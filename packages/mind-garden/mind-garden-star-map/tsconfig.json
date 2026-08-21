@@ -1,0 +1,23 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib/types"
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../../vendor/cosmokit" },
+    { "path": "../../../vendor/cordis" },
+    { "path": "../../../vendor/schemastery" },
+    { "path": "../../util/brand" },
+    { "path": "../../core/agent" },
+    { "path": "../../core/session" },
+    { "path": "../../llm/llm" },
+    { "path": "../mind-garden-core" },
+    { "path": "../mind-garden-memory" },
+    { "path": "../mind-garden-reflection" },
+    { "path": "../mind-garden-vault" },
+    { "path": "../../typert/protocol" },
+    { "path": "../../runtime-diagnostics/invariants" }
+  ]
+}

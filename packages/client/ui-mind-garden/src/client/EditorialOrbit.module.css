@@ -1,0 +1,399 @@
+.orbit {
+  --orbit-tilt-x: 0deg;
+  --orbit-tilt-y: 0deg;
+  --orbit-light-x: 32%;
+  --orbit-light-y: 24%;
+  position: relative;
+  width: min(100%, 680px);
+  min-height: 650px;
+  margin-inline: auto;
+  color: var(--mg-bone);
+  isolation: isolate;
+  perspective: 1200px;
+  touch-action: pan-y;
+}
+
+.instrumentFrame {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 1;
+  width: min(92%, 620px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotateX(var(--orbit-tilt-x)) rotateY(var(--orbit-tilt-y));
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.orbit[data-interacting='true'] .instrumentFrame {
+  transition-duration: 90ms;
+  transition-timing-function: linear;
+}
+
+.outerShadow,
+.brassBezel,
+.enamelWell,
+.instrument {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.outerShadow {
+  width: 100%;
+  background: color-mix(in srgb, var(--mg-night) 88%, transparent);
+  box-shadow:
+    0 42px 72px color-mix(in srgb, var(--mg-night) 84%, transparent),
+    0 10px 24px color-mix(in srgb, var(--mg-brass) 13%, transparent);
+  transform: translate(-50%, -47%) translateZ(-26px) scale(0.94);
+}
+
+.brassBezel {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--mg-brass-light) 82%, transparent);
+  background:
+    radial-gradient(circle at var(--orbit-light-x) var(--orbit-light-y), color-mix(in srgb, var(--mg-brass-light) 60%, transparent), transparent 24%),
+    conic-gradient(from 18deg, var(--mg-brass-dark), var(--mg-brass-light), var(--mg-brass), var(--mg-brass-dark), var(--mg-brass-light), var(--mg-brass-dark));
+  box-shadow:
+    inset 0 0 0 4px color-mix(in srgb, var(--mg-night) 72%, transparent),
+    inset 0 0 0 7px color-mix(in srgb, var(--mg-brass-light) 34%, transparent),
+    inset 0 0 26px color-mix(in srgb, var(--mg-night) 74%, transparent),
+    0 16px 38px color-mix(in srgb, var(--mg-night) 74%, transparent);
+  transform: translate(-50%, -50%) translateZ(8px);
+}
+
+.brassBezel::before,
+.brassBezel::after {
+  position: absolute;
+  border-radius: 50%;
+  content: '';
+  pointer-events: none;
+}
+
+.brassBezel::before {
+  inset: 20px;
+  border: 1px solid color-mix(in srgb, var(--mg-brass-light) 62%, transparent);
+  box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--mg-night) 78%, transparent);
+}
+
+.brassBezel::after {
+  inset: 4px;
+  border: 1px solid color-mix(in srgb, var(--mg-night) 58%, transparent);
+}
+
+.enamelWell {
+  width: 91%;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--mg-brass) 48%, transparent);
+  background:
+    radial-gradient(circle at var(--orbit-light-x) var(--orbit-light-y), color-mix(in srgb, var(--mg-teal-light) 32%, transparent), transparent 34%),
+    radial-gradient(circle, color-mix(in srgb, var(--mg-teal) 78%, var(--mg-night)), var(--mg-night) 74%);
+  box-shadow:
+    inset 0 0 54px color-mix(in srgb, var(--mg-night) 86%, transparent),
+    inset 0 0 0 7px color-mix(in srgb, var(--mg-night) 46%, transparent),
+    0 0 36px color-mix(in srgb, var(--mg-teal-light) 10%, transparent);
+  transform: translate(-50%, -50%) translateZ(14px);
+}
+
+.enamelWell::before {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(112deg, transparent 18%, color-mix(in srgb, var(--mg-bone) 7%, transparent) 44%, transparent 64%),
+    radial-gradient(circle at 70% 26%, color-mix(in srgb, var(--mg-bone) 8%, transparent), transparent 18%);
+  content: '';
+  opacity: 0.72;
+}
+
+.instrument {
+  z-index: 2;
+  width: 86%;
+  overflow: visible;
+  fill: none;
+  transform: translate(-50%, -50%) translateZ(24px);
+}
+
+.rotorSlow {
+  transform-origin: 50% 50%;
+}
+
+.rotorSlow { animation: orbitDrift 78s linear infinite; }
+
+.calibrationOuter {
+  stroke: color-mix(in srgb, var(--mg-brass-light) 64%, transparent);
+  stroke-dasharray: 0.35 3.65;
+  stroke-linecap: round;
+  stroke-width: 0.72;
+}
+
+.centerMark circle:first-child {
+  stroke: color-mix(in srgb, var(--mg-brass-light) 38%, transparent);
+  stroke-width: 0.28;
+}
+
+.centerMark circle:last-child {
+  fill: color-mix(in srgb, var(--mg-brass-light) 82%, transparent);
+}
+
+.crown {
+  position: absolute;
+  z-index: 3;
+  border: 1px solid color-mix(in srgb, var(--mg-brass-light) 58%, transparent);
+  background: linear-gradient(90deg, var(--mg-brass-dark), var(--mg-brass-light), var(--mg-brass-dark));
+  box-shadow: 0 9px 18px color-mix(in srgb, var(--mg-night) 72%, transparent);
+}
+
+.crown {
+  inset: 0 auto auto 50%;
+  width: 10px;
+  height: 32px;
+  border-radius: 4px;
+  transform: translate(-50%, -36%) translateZ(28px);
+}
+
+.nodes {
+  position: absolute;
+  z-index: 4;
+  inset: 50% auto auto 50%;
+  width: min(92%, 620px);
+  aspect-ratio: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotateX(var(--orbit-tilt-x)) rotateY(var(--orbit-tilt-y));
+  transform-style: preserve-3d;
+  transition: transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.orbit[data-interacting='true'] .nodes {
+  transition-duration: 110ms;
+  transition-timing-function: linear;
+}
+
+.nodes li {
+  position: absolute;
+  inset: var(--orbit-y) auto auto var(--orbit-x);
+  display: flex;
+  width: min(142px, 24%);
+  align-items: center;
+  gap: 7px;
+  color: color-mix(in srgb, var(--mg-bone) 78%, transparent);
+  transform: translate(-50%, -50%) translateZ(var(--orbit-depth));
+}
+
+.node {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  flex: none;
+  border: 1px solid color-mix(in srgb, var(--mg-teal-light) 72%, var(--mg-brass));
+  border-radius: 50%;
+  background: radial-gradient(circle at 31% 25%, var(--mg-bone), var(--mg-teal-light) 13%, var(--mg-teal) 46%, var(--mg-night) 78%);
+  box-shadow:
+    inset -2px -3px 5px color-mix(in srgb, var(--mg-night) 72%, transparent),
+    0 6px 13px color-mix(in srgb, var(--mg-night) 76%, transparent),
+    0 0 10px color-mix(in srgb, var(--mg-teal-light) 14%, transparent);
+  animation: planetBreathe 8.2s ease-in-out infinite;
+  animation-delay: var(--orbit-delay);
+}
+
+.node::after {
+  position: absolute;
+  inset: 3px auto auto 3px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--mg-bone) 72%, transparent);
+  content: '';
+}
+
+.nodes li:nth-child(1),
+.nodes li:nth-child(5),
+.nodes li:nth-child(6) {
+  flex-direction: row-reverse;
+  text-align: end;
+}
+
+.nodes li[data-kind='question'] { color: color-mix(in srgb, var(--mg-oxblood-light) 68%, var(--mg-bone)); }
+.nodes li[data-kind='question'] .node {
+  border-color: color-mix(in srgb, var(--mg-oxblood-light) 72%, var(--mg-brass));
+  background: radial-gradient(circle at 31% 25%, var(--mg-bone), var(--mg-oxblood-light) 18%, var(--mg-oxblood) 52%, var(--mg-night) 82%);
+}
+
+.nodes li[data-kind='review'] { color: color-mix(in srgb, var(--mg-brass-light) 78%, var(--mg-bone)); }
+.nodes li[data-kind='review'] .node {
+  border-color: color-mix(in srgb, var(--mg-brass-light) 82%, transparent);
+  background: radial-gradient(circle at 31% 25%, var(--mg-bone), var(--mg-brass-light) 14%, var(--mg-brass) 48%, var(--mg-brass-dark) 78%);
+}
+
+.nodeCopy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--mg-night) 90%, transparent));
+}
+
+.nodeCopy strong,
+.nodeCopy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nodeCopy strong {
+  color: var(--mg-bone);
+  font-size: 10px;
+  font-weight: 560;
+}
+
+.nodeCopy small {
+  color: color-mix(in srgb, var(--mg-bone) 56%, transparent);
+  font-size: 8px;
+}
+
+.centerContent {
+  position: absolute;
+  z-index: 5;
+  inset: 50% auto auto 50%;
+  width: min(62%, 370px);
+  text-align: center;
+  transform: translate(-50%, -50%) translateZ(44px);
+}
+
+.center {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-shadow: 0 4px 16px color-mix(in srgb, var(--mg-night) 88%, transparent);
+}
+
+.center strong {
+  color: var(--mg-brass-light);
+  font-size: 18px;
+  font-weight: 620;
+}
+
+.center small {
+  color: color-mix(in srgb, var(--mg-bone) 62%, transparent);
+  font-size: 10px;
+}
+
+.starDepth {
+  position: absolute;
+  z-index: 0;
+  inset: 50% auto auto 50%;
+  width: min(88%, 590px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.starDepth i {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--mg-brass-light);
+  box-shadow: 0 0 7px color-mix(in srgb, var(--mg-brass-light) 42%, transparent);
+  opacity: 0.28;
+  animation: dustFloat 9s ease-in-out infinite alternate;
+}
+
+.starDepth i:nth-child(3n) { width: 1px; height: 1px; opacity: 0.52; animation-duration: 13s; }
+.starDepth i:nth-child(4n) { background: var(--mg-teal-light); animation-duration: 17s; }
+.starDepth i:nth-child(5n) { animation-delay: -5s; }
+.starDepth i:nth-child(7n) { animation-delay: -9s; }
+.starDepth i:nth-child(1) { top: 10%; left: 17%; }
+.starDepth i:nth-child(2) { top: 7%; left: 38%; }
+.starDepth i:nth-child(3) { top: 14%; left: 67%; }
+.starDepth i:nth-child(4) { top: 19%; left: 84%; }
+.starDepth i:nth-child(5) { top: 29%; left: 7%; }
+.starDepth i:nth-child(6) { top: 34%; left: 24%; }
+.starDepth i:nth-child(7) { top: 30%; left: 76%; }
+.starDepth i:nth-child(8) { top: 39%; left: 94%; }
+.starDepth i:nth-child(9) { top: 49%; left: 12%; }
+.starDepth i:nth-child(10) { top: 47%; left: 43%; }
+.starDepth i:nth-child(11) { top: 51%; left: 68%; }
+.starDepth i:nth-child(12) { top: 56%; left: 88%; }
+.starDepth i:nth-child(13) { top: 68%; left: 8%; }
+.starDepth i:nth-child(14) { top: 72%; left: 26%; }
+.starDepth i:nth-child(15) { top: 67%; left: 57%; }
+.starDepth i:nth-child(16) { top: 73%; left: 82%; }
+.starDepth i:nth-child(17) { top: 87%; left: 19%; }
+.starDepth i:nth-child(18) { top: 90%; left: 47%; }
+.starDepth i:nth-child(19) { top: 84%; left: 72%; }
+.starDepth i:nth-child(20) { top: 92%; left: 91%; }
+.starDepth i:nth-child(21) { top: 23%; left: 49%; }
+.starDepth i:nth-child(22) { top: 43%; left: 31%; }
+.starDepth i:nth-child(23) { top: 61%; left: 39%; }
+.starDepth i:nth-child(24) { top: 78%; left: 64%; }
+.starDepth i:nth-child(25) { top: 16%; left: 29%; }
+.starDepth i:nth-child(26) { top: 37%; left: 57%; }
+.starDepth i:nth-child(27) { top: 58%; left: 18%; }
+.starDepth i:nth-child(28) { top: 81%; left: 36%; }
+.starDepth i:nth-child(29) { top: 25%; left: 92%; }
+.starDepth i:nth-child(30) { top: 63%; left: 73%; }
+.starDepth i:nth-child(31) { top: 11%; left: 55%; }
+.starDepth i:nth-child(32) { top: 88%; left: 57%; }
+
+.orbit figcaption {
+  position: absolute;
+  z-index: 6;
+  inset: auto 9% 1%;
+  color: color-mix(in srgb, var(--mg-bone) 48%, transparent);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+@keyframes orbitDrift { to { transform: rotate(360deg); } }
+@keyframes planetBreathe { 50% { filter: brightness(1.12); transform: translateY(-1px); } }
+@keyframes dustFloat { to { opacity: 0.62; transform: translate3d(5px, -9px, 0) scale(1.35); } }
+
+@media (max-width: 1120px) {
+  .orbit { min-height: 590px; }
+  .instrumentFrame,
+  .nodes { width: min(92%, 554px); }
+}
+
+@media (max-width: 760px) {
+  .orbit { min-height: 520px; }
+  .instrumentFrame,
+  .nodes { width: min(92%, 500px); }
+  .nodeCopy { max-width: 86px; }
+  .nodes li { width: 25%; }
+  .nodeCopy strong { font-size: 9px; }
+  .nodeCopy small { display: none; }
+}
+
+@media (max-width: 520px) {
+  .orbit { min-height: 450px; }
+  .instrumentFrame,
+  .nodes { width: min(92%, 430px); }
+  .nodeCopy { display: none; }
+  .centerContent { width: 64%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .instrumentFrame,
+  .nodes {
+    transform: translate(-50%, -50%);
+    transition: none;
+  }
+
+  .rotorSlow,
+  .node,
+  .starDepth i {
+    animation: none;
+  }
+
+  .starDepth i:nth-child(n + 13) { display: none; }
+}

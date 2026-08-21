@@ -1,0 +1,24 @@
+{
+  "extends": "../../../tsconfig.base.client.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib/types"
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../../vendor/cordis" },
+    { "path": "../locale" },
+    { "path": "../../api/remotes/tsconfig.client.json" },
+    { "path": "../runtime" },
+    { "path": "../ui-attachment" },
+    { "path": "../ui-conversation" },
+    { "path": "../ui-slots" },
+    { "path": "../../mind-garden/mind-garden-core" },
+    { "path": "../../mind-garden/mind-garden-media" },
+    { "path": "../../mind-garden/mind-garden-portability" },
+    { "path": "../../mind-garden/mind-garden-reflection" },
+    { "path": "../../mind-garden/mind-garden-star-map" },
+    { "path": "../../typert/protocol" },
+    { "path": "../../runtime-diagnostics/invariants" }
+  ]
+}

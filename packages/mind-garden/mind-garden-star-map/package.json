@@ -1,0 +1,70 @@
+{
+  "name": "@deepseek-ai/dsh-mind-garden-star-map",
+  "description": "Encrypted Star Map ritual, profile, and governed constellation traits for Mind Garden",
+  "version": "0.1.0-rc.7",
+  "publishConfig": { "access": "public" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hyyhf/mindgarden.git",
+    "directory": "packages/mind-garden/mind-garden-star-map"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
+  "exports": {
+    ".": { "types": "./lib/types/index.d.ts", "default": "./lib/index.js" },
+    "./invariant": { "types": "./lib/types/invariant.d.ts", "default": "./lib/invariant.js" },
+    "./types": { "types": "./lib/types/types.d.ts", "default": "./lib/types/types.js" },
+    "./typert": { "types": "./lib/typert.host.d.ts", "default": "./lib/typert.host.js" },
+    "./remote": { "types": "./lib/typert.remote-client.d.ts", "default": "./lib/typert.remote-client.js" },
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/invariant.js",
+    "lib/types/**/*.js",
+    "lib/types/**/*.d.ts",
+    "lib/typert.host.js",
+    "lib/typert.host.d.ts",
+    "lib/typert.remote-client.js",
+    "lib/typert.remote-client.d.ts"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@deepseek-ai/schemastery": "*",
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*",
+    "@deepseek-ai/dsh-agent": "*",
+    "@deepseek-ai/dsh-brand": "*",
+    "@deepseek-ai/dsh-invariants": "*",
+    "@deepseek-ai/dsh-llm": "*",
+    "@deepseek-ai/dsh-mind-garden-core": "*",
+    "@deepseek-ai/dsh-mind-garden-memory": "*",
+    "@deepseek-ai/dsh-mind-garden-reflection": "*",
+    "@deepseek-ai/dsh-mind-garden-vault": "*",
+    "@deepseek-ai/dsh-session": "*",
+    "@deepseek-ai/dsh-typert-protocol": "*"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "*",
+    "@deepseek-ai/cordis-plugin-include": "*",
+    "@deepseek-ai/cordis-plugin-loader": "*",
+    "@deepseek-ai/dsh-agent": "*",
+    "@deepseek-ai/dsh-brand": "*",
+    "@deepseek-ai/dsh-credentials-local": "*",
+    "@deepseek-ai/dsh-invariants": "*",
+    "@deepseek-ai/dsh-llm": "*",
+    "@deepseek-ai/dsh-mind-garden-core": "*",
+    "@deepseek-ai/dsh-mind-garden-memory": "*",
+    "@deepseek-ai/dsh-mind-garden-reflection": "*",
+    "@deepseek-ai/dsh-mind-garden-vault": "*",
+    "@deepseek-ai/dsh-session": "*",
+    "@deepseek-ai/dsh-storage": "*",
+    "@deepseek-ai/dsh-storage-domain": "*",
+    "@deepseek-ai/dsh-storage-json": "*",
+    "@deepseek-ai/dsh-typert-protocol": "*"
+  }
+}

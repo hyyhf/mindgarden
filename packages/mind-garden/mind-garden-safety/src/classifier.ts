@@ -1,0 +1,177 @@
+/** Pure deterministic input classifier and follow-up state transition. */
+
+import { mindGardenSafetyResources } from './resources.ts'
+import type {
+  MindGardenSafetyAssessment,
+  MindGardenSafetyCategory,
+  MindGardenSafetyLevel,
+  MindGardenSafetyState,
+} from './types.ts'
+
+const URGENT_PATTERNS = [
+  /(?:我)?(?:现在|马上|今晚|已经).{0,10}(?:想|要|准备|打算)(?:自杀|轻生|跳楼|割腕|上吊|伤害自己|紫砂)/iu,
+  /(?:我)?(?:已经|刚刚)(?:割腕|吞药|跳下|伤害自己|伤害他人|捅了|砍了)/iu,
+  /(?:药|刀|绳|煤气|楼顶).{0,12}(?:就在身边|已经准备好|已经拿到|伸手就能拿到)/iu,
+  /(?:我)?(?:现在|马上|今晚).{0,8}(?:要|准备|打算)(?:杀了|伤害)(?:他|她|他们|别人)/iu,
+  /(?:我)?(?:已经|刚刚).{0,8}(?:吞了|吃了|注射了).{0,8}(?:一把|一瓶|一整瓶|很多|过量|全部)(?:药|毒品|酒)/iu,
+  /(?:我)?(?:正站在|已经到了|就在).{0,8}(?:楼顶|桥边|铁轨|悬崖)/iu,
+  /\b(?:i am|i'm|im)\s+(?:going to|about to|ready to)\s+(?:kill myself|end my life|hurt myself)\b/iu,
+  /\b(?:i|we)\s+(?:just|already)\s+(?:took|swallowed|injected).{0,18}(?:overdose|all the pills|a bottle of pills)\b/iu,
+  /\b(?:tonight|right now|now).{0,18}(?:kill myself|end my life|kill (?:him|her|them))\b/iu,
+] as const
+
+const HIGH_RISK_PATTERNS = [
+  /(?:我)?(?:想|打算|计划|决定).{0,8}(?:自杀|轻生|结束生命|伤害自己|自残|紫砂)/iu,
+  /(?:我)?(?:不想活(?:了|下去|着|[，。！？\s]|$)|活不下去|想死|死了算了|结束自己的生命)/iu,
+  /(?:我)?(?:想|打算|计划|决定).{0,8}(?:杀了|伤害)(?:他|她|他们|别人)/iu,
+  /(?:遗书|告别信).{0,8}(?:写好|写完|已经写)|(?:东西|财物|宠物).{0,8}(?:送走|送人).{0,8}(?:不回来了|最后)/iu,
+  /\b(?:i want to die|i want to kill myself|i plan to kill myself|i don't want to live|i do not want to live)\b/iu,
+  /\b(?:wrote|finished).{0,12}(?:suicide note|goodbye letter)\b/iu,
+] as const
+
+const VULNERABLE_PATTERNS = [
+  /(?:彻底|非常|特别)?绝望/iu,
+  /(?:真的|快要)?撑不下去/iu,
+  /连续.{0,6}(?:天|周).{0,4}(?:睡不着|失眠)/iu,
+  /活着.{0,5}(?:没意思|没有意义)/iu,
+  /(?:希望|最好|要是).{0,8}(?:睡着.{0,4}(?:就)?别醒|明天别醒来|消失就好)/iu,
+  /\b(?:can't go on|cannot go on|no reason to live|wish i would not wake up|wish i wouldn't wake up)\b/iu,
+] as const
+
+const ABUSE_DANGER_PATTERNS = [
+  /(?:正在|现在|今晚).{0,8}(?:打我|掐我|锁着我|威胁杀我|不让我离开)/iu,
+  /(?:孩子|小孩|未成年人).{0,8}(?:正在|经常).{0,8}(?:被打|被性侵|被虐待|被关起来)/iu,
+  /\b(?:he|she|they)\s+(?:is|are)\s+(?:hitting|strangling|locking up|threatening to kill)\s+me\b/iu,
+  /\b(?:child|kid|minor).{0,12}(?:is being abused|is being assaulted|is locked up)\b/iu,
+] as const
+
+const REALITY_OR_SLEEP_PATTERNS = [
+  /(?:连续|已经).{0,5}(?:三|3|四|4|五|5).{0,3}(?:天|晚).{0,8}(?:没睡|不睡).{0,12}(?:停不下来|控制不了|无所不能)/iu,
+  /(?:声音|有人).{0,8}(?:命令|叫|逼).{0,8}(?:我)?(?:自杀|伤人|杀人|跳下去)/iu,
+  /\b(?:voices?|someone)\s+(?:is|are)?\s*(?:telling|ordering|commanding)\s+me\s+to\s+(?:kill|hurt|jump)\b/iu,
+  /\b(?:three|four|five|3|4|5)\s+(?:days|nights).{0,18}(?:without sleep|haven't slept).{0,18}(?:unstoppable|invincible|out of control)\b/iu,
+] as const
+
+const SUBSTANCE_DANGER_PATTERNS = [
+  /(?:停酒|戒酒|停药|戒断).{0,12}(?:抽搐|意识不清|看见不存在|严重发抖)/iu,
+  /(?:吸毒|用药|喝酒).{0,12}(?:过量|失去意识|叫不醒|呼吸很慢)/iu,
+  /\b(?:overdose|overdosed).{0,16}(?:unconscious|won't wake|not breathing|breathing slowly)\b/iu,
+  /\b(?:alcohol|benzodiazepine|benzo)\s+withdrawal.{0,16}(?:seizure|hallucination|confusion)\b/iu,
+] as const
+
+const BENIGN_CONTEXT_PATTERNS = [
+  /(?:新闻|报道|论文|小说|电影|电视剧|游戏|角色|台词|剧本).{0,30}(?:自杀|轻生|跳楼|割腕|杀人)/iu,
+  /(?:讨论|分析|研究|科普).{0,20}(?:自杀|轻生|自残|他伤)/iu,
+  /(?:如果|假如).{0,8}(?:有人|一个人).{0,12}(?:自杀|轻生|自残)/iu,
+  /(?:课程|标题|关键词|测试样例).{0,20}(?:自杀|轻生|自残|杀人)/iu,
+  /\b(?:news|article|paper|novel|movie|script|research|training).{0,30}(?:suicide|self-harm|murder)\b/iu,
+  /\b(?:if|suppose).{0,10}(?:someone|a person).{0,16}(?:suicide|self-harm)\b/iu,
+] as const
+
+const NEGATED_RISK_PATTERNS = [
+  /(?:我)?(?:没有|并没有|从没|不会|不想|不打算).{0,5}(?:自杀|轻生|自残|伤害自己|杀人)/iu,
+  /(?:我)?(?:已放弃|取消了).{0,5}(?:自杀|轻生|自残|伤害自己)的?(?:想法|计划)?/iu,
+  /\b(?:i am not|i'm not|im not)\s+(?:suicidal|going to hurt myself)\b/iu,
+  /\b(?:i don't|i do not)\s+(?:want|plan|intend)\s+to\s+(?:die|kill myself|hurt myself)\b/iu,
+] as const
+
+const SAFETY_CONFIRMED_TERMS = [
+  '我现在安全', '现在是安全的', '已经联系到', '有人陪着我', '危险已经过去',
+  '已经离开楼顶', '已经离开桥边', '刀已经交给', '药已经交给', '救护车到了',
+  '警察到了', '已经到急诊', '门已经锁好', '施暴者已经离开',
+] as const
+
+function matches(patterns: readonly RegExp[], text: string): boolean {
+  return patterns.some(pattern => pattern.test(text))
+}
+
+function result(
+  level: MindGardenSafetyLevel,
+  state: MindGardenSafetyState,
+  categories: readonly MindGardenSafetyCategory[],
+  normalTurns = 0,
+): MindGardenSafetyAssessment {
+  return {
+    level,
+    state,
+    categories,
+    resources: level === 0 ? [] : mindGardenSafetyResources(level >= 3),
+    normalTurns,
+  }
+}
+
+/**
+ * Normalize common spacing, traditional characters, and obfuscations.
+ * @param text - entered user text.
+ * @returns normalized text used only for deterministic matching.
+ */
+export function normalizeMindGardenSafetyText(text: string): string {
+  return text.trim().replace(/\s+/gu, ' ')
+    .replaceAll('殺', '杀')
+    .replaceAll('傷', '伤')
+    .replaceAll('輕', '轻')
+    .replaceAll('藥', '药')
+    .replaceAll('覺', '觉')
+    .replace(/自[\s·._-]*杀/giu, '自杀')
+    .replace(/轻[\s·._-]*生/giu, '轻生')
+    .replace(/割[\s·._-]*腕/giu, '割腕')
+    .replace(/紫[\s·._-]*砂/giu, '紫砂')
+    .replace(/s[\s·._-]*u[\s·._-]*i[\s·._-]*c[\s·._-]*i[\s·._-]*d[\s·._-]*e/giu, 'suicide')
+    .replace(/k[\s·._-]*i[\s·._-]*l[\s·._-]*l/giu, 'kill')
+    .replace(/z[\s·._-]*i[\s·._-]*s[\s·._-]*h[\s·._-]*a/giu, '自杀')
+}
+
+/**
+ * Classify one user text without a model or network call.
+ * @param text - complete entered human text.
+ * @returns a detached deterministic assessment.
+ */
+export function assessMindGardenInput(text: string): MindGardenSafetyAssessment {
+  const normalized = normalizeMindGardenSafetyText(text)
+  if (normalized.includes('不想活在')
+    || matches(NEGATED_RISK_PATTERNS, normalized)
+    || matches(BENIGN_CONTEXT_PATTERNS, normalized)) return result(0, 'ordinary', [])
+  if (matches(URGENT_PATTERNS, normalized)) return result(3, 'urgent', ['immediate-danger'])
+  if (matches(ABUSE_DANGER_PATTERNS, normalized)) return result(2, 'abuse-danger', ['abuse-or-child-safety'])
+  if (matches(REALITY_OR_SLEEP_PATTERNS, normalized)) {
+    return result(2, 'reality-or-sleep-danger', ['mania-or-psychosis-danger'])
+  }
+  if (matches(SUBSTANCE_DANGER_PATTERNS, normalized)) {
+    return result(3, 'substance-emergency', ['overdose-or-withdrawal'])
+  }
+  if (matches(HIGH_RISK_PATTERNS, normalized)) return result(2, 'high-risk', ['self-or-other-harm'])
+  if (matches(VULNERABLE_PATTERNS, normalized)) return result(1, 'vulnerable', ['severe-distress'])
+  return result(0, 'ordinary', [])
+}
+
+/**
+ * Carry a previous intervention forward until concrete safety information or
+ * two ordinary level-one turns allow a step down.
+ * @param current - classification of the latest text alone.
+ * @param previous - previous entered-human assessment in this session.
+ * @param text - latest complete human text.
+ * @returns effective assessment for this response.
+ */
+export function recoverMindGardenSafetyState(
+  current: MindGardenSafetyAssessment,
+  previous: MindGardenSafetyAssessment | undefined,
+  text: string,
+): MindGardenSafetyAssessment {
+  if (current.level > 0 || previous === undefined || previous.level === 0) return current
+  const normalized = normalizeMindGardenSafetyText(text)
+  const safetyConfirmed = SAFETY_CONFIRMED_TERMS.some(term => normalized.includes(term))
+  if (previous.level === 3) {
+    return safetyConfirmed
+      ? result(2, 'support-follow-up', ['immediate-danger-reduced'])
+      : result(3, 'support-follow-up', ['urgent-follow-up'], previous.normalTurns)
+  }
+  if (previous.level === 2) {
+    return safetyConfirmed
+      ? result(1, 'support-follow-up', ['safety-confirmed'])
+      : result(2, 'support-follow-up', ['safety-follow-up'], previous.normalTurns)
+  }
+  const normalTurns = previous.normalTurns + 1
+  return normalTurns >= 2
+    ? result(0, 'ordinary', [])
+    : result(1, 'support-follow-up', ['safety-follow-up'], normalTurns)
+}

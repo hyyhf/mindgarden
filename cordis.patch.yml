@@ -1,0 +1,32 @@
+# Mind Garden is a Web-profile add-on. Core and dialogue stay on the Host
+# plane; the browser row is discovered from its dsh.client manifest.
+- insert:
+    - id: mind-garden-vault
+      name: '@deepseek-ai/dsh-mind-garden/vault'
+
+    - id: mind-garden-core
+      name: '@deepseek-ai/dsh-mind-garden/core'
+
+    - id: mind-garden-memory
+      name: '@deepseek-ai/dsh-mind-garden/memory'
+
+    - id: mind-garden-media
+      name: '@deepseek-ai/dsh-mind-garden/media'
+
+    - id: mind-garden-reflection
+      name: '@deepseek-ai/dsh-mind-garden/reflection'
+
+    - id: mind-garden-star-map
+      name: '@deepseek-ai/dsh-mind-garden/star-map'
+
+    - id: mind-garden-dialogue
+      name: '@deepseek-ai/dsh-mind-garden/dialogue'
+
+    - id: mind-garden-safety
+      name: '@deepseek-ai/dsh-mind-garden/safety'
+
+    - id: mind-garden-portability
+      name: '@deepseek-ai/dsh-mind-garden/portability'
+
+    - id: ui-mind-garden
+      name: '@deepseek-ai/dsh-mind-garden/ui'

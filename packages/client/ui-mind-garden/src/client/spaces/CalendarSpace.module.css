@@ -1,0 +1,553 @@
+.atlasSeal {
+  display: grid;
+  width: 46px;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-state-warn-primary) 38%, var(--dsw-alias-border-l2));
+  border-radius: 50%;
+  color: color-mix(in srgb, var(--dsw-alias-state-success-primary) 72%, var(--dsw-alias-label-primary));
+  background: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 18%, transparent);
+  box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 18%, transparent);
+}
+
+.atlas {
+  max-width: 1180px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-state-warn-primary) 24%, var(--dsw-alias-border-l2));
+  border-radius: 11px 11px 5px 5px;
+  background: color-mix(in srgb, var(--dsw-alias-bg-base) 94%, var(--dsw-alias-state-warn-secondary));
+  box-shadow: 0 22px 60px color-mix(in srgb, var(--dsw-alias-label-primary) 8%, transparent);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 70px;
+  padding: 13px 18px;
+  color: var(--dsw-alias-label-primary-inverted);
+  background:
+    radial-gradient(circle at 16% -60%, color-mix(in srgb, var(--dsw-alias-state-warn-primary) 26%, transparent), transparent 19rem),
+    linear-gradient(128deg, color-mix(in srgb, var(--dsw-alias-state-success-primary) 46%, var(--dsw-alias-label-primary)), color-mix(in srgb, var(--dsw-alias-label-primary) 96%, var(--dsw-alias-state-success-primary)));
+}
+
+.monthControls,
+.modeSwitch {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.monthControls > button,
+.modeSwitch button {
+  min-height: 34px;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 18%, transparent);
+  border-radius: 6px;
+  color: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 76%, transparent);
+  background: color-mix(in srgb, var(--dsw-alias-label-primary) 18%, transparent);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.monthControls > button {
+  display: grid;
+  min-width: 34px;
+  place-items: center;
+}
+
+.monthControls label {
+  position: relative;
+  display: grid;
+  min-width: 156px;
+  gap: 1px;
+  padding: 4px 11px;
+  border-inline: 1px solid color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 30%, transparent);
+}
+
+.monthControls label span {
+  color: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 72%, white);
+  font-size: 9px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.monthControls input {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  color: var(--dsw-alias-label-primary-inverted);
+  background: transparent;
+  font: 520 17px/1.4 'Mind Garden Display', 'Noto Serif SC', 'Songti SC', serif;
+  color-scheme: dark;
+}
+
+.monthControls .todayButton {
+  display: inline-flex;
+  width: auto;
+  padding-inline: 11px;
+  color: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 78%, white);
+}
+
+.modeSwitch {
+  padding: 3px;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 14%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--dsw-alias-label-primary) 22%, transparent);
+}
+
+.modeSwitch button {
+  padding: 5px 10px;
+  border: 0;
+  background: transparent;
+}
+
+.modeSwitch button[aria-pressed='true'] {
+  color: var(--dsw-alias-label-primary);
+  background: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 82%, white);
+}
+
+.monthControls button:hover,
+.modeSwitch button:hover {
+  border-color: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 52%, transparent);
+  color: var(--dsw-alias-label-primary-inverted);
+}
+
+.monthControls button:focus-visible,
+.modeSwitch button:focus-visible,
+.filters button:focus-visible,
+.day:focus-visible,
+.event > button:focus-visible {
+  outline: 2px solid var(--dsw-alias-state-business-primary);
+  outline-offset: 2px;
+}
+
+.filters {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 10px 18px;
+  border-block-end: 1px solid color-mix(in srgb, var(--dsw-alias-state-success-primary) 16%, var(--dsw-alias-border-l2));
+  scrollbar-width: thin;
+}
+
+.filters button {
+  min-height: 30px;
+  flex: none;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--dsw-alias-label-secondary);
+  background: transparent;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.filters button:hover {
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+.filters button[aria-pressed='true'] {
+  color: color-mix(in srgb, var(--dsw-alias-state-success-primary) 72%, var(--dsw-alias-label-primary));
+  background: color-mix(in srgb, var(--dsw-alias-state-success-secondary) 18%, transparent);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(500px, 1fr) minmax(300px, 0.43fr);
+  min-height: 570px;
+}
+
+.calendar {
+  padding: 20px 22px 26px;
+  border-inline-end: 1px solid color-mix(in srgb, var(--dsw-alias-state-success-primary) 16%, var(--dsw-alias-border-l2));
+}
+
+.weekdays,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.weekdays {
+  gap: 6px;
+  margin-block-end: 7px;
+}
+
+.weekdays span {
+  padding: 5px;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.grid {
+  gap: 6px;
+}
+
+.day,
+.blank {
+  min-height: 80px;
+  border-radius: 7px;
+}
+
+.day {
+  position: relative;
+  display: grid;
+  align-content: space-between;
+  justify-items: start;
+  padding: 9px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-state-warn-primary) 12%, var(--dsw-alias-border-l2));
+  color: var(--dsw-alias-label-primary);
+  background: color-mix(in srgb, var(--dsw-alias-bg-base) 96%, var(--dsw-alias-state-warn-secondary));
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 140ms ease-out, background 140ms ease-out, transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.day::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: transparent;
+  content: '';
+}
+
+.day:hover {
+  border-color: color-mix(in srgb, var(--dsw-alias-state-warn-primary) 36%, var(--dsw-alias-border-l2));
+  background: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 16%, var(--dsw-alias-bg-base));
+  transform: translateY(-1px);
+}
+
+.day[data-selected='true'] {
+  border-color: color-mix(in srgb, var(--dsw-alias-state-success-primary) 52%, var(--dsw-alias-state-warn-primary));
+  color: var(--dsw-alias-label-primary-inverted);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--dsw-alias-state-success-primary) 54%, var(--dsw-alias-label-primary)), color-mix(in srgb, var(--dsw-alias-label-primary) 94%, var(--dsw-alias-state-success-primary)));
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--dsw-alias-label-primary) 13%, transparent);
+}
+
+.day[data-selected='true']::before {
+  background: var(--dsw-alias-state-warn-secondary);
+}
+
+.day[data-today='true'] .dayNumber::after {
+  display: inline-block;
+  width: 5px;
+  aspect-ratio: 1;
+  margin-inline-start: 5px;
+  border-radius: 50%;
+  background: var(--dsw-alias-state-warn-primary);
+  box-shadow: 0 0 9px color-mix(in srgb, var(--dsw-alias-state-warn-primary) 42%, transparent);
+  content: '';
+  vertical-align: middle;
+}
+
+.dayNumber {
+  font-family: 'Mind Garden Display', 'Noto Serif SC', 'Songti SC', serif;
+  font-size: 17px;
+  font-weight: 560;
+}
+
+.day small {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 9px;
+}
+
+.day[data-selected='true'] small {
+  color: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 58%, transparent);
+}
+
+.signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-height: 4px;
+}
+
+.signals i {
+  width: 10px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--dsw-alias-state-business-primary);
+}
+
+.signals i[data-kind='checkin'] { background: var(--dsw-alias-state-success-primary); }
+.signals i[data-kind='journal'] { background: var(--dsw-alias-state-warn-primary); }
+.signals i[data-kind='concern'] { background: var(--dsw-alias-state-error-primary); }
+.signals i[data-kind='principle'] { background: var(--dsw-alias-state-business-primary); }
+.signals i[data-kind='experiment'] { background: color-mix(in srgb, var(--dsw-alias-state-success-primary) 54%, var(--dsw-alias-state-warn-primary)); }
+.signals i[data-kind='question'] { background: var(--dsw-alias-label-tertiary); }
+
+.day[data-selected='true'] .signals i {
+  filter: saturate(0.72) brightness(1.45);
+}
+
+.detail {
+  position: relative;
+  min-width: 0;
+  padding: 24px 22px;
+  color: var(--dsw-alias-label-primary-inverted);
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--dsw-alias-state-warn-primary) 16%, transparent), transparent 18rem),
+    linear-gradient(155deg, color-mix(in srgb, var(--dsw-alias-state-success-primary) 42%, var(--dsw-alias-label-primary)), color-mix(in srgb, var(--dsw-alias-label-primary) 97%, var(--dsw-alias-state-success-primary)));
+}
+
+.detailHeader,
+.trend header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block-end: 14px;
+}
+
+.detailHeader small,
+.trend header small {
+  color: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 72%, white);
+  font-size: 9px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.detailHeader h2,
+.trend h2 {
+  margin: 4px 0 0;
+  font-family: 'Mind Garden Display', 'Noto Serif SC', 'Songti SC', serif;
+  font-size: 22px;
+  font-weight: 520;
+}
+
+.detailHeader strong {
+  color: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 54%, transparent);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.draftNotice {
+  margin: 12px 0 0;
+  padding: 9px 10px;
+  border-inline-start: 2px solid var(--dsw-alias-state-warn-secondary);
+  color: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 76%, white);
+  background: color-mix(in srgb, var(--dsw-alias-label-primary) 22%, transparent);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.events {
+  display: grid;
+  margin: 0;
+  padding: 6px 0 0;
+  list-style: none;
+}
+
+.event {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 30px;
+  align-items: start;
+  gap: 10px;
+  padding: 15px 0;
+}
+
+.eventIcon {
+  display: grid;
+  width: 32px;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 30%, transparent);
+  border-radius: 50%;
+  color: var(--dsw-alias-state-warn-secondary);
+  background: color-mix(in srgb, var(--dsw-alias-label-primary) 22%, transparent);
+}
+
+.event small {
+  color: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 66%, white);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.event p {
+  margin: 5px 0 0;
+  color: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 78%, transparent);
+  font-size: 12px;
+  line-height: 1.58;
+  white-space: pre-wrap;
+}
+
+.event > button {
+  display: grid;
+  width: 30px;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 46%, transparent);
+  background: transparent;
+  cursor: pointer;
+}
+
+.event > button:hover {
+  border-color: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 34%, transparent);
+  color: var(--dsw-alias-state-warn-secondary);
+  background: color-mix(in srgb, var(--dsw-alias-label-primary) 24%, transparent);
+}
+
+.emptyDay {
+  display: grid;
+  min-height: 260px;
+  place-items: center;
+  margin: 0;
+  color: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 48%, transparent);
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.trend {
+  min-height: 100%;
+}
+
+.trend header {
+  display: block;
+}
+
+.trend svg {
+  width: 100%;
+  height: 230px;
+  margin-block-start: 40px;
+  overflow: visible;
+}
+
+.trend line {
+  stroke: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 18%, transparent);
+  stroke-dasharray: 1.5 2.5;
+  stroke-width: 0.35;
+}
+
+.trend polyline {
+  fill: none;
+  stroke: var(--dsw-alias-state-warn-secondary);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.25;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 26%, transparent));
+}
+
+.trend circle {
+  fill: color-mix(in srgb, var(--dsw-alias-state-success-primary) 60%, var(--dsw-alias-label-primary));
+  stroke: var(--dsw-alias-state-warn-secondary);
+  stroke-width: 0.8;
+}
+
+.trendScale {
+  display: flex;
+  justify-content: space-between;
+  color: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 36%, transparent);
+  font-size: 9px;
+}
+
+@container mind-garden-workspace (max-width: 1040px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar {
+    border-inline-end: 0;
+    border-block-end: 1px solid color-mix(in srgb, var(--dsw-alias-state-success-primary) 16%, var(--dsw-alias-border-l2));
+  }
+
+  .detail {
+    min-height: 420px;
+  }
+}
+
+@container mind-garden-workspace (max-width: 720px) {
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .monthControls {
+    flex-wrap: wrap;
+  }
+
+  .modeSwitch {
+    align-self: flex-start;
+  }
+
+  .calendar {
+    padding: 14px 10px 18px;
+  }
+
+  .grid,
+  .weekdays {
+    gap: 3px;
+  }
+
+  .day,
+  .blank {
+    min-height: 62px;
+  }
+
+  .day {
+    padding: 6px;
+  }
+
+  .day small {
+    display: none;
+  }
+
+  .signals i {
+    width: 5px;
+  }
+}
+
+@container mind-garden-workspace (max-width: 480px) {
+  .atlasSeal {
+    display: none;
+  }
+
+  .monthControls label {
+    min-width: 136px;
+  }
+
+  .filters {
+    padding-inline: 10px;
+  }
+
+  .day,
+  .blank {
+    min-height: 50px;
+    border-radius: 5px;
+  }
+
+  .dayNumber {
+    font-size: 14px;
+  }
+
+  .signals {
+    gap: 2px;
+  }
+
+  .detail {
+    padding: 20px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .day {
+    transition: none;
+  }
+
+  .day:hover {
+    transform: none;
+  }
+}

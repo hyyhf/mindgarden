@@ -1,0 +1,143 @@
+// @vitest-environment jsdom
+
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
+import type { MindGardenSessionProjection } from '@deepseek-ai/dsh-mind-garden-core/client'
+import type { LocaleKeysOf } from '@deepseek-ai/dsh-client-ui-slots'
+import { MindGardenDock, MindGardenPanel } from '../src/client/MindGardenDock.tsx'
+import type { MindGardenDockActions } from '../src/client/slots.ts'
+import { zh, type MindGardenKey } from '../src/client/locales.ts'
+
+afterEach(cleanup)
+
+const t = (key: LocaleKeysOf<'mindGarden'>) => zh[key as MindGardenKey] ?? key
+
+const active = (revision = 2): MindGardenSessionProjection => ({
+  state: {
+    revision,
+    activatedAt: 1,
+    updatedAt: 2,
+    mode: 'serenity',
+    supportIntent: 'auto',
+    privacy: 'durable',
+    contractVersion: 1,
+    modelDisclosureAccepted: true,
+  },
+})
+
+function actions(overrides: Partial<MindGardenDockActions> = {}): MindGardenDockActions {
+  return {
+    onActivate: () => Promise.resolve({ ok: true, value: undefined }),
+    onSelectMode: () => Promise.resolve({ ok: true, value: undefined }),
+    onSelectSupportIntent: () => Promise.resolve({ ok: true, value: undefined }),
+    ...overrides,
+  }
+}
+
+describe('MindGardenPanel', () => {
+  it('renders nothing when the projection capability is absent', () => {
+    const view = render(<MindGardenPanel projection={undefined} {...actions()} t={t} />)
+    expect(view.container.firstChild).toBeNull()
+  })
+
+  it('opens the disclosure and activates exactly once despite rapid clicks', async () => {
+    const deferred = Promise.withResolvers<{ ok: true; value: undefined }>()
+    const onActivate = vi.fn(() => deferred.promise)
+    const view = render(<MindGardenPanel projection={null} {...actions({ onActivate })} t={t} />)
+    fireEvent.click(view.getByRole('button', { name: zh['entry.open'] }))
+    expect(view.getByText(zh['disclosure.body'])).toBeTruthy()
+    expect(view.getByText(zh['disclosure.profile.title'])).toBeTruthy()
+    expect(view.getByText(zh['disclosure.model.title'])).toBeTruthy()
+    expect(view.getByText(zh['disclosure.authority.title'])).toBeTruthy()
+    const serenity = view.getByRole('button', { name: new RegExp(zh['mode.serenity']) })
+    fireEvent.click(serenity)
+    fireEvent.click(serenity)
+    expect(onActivate).toHaveBeenCalledTimes(1)
+    expect(onActivate).toHaveBeenCalledWith('serenity')
+    deferred.resolve({ ok: true, value: undefined })
+    await waitFor(() => { expect(view.getByText(zh['entry.hint'])).toBeTruthy() })
+  })
+
+  it('can close disclosure and explains activation on a nonblank session', async () => {
+    const onActivate = vi.fn(() => Promise.resolve({
+      ok: false as const,
+      error: { code: 'MIND_GARDEN_SESSION_NOT_BLANK', message: 'raw', details: {} },
+    }))
+    const view = render(<MindGardenPanel projection={null} {...actions({ onActivate })} t={t} />)
+    fireEvent.click(view.getByRole('button', { name: zh['entry.open'] }))
+    fireEvent.click(view.getByRole('button', { name: new RegExp(zh['mode.clarity']) }))
+    expect((await view.findByRole('alert')).textContent).toBe(zh['error.notBlank'])
+    fireEvent.click(view.getByRole('button', { name: zh['entry.close'] }))
+    expect(view.queryByText(zh['disclosure.title'])).toBeNull()
+  })
+
+  it('uses the localized fallback when a Remote failure has no message', async () => {
+    const onActivate = vi.fn(() => Promise.resolve({
+      ok: false as const,
+      error: { code: 'internal', message: '', details: {} },
+    }))
+    const view = render(<MindGardenPanel projection={null} {...actions({ onActivate })} t={t} />)
+    fireEvent.click(view.getByRole('button', { name: zh['entry.open'] }))
+    fireEvent.click(view.getByRole('button', { name: new RegExp(zh['mode.serenity']) }))
+    expect((await view.findByRole('alert')).textContent).toBe(zh['error.generic'])
+  })
+
+  it('changes active preferences with projected CAS revisions and shows Remote failures', async () => {
+    const onSelectMode = vi.fn(() => Promise.resolve({ ok: true as const, value: undefined }))
+    const onSelectSupportIntent = vi.fn(() => Promise.resolve({
+      ok: false as const,
+      error: { code: 'MIND_GARDEN_STALE_REVISION', message: 'stale setting', details: {} },
+    }))
+    const view = render(<MindGardenPanel
+      projection={active(7)}
+      {...actions({ onSelectMode, onSelectSupportIntent })}
+      t={t}
+    />)
+    expect(view.getByText(`${zh['mode.serenity']} · ${zh['intent.auto']}`)).toBeTruthy()
+    fireEvent.click(view.getByRole('button', { name: zh['garden.expand'] }))
+    fireEvent.click(view.getByRole('button', { name: zh['mode.clarity'] }))
+    await waitFor(() => { expect(onSelectMode).toHaveBeenCalledWith(7, 'clarity') })
+    expect(view.getByRole('button', { name: zh['garden.expand'] })).toBeTruthy()
+    fireEvent.click(view.getByRole('button', { name: zh['garden.expand'] }))
+    fireEvent.click(view.getByRole('button', { name: zh['intent.listen'] }))
+    expect((await view.findByRole('alert')).textContent).toBe('stale setting')
+    expect(onSelectSupportIntent).toHaveBeenCalledWith(7, 'listen')
+    fireEvent.click(view.getByRole('button', { name: zh['garden.collapse'] }))
+  })
+
+  it('contains thrown action failures and clears an error when projection revision changes', async () => {
+    const onSelectSupportIntent = vi.fn(() => Promise.reject(new Error('offline')))
+    const props = actions({ onSelectSupportIntent })
+    const view = render(<MindGardenPanel projection={active(2)} {...props} t={t} />)
+    fireEvent.click(view.getByRole('button', { name: zh['garden.expand'] }))
+    fireEvent.click(view.getByRole('button', { name: zh['intent.settle'] }))
+    expect((await view.findByRole('alert')).textContent).toBe(zh['error.generic'])
+    view.rerender(<MindGardenPanel projection={active(3)} {...props} t={t} />)
+    await waitFor(() => { expect(view.queryByRole('alert')).toBeNull() })
+  })
+
+  it('keeps the dedicated settings instrument open after a successful calibration', async () => {
+    const onSelectMode = vi.fn(() => Promise.resolve({ ok: true as const, value: undefined }))
+    const view = render(<MindGardenPanel
+      projection={active(9)}
+      defaultOpen
+      {...actions({ onSelectMode })}
+      t={t}
+    />)
+    expect(view.getByText(zh['garden.dialogue.body'])).toBeTruthy()
+    fireEvent.click(view.getByRole('button', { name: new RegExp(zh['mode.clarity']) }))
+    await waitFor(() => { expect(onSelectMode).toHaveBeenCalledWith(9, 'clarity') })
+    expect(view.getByRole('group', { name: zh['section.mode'] })).toBeTruthy()
+    expect(view.queryByRole('button', { name: zh['garden.expand'] })).toBeNull()
+  })
+})
+
+describe('MindGardenDock adapter', () => {
+  it('reads the mind-garden projection through the standard slot kit', () => {
+    const useProjection = vi.fn(() => active())
+    const props = { useProjection, ...actions(), t } as unknown as Parameters<typeof MindGardenDock>[0]
+    const view = render(<MindGardenDock {...props} />)
+    expect(useProjection).toHaveBeenCalledWith('mind-garden')
+    expect(view.getByText(zh['garden.title'])).toBeTruthy()
+  })
+})

@@ -1,0 +1,90 @@
+.scene {
+  --mg-star-bg: #07130f;
+  --mg-star-center: #e2b34f;
+  --mg-star-trait: #b76550;
+  --mg-star-question: #83a8ff;
+  --mg-star-review: #69b998;
+  --mg-star-orbit: #d9d1bd;
+  --mg-star-continuity: #8eb6ae;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 49% 46%, color-mix(in srgb, var(--mg-star-review) 14%, transparent), transparent 31%),
+    radial-gradient(circle at 72% 18%, color-mix(in srgb, var(--mg-star-center) 10%, transparent), transparent 34%),
+    radial-gradient(circle at 14% 82%, color-mix(in srgb, var(--mg-star-question) 7%, transparent), transparent 30%),
+    #07130f;
+  box-shadow:
+    inset 0 0 180px color-mix(in srgb, #000 62%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--mg-star-center) 12%, transparent);
+}
+
+.host,
+.host canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.host canvas {
+  cursor: grab;
+  filter: contrast(1.16) saturate(1.12) brightness(1.06);
+  touch-action: none;
+}
+
+.host canvas:active {
+  cursor: grabbing;
+}
+
+.fallback {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: min(320px, calc(100% - 40px));
+  padding: 14px 18px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 7px;
+  color: var(--dsw-alias-label-secondary);
+  background: var(--dsw-alias-bg-layer-2);
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 3;
+  top: clamp(12px, calc(var(--mg-star-y) + 14px), calc(100% - 126px));
+  left: clamp(12px, calc(var(--mg-star-x) + 14px), calc(100% - 264px));
+  display: grid;
+  width: min(240px, calc(100% - 24px));
+  gap: 4px;
+  padding: 11px 12px;
+  pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 16%, transparent);
+  border-radius: 7px;
+  color: var(--dsw-alias-label-primary-inverted);
+  background: color-mix(in srgb, var(--dsw-alias-bg-mask-drop) 72%, transparent);
+  box-shadow: 0 12px 34px color-mix(in srgb, var(--dsw-alias-bg-mask-drop) 32%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.tooltip strong {
+  font-size: 13px;
+  font-weight: 620;
+}
+
+.tooltip p {
+  margin: 0;
+  color: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 76%, transparent);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .host canvas {
+    cursor: default;
+    filter: contrast(1.06) saturate(1.04);
+  }
+}

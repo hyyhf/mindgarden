@@ -1,0 +1,23 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib/types"
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../../vendor/cordis" },
+    { "path": "../../../vendor/schemastery" },
+    { "path": "../../attachment/attachment" },
+    { "path": "../../core/agent" },
+    { "path": "../../core/session" },
+    { "path": "../../runtime-diagnostics/invariants" },
+    { "path": "../mind-garden-core" },
+    { "path": "../mind-garden-memory" },
+    { "path": "../mind-garden-media" },
+    { "path": "../mind-garden-reflection" },
+    { "path": "../mind-garden-star-map" },
+    { "path": "../mind-garden-vault" },
+    { "path": "../../typert/protocol" }
+  ]
+}

@@ -1,0 +1,12 @@
+Use case: stylized-concept
+Asset type: production empty-state artwork for the Photo Story space inside the Mind Garden plugin
+Primary request: create an emotionally warm, tactile visual of an empty memory vessel waiting for the user's own photograph, without depicting any fabricated memory
+Scene/backdrop: an open paper-white editorial field with a single empty translucent photo plane suspended just above a dark oxidized-teal observation surface; a few fine cotton fibres and amber dust motes drift around it
+Subject: one blank unprinted photo sheet or glass-paper frame with no image inside; no people and no recognizable scene
+Style/medium: premium mixed-media still life combining handmade cotton paper, frosted glass, subtle mineral pigment, soft cinematic depth of field, and physically believable warm studio light; contemporary restrained editorial art, not a UI mockup
+Composition/framing: wide landscape crop; the blank vessel occupies the right half; left half stays quiet for localized UI copy and an upload action; soft edge fade into the background
+Lighting/mood: warm window light grazing the paper fibres, a restrained amber rim light against deep teal shadow, intimate, calm, anticipatory, high-end material photography
+Color palette: paper white, warm ivory, oxidized deep teal, tiny aged-brass highlights, soft graphite shadows; restrained saturation
+Materials/textures: cotton rag paper tooth, frosted glass edge, minute dust particles, subtle film grain, soft contact shadow
+Constraints: no text, no letters, no logos, no watermark, no UI controls, no people, no faces, no hands, no actual photograph, no landscape inside the frame, no personal object, no fake memory; keep the frame intentionally blank
+Avoid: stock photo album imagery, scrapbook decorations, heart symbols, cute flowers, cream wellness aesthetic, neon particles, sci-fi hologram, excessive glow, ornate gold frame, obvious AI artifacts

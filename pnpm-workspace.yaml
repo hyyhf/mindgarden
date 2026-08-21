@@ -1,0 +1,5 @@
+packages:
+  - packages/mind-garden/*
+  - packages/client/ui-mind-garden
+
+linkWorkspacePackages: true

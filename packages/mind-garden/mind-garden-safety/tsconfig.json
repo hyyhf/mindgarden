@@ -1,0 +1,17 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib/types"
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../../vendor/cordis" },
+    { "path": "../../../vendor/schemastery" },
+    { "path": "../../llm/llm" },
+    { "path": "../../core/agent" },
+    { "path": "../../core/session" },
+    { "path": "../mind-garden-core" },
+    { "path": "../../runtime-diagnostics/invariants" }
+  ]
+}
