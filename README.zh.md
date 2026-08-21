@@ -1,27 +1,41 @@
-<div align="center">
-  <h1>🌌 心智庭院</h1>
-  <p>为 DeepSeek Harness 打造的私密、由用户掌控的反思庭院。</p>
-  <p>
-    <a href="https://github.com/hyyhf/mindgarden/actions/workflows/verify.yml"><img alt="验证状态" src="https://github.com/hyyhf/mindgarden/actions/workflows/verify.yml/badge.svg"></a>
-    <a href="LICENSE"><img alt="MIT 许可证" src="https://img.shields.io/github/license/hyyhf/mindgarden?style=flat-square"></a>
-    <img alt="DeepSeek Harness 插件" src="https://img.shields.io/badge/DeepSeek%20Harness-plugin-4B6BFB?style=flat-square">
-    <img alt="Node.js 22.19 或更高版本" src="https://img.shields.io/badge/Node.js-%5E22.19%20%7C%7C%20%3E%3D24-339933?style=flat-square&logo=nodedotjs&logoColor=white">
-    <img alt="AES-256-GCM 加密私密记录" src="https://img.shields.io/badge/private%20records-AES--256--GCM-6F42C1?style=flat-square">
-  </p>
-  <p><a href="README.md">English</a> · 中文</p>
-</div>
+<p align="center">
+  <img src="assets/mind-garden-header.png" alt="暖夜庭院小径通向一座星象仪" width="100%">
+</p>
 
-心智庭院是面向 DeepSeek Harness Web 的可安装陪伴对话与私密反思工作区。它把克制、可被模型看见的陪伴姿态，与九个由用户掌控的庭院空间、认证加密、受治理记忆、原版 Fun Garden 迁移、高质感 3D 与粒子场组合在一起，同时不替代 Harness 已有的 Session、模型提供方、凭据、附件或插件生命周期。
+<h1 align="center">心智庭院</h1>
 
-![心智庭院中由 DeepSeek-V4-Flash 真实生成的一轮陪伴对话](assets/mind-garden-real-companion.png)
+<p align="center">
+  <strong>DeepSeek Harness 中的一方私密反思空间。</strong><br>
+  陪伴对话、用户治理的记忆与九个沉思空间——故事的最终解释权始终属于你。
+</p>
 
-上图来自仓库内可选择开启的真实提供方端到端测试。回复由 `deepseek-v4-flash` 经内置 DeepSeek 适配器生成，再通过心智庭院安全边界，最终由真实 Web 装配渲染；不是 mock，也不是静态拼图。
+<p align="center">
+  <a href="https://github.com/hyyhf/mindgarden/actions/workflows/verify.yml"><img alt="验证状态" src="https://github.com/hyyhf/mindgarden/actions/workflows/verify.yml/badge.svg"></a>
+  <img alt="版本 v0.1.0-rc.7" src="https://img.shields.io/badge/release-v0.1.0--rc.7-7C3AED?style=flat-square">
+  <img alt="需要 DeepSeek Harness 0.1.1-rc.1 或更高版本" src="https://img.shields.io/badge/Harness-%E2%89%A50.1.1--rc.1-0369A1?style=flat-square">
+</p>
 
-![同一个 DeepSeek Harness 真实会话中居中的“今天”罗盘](assets/mind-garden-real-today.png)
+<p align="center"><a href="README.md">English</a> · 简体中文</p>
 
-同一轮真实运行随后进入心智庭院，通过已安装的 Host 服务保存开放问题，并在实际 Harness 外壳中渲染“今天”罗盘。六条记录围绕清晰中心形成隐式轨道：稀疏校准标记保留纵深，但不会让坐标轴或连接曲线穿过反思提示。
+心智庭院是可安装到 DeepSeek Harness Web profile 的陪伴与私密反思工作区。普通对话继续使用 Harness Session；心智庭院在此基础上加入克制的陪伴姿态、加密个人记录、受治理记忆、原版 Fun Garden 迁移，以及具有辨识度的 3D 与粒子场景。
 
-## 为什么是心智庭院
+它复用 Harness 的模型提供方、凭据、存储、附件、Remote 与插件生命周期，不会分叉或复制 DeepSeek Harness 应用。
+
+### 三条命令完成安装
+
+```sh
+dsh plugin --profile web add git+https://github.com/hyyhf/mindgarden.git
+dsh plugin --profile web why @deepseek-ai/dsh-mind-garden
+dsh web
+```
+
+需要 DeepSeek Harness `0.1.1-rc.1` 或更高版本、位于 `PATH` 的 `pnpm`，以及已配置的模型提供方。profile 要求、升级与本地开发方式见[安装](#安装)。
+
+![由 DeepSeek-V4-Flash 真实生成并在心智庭院中渲染的一轮陪伴对话](assets/mind-garden-real-companion.png)
+
+这张截图来自可选择开启的真实提供方路径：`deepseek-v4-flash` 通过内置 DeepSeek 适配器生成回复，回复经过心智庭院安全插件，再由实际 Harness Web 装配渲染。
+
+## 把结论留给你的庭院
 
 心智庭院服务于那些需要耐心、连续性和用户决定权，而不是另一个任务面板的对话。它遵循四条原则：
 
@@ -32,7 +46,7 @@
 
 相较原版 Fun Garden，这一版增加了证据绑定的记忆治理、崩溃可恢复换钥、认证且不覆盖的恢复、确定性安全门、可访问的 WebGL 降级路径和清晰的包级扩展边界；同时保留原版极具辨识度的星图与照片粒子气质，并采用 DeepSeek Harness 的克制间距、图标语言和交互语法。
 
-## 九个庭院空间
+## 九个空间，一座庭院
 
 常驻庭院导航包含九个空间：
 
@@ -48,83 +62,86 @@
 | **人生回望** | 周、月、年材料快照及保存的回望；即使来源后来变化，也能检查当时所见。 |
 | **我的哲学** | 沉思笔记、已采纳笔记、带完整修订史的原则，以及允许长期悬而未决的开放问题。 |
 
-### 完整运行图册
+<details>
+<summary><strong>展开完整运行图册</strong></summary>
 
 下方所有桌面图都来自真实的 DeepSeek Harness Web 装配。确定性的图册场景通过已安装的 Host 服务写入仓库自有的虚构记录，让生成的演示照片经过 Harness 附件准入，打开可操作的 Client 空间，再捕获最终渲染结果；其中没有个人材料或静态 UI 拼图。
 
-#### 进入与边界说明
+### 进入与边界说明
 
 ![在 DeepSeek Harness 会话入口中运行的心智庭院边界说明](assets/mind-garden-demo-entry.png)
 
 进入页会在任一陪伴姿态生效前明确模型说明、profile 存储、紧急情况限制和始终属于用户的确认权。
 
-#### 今天
+### 今天
 
 ![包含温暖星仪与真实反思记录的心智庭院今天空间](assets/mind-garden-demo-today.png)
 
 今天空间把具有材质感的星仪、当前问题、已保存回望、每日签到和日记入口组合在一起，同时避免变成通用仪表盘。
 
-#### 心事篮
+### 心事篮
 
 ![包含一条已安排日期私密心事的心智庭院心事篮](assets/mind-garden-demo-concerns.png)
 
 每条心事在用户修改、完成、转为日记或主动放入 Harness 输入框之前，都会保持私密且不会自动进入对话。
 
-#### 日历
+### 日历
 
 ![投影 2026 年 8 月已验证记录的心智庭院日历](assets/mind-garden-demo-calendar.png)
 
 日历把已验证的签到、日记、心事、原则、实验和开放问题投影到同一个月视图与选中日期清单中，不会为了画面密度制造活动。
 
-#### 照片故事
+### 照片故事
 
 ![在粒子编辑器中运行温暖生成照片的心智庭院照片故事](assets/mind-garden-demo-photo-story.png)
 
 图中的雨夜静物是带已提交提示词来源记录的仓库自有 ImageGen fixture（测试前置数据）。Harness 附件准入、已验证原图读取、有界 WebGL 粒子、预设、重新聚成、查看原图、故事编辑和观察说明都是真实可操作的产品控件。
 
-#### 我的记忆
+### 我的记忆
 
 ![展示一条由用户确认陪伴偏好的心智庭院记忆空间](assets/mind-garden-demo-memory.png)
 
 记录会展示确认状态、来源数量、适用范围、敏感度、召回策略、历史、编辑、输入框交接与删除控件，而不会把模型对用户的了解包装成不可更改的档案。
 
-#### 生活议题
+### 生活议题
 
 ![展示现实实验与仅追加观察的心智庭院生活议题](assets/mind-garden-demo-growth.png)
 
 生活议题记录假设、一个具体行动和实际发生的事，并完整保留观察，不设置分数、连续天数或模型裁定的成功结论。
 
-#### 我的星图
+### 我的星图
 
 ![以 WebGL 渲染自述星尘、问题和回望的心智庭院星图](assets/mind-garden-demo-star-map.png)
 
 星图不是装饰性的性格评分。中心始终是当下自我；自述特质、问题和回望材料保持可区分。Star Observer 调用必须由用户显式发起并受权限约束，旁边的节点列表也会提供同样的信息，不依赖 Canvas 像素。
 
-#### 人生回望
+### 人生回望
 
 ![包含一条已保存且绑定来源周回望的心智庭院人生回望](assets/mind-garden-demo-life-review.png)
 
 人生回望会在同一条时间平面上展示已验证周期、来源数量、生命周期状态和用户写下的理解；来源后来变化也不会暗中改写已经保存的回望。
 
-#### 我的哲学
+### 我的哲学
 
 ![展示已确认沉思与已采纳原则的心智庭院哲学空间](assets/mind-garden-demo-philosophy.png)
 
 哲学空间会从结构上分开已确认沉思、未生效提案和已采纳原则。形成背景、原话、反例、适用范围、状态和完整版本始终由用户治理。
 
-#### 庭院设置
+### 庭院设置
 
 ![在真实 DeepSeek Harness 装配上打开的心智庭院 profile 设置](assets/mind-garden-demo-settings.png)
 
 设置面板负责校准当前 Session 的对话姿态和支持意图，并在同一聚焦面板中提供加密 profile 备份、认证恢复、原版 Fun Garden 迁移与崩溃可恢复换钥；提供方、模型、Session 和附件仍由 Harness 管理。
 
-#### 移动端装配
+### 移动端装配
 
 <p align="center">
   <img src="assets/mind-garden-real-mobile.png" width="390" alt="DeepSeek Harness 紧凑壳层中的心智庭院今天空间">
 </p>
 
 同一个插件会进入 Harness 紧凑壳层：导航收起、密集控制简化、Canvas 工作量受限，同时保留 Harness 固定输入区。开启减少动态效果或缺少 WebGL 时，记录仍可通过列表与静态图片使用。
+
+</details>
 
 ## 安装
 
