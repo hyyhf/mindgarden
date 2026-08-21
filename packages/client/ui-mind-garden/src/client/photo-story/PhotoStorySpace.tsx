@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ChangeEvent, CSSProperties, FormEvent, PointerEvent as ReactPointerEvent } from 'react'
-import { ImageLightbox } from '@deepseek-ai/dsh-client-ui-attachment'
 import {
   IconChevronLeftOutline14,
   IconChevronRightOutline14,
@@ -10,12 +9,13 @@ import {
   IconPlayOutline16,
   IconPlusOutline16,
   IconRefreshOutline14,
+  Modal,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type {
   MindGardenPhotoParticleConfig,
   MindGardenPhotoParticlePreset,
   MindGardenPhotoStory,
-} from '@deepseek-ai/dsh-mind-garden-media/types'
+} from '@deepseek-ai/dsh-mind-garden/media/types'
 import { calendarStamp } from '../calendar.ts'
 import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenViewActions } from '../slots.ts'
@@ -95,6 +95,7 @@ export function PhotoStorySpace({
   const [stories, setStories] = useState<readonly MindGardenPhotoStory[]>([])
   const [images, setImages] = useState<ReadonlyMap<string, string>>(new Map())
   const [active, setActive] = useState<MindGardenPhotoStory | null>(null)
+  const [storyPanel, setStoryPanel] = useState<'dialogue' | 'edit'>('dialogue')
   const [view, setView] = useState<'classic' | 'dynamic'>('classic')
   const [dynamicIndex, setDynamicIndex] = useState(0)
   const [dynamicAutoPlay, setDynamicAutoPlay] = useState(true)
@@ -240,6 +241,7 @@ export function PhotoStorySpace({
 
   function openStory(story: MindGardenPhotoStory) {
     setSaved(false)
+    setStoryPanel('dialogue')
     setActive(story)
   }
 
@@ -393,7 +395,10 @@ export function PhotoStorySpace({
     return (
       <main className={css.story} data-mind-garden-space="photo-story" data-photo-mode="story">
         <header className={css.storyHeader}>
-          <button type="button" className={css.back} onClick={() => { setActive(null) }}>{t('photo.back')}</button>
+          <div className={css.storyHeading}>
+            <h1>{t('photo.dialogue.title')}</h1>
+            <button type="button" className={css.back} onClick={() => { setActive(null) }}>{t('photo.back')}</button>
+          </div>
           <div className={css.storyMeta}>
             <span>{t('photo.date').replace('{date}', active.stamp.localDate)}</span>
             {particleCount > 0 && <span>{replaceCount(t('photo.sceneCount'), particleCount)}</span>}
@@ -430,130 +435,144 @@ export function PhotoStorySpace({
             )}
           </section>
 
-          <aside className={css.editor} aria-label={t('photo.particleTitle')}>
-            <label>
-              <span>{t('photo.storyTitle')}</span>
-              <input value={title} maxLength={160} onChange={(event) => { setTitle(event.target.value); setSaved(false) }} />
-            </label>
-            <label>
-              <span>{t('photo.storyNote')}</span>
-              <textarea value={note} maxLength={8_000} placeholder={t('photo.storyPlaceholder')} onChange={(event) => { setNote(event.target.value); setSaved(false) }} />
-            </label>
+          <aside className={css.editor} aria-label={t('photo.panel.controls')}>
+            <nav className={css.storyPanelTabs} aria-label={t('photo.panel.controls')}>
+              <button type="button" aria-pressed={storyPanel === 'dialogue'} onClick={() => { setStoryPanel('dialogue') }}>
+                {t('photo.panel.dialogue')}
+              </button>
+              <button type="button" aria-pressed={storyPanel === 'edit'} onClick={() => { setStoryPanel('edit') }}>
+                {t('photo.panel.edit')}
+              </button>
+            </nav>
 
-            <section className={css.particleEditor}>
-              <h2>{t('photo.particleTitle')}</h2>
-              <div className={css.presets}>
-                {PRESETS.map(preset => (
-                  <button
-                    type="button"
-                    data-active={config.preset === preset}
-                    key={preset}
-                    onClick={() => { setConfig(applyPhotoParticlePreset(config, preset)); setSaved(false) }}
-                  >
-                    {t(`photo.particle.${preset}`)}
-                  </button>
-                ))}
-              </div>
-              <RangeField label={t('photo.pointSize')} value={config.rendering.pointSize} min={0.7} max={6} step={0.1} onChange={(pointSize) => { setConfig(updateConfigGroup(config, 'rendering', { pointSize })); setSaved(false) }} />
-              <RangeField label={t('photo.depth')} value={config.depth.strength} min={0} max={60} step={1} onChange={(strength) => { setConfig(updateConfigGroup(config, 'depth', { strength })); setSaved(false) }} />
-              <RangeField label={t('photo.interaction')} value={config.interaction.strength} min={0} max={16} step={0.1} onChange={(strength) => { setConfig(updateConfigGroup(config, 'interaction', { strength })); setSaved(false) }} />
-              <RangeField label={t('photo.motion')} value={config.animation.idleStrength} min={0} max={1.5} step={0.01} onChange={(idleStrength) => { setConfig(updateConfigGroup(config, 'animation', { idleStrength })); setSaved(false) }} />
-            </section>
+            <div className={css.editorForm} hidden={storyPanel !== 'edit'}>
+              <label>
+                <span>{t('photo.storyTitle')}</span>
+                <input value={title} maxLength={160} onChange={(event) => { setTitle(event.target.value); setSaved(false) }} />
+              </label>
+              <label>
+                <span>{t('photo.storyNote')}</span>
+                <textarea value={note} maxLength={8_000} placeholder={t('photo.storyPlaceholder')} onChange={(event) => { setNote(event.target.value); setSaved(false) }} />
+              </label>
 
-            {saved && <p className={css.saved} role="status">{t('photo.saved')}</p>}
-            <div className={css.editorActions}>
-              <button type="button" className={css.save} disabled={pending || title.trim() === ''} onClick={() => { void saveStory(active, config) }}>
-                {pending ? t('photo.saving') : t('photo.save')}
-              </button>
-              <button type="button" className={css.delete} disabled={pending} onClick={() => { void deleteStory(active) }}>
-                {deleteArmed ? t('photo.deleteConfirm') : t('photo.delete')}
-              </button>
-            </div>
-            {deleteArmed && <p className={css.deleteHint}>{t('photo.deleteHint')}</p>}
-          </aside>
-        </div>
-        <section className={css.photoDialogue} aria-labelledby="mind-garden-photo-dialogue-title">
-          <header>
-            <div>
-              <h2 id="mind-garden-photo-dialogue-title">{t('photo.dialogue.title')}</h2>
-            </div>
-            <p>{t('photo.dialogue.boundary')}</p>
-          </header>
-          {active.observation == null ? (
-            <div className={css.observationGate}>
-              <div>
-                <h3>{t('photo.observe.title')}</h3>
-                <p>{t('photo.observe.disclosure')}</p>
-              </div>
-              <button type="button" disabled={dialoguePending} onClick={() => { void observeStory(active) }}>
-                {dialoguePending ? t('photo.observe.pending') : t('photo.observe.action')}
-              </button>
-            </div>
-          ) : (
-            <>
-              <article className={css.grounding}>
-                <span>{t('photo.observe.unconfirmed')}</span>
-                <p>{active.observation.grounding.visualSummary}</p>
-                {active.observation.grounding.visibleElements.length > 0 && (
-                  <ul aria-label={t('photo.observe.visible')}>
-                    {active.observation.grounding.visibleElements.map(element => <li key={element}>{element}</li>)}
-                  </ul>
-                )}
-                {active.observation.grounding.uncertainDetails.length > 0 && (
-                  <details>
-                    <summary>{t('photo.observe.uncertain')}</summary>
-                    <ul>{active.observation.grounding.uncertainDetails.map(detail => <li key={detail}>{detail}</li>)}</ul>
-                  </details>
-                )}
-              </article>
-              <div className={css.dialogueTurns} role="log" aria-live="polite">
-                {active.turns.map(turn => (
-                  <article data-role={turn.role} key={String(turn.id)}>
-                    <span>{turn.role === 'user' ? t('photo.dialogue.me') : t('photo.dialogue.companion')}</span>
-                    <p>{turn.content}</p>
-                  </article>
-                ))}
-              </div>
-              {active.quickReplies.length > 0 && (
-                <div className={css.quickReplies} aria-label={t('photo.dialogue.suggestions')}>
-                  {active.quickReplies.map(reply => (
+              <section className={css.particleEditor}>
+                <h2>{t('photo.particleTitle')}</h2>
+                <div className={css.presets}>
+                  {PRESETS.map(preset => (
                     <button
                       type="button"
-                      disabled={dialoguePending}
-                      key={reply.kind}
-                      onClick={() => { void continueStory(active, reply.label, reply.kind) }}
+                      data-active={config.preset === preset}
+                      key={preset}
+                      onClick={() => { setConfig(applyPhotoParticlePreset(config, preset)); setSaved(false) }}
                     >
-                      {reply.label}
+                      {t(`photo.particle.${preset}`)}
                     </button>
                   ))}
                 </div>
-              )}
-              <form className={css.dialogueForm} onSubmit={(event) => { submitDialogue(event, active) }}>
-                <label htmlFor="mind-garden-photo-dialogue-input">{t('photo.dialogue.input')}</label>
-                <div>
-                  <textarea
-                    id="mind-garden-photo-dialogue-input"
-                    maxLength={8_000}
-                    placeholder={t('photo.dialogue.placeholder')}
-                    value={dialogueDraft}
-                    onChange={(event) => { setDialogueDraft(event.target.value) }}
-                  />
-                  <button type="submit" disabled={dialoguePending || dialogueDraft.trim() === ''}>
-                    {dialoguePending ? t('photo.dialogue.pending') : t('photo.dialogue.send')}
+                <RangeField label={t('photo.pointSize')} value={config.rendering.pointSize} min={0.7} max={6} step={0.1} onChange={(pointSize) => { setConfig(updateConfigGroup(config, 'rendering', { pointSize })); setSaved(false) }} />
+                <RangeField label={t('photo.depth')} value={config.depth.strength} min={0} max={60} step={1} onChange={(strength) => { setConfig(updateConfigGroup(config, 'depth', { strength })); setSaved(false) }} />
+                <RangeField label={t('photo.interaction')} value={config.interaction.strength} min={0} max={16} step={0.1} onChange={(strength) => { setConfig(updateConfigGroup(config, 'interaction', { strength })); setSaved(false) }} />
+                <RangeField label={t('photo.motion')} value={config.animation.idleStrength} min={0} max={1.5} step={0.01} onChange={(idleStrength) => { setConfig(updateConfigGroup(config, 'animation', { idleStrength })); setSaved(false) }} />
+              </section>
+
+              {saved && <p className={css.saved} role="status">{t('photo.saved')}</p>}
+              <div className={css.editorActions}>
+                <button type="button" className={css.save} disabled={pending || title.trim() === ''} onClick={() => { void saveStory(active, config) }}>
+                  {pending ? t('photo.saving') : t('photo.save')}
+                </button>
+                <button type="button" className={css.delete} disabled={pending} onClick={() => { void deleteStory(active) }}>
+                  {deleteArmed ? t('photo.deleteConfirm') : t('photo.delete')}
+                </button>
+              </div>
+              {deleteArmed && <p className={css.deleteHint}>{t('photo.deleteHint')}</p>}
+            </div>
+
+            <section className={css.photoDialogue} hidden={storyPanel !== 'dialogue'} aria-labelledby="mind-garden-photo-dialogue-title">
+              <header>
+                <h2 id="mind-garden-photo-dialogue-title">{t('photo.dialogue.title')}</h2>
+                <p>{t('photo.dialogue.boundary')}</p>
+              </header>
+              {active.observation == null ? (
+                <div className={css.observationGate}>
+                  <div>
+                    <h3>{t('photo.observe.title')}</h3>
+                    <p>{t('photo.observe.disclosure')}</p>
+                  </div>
+                  <button type="button" disabled={dialoguePending} onClick={() => { void observeStory(active) }}>
+                    {dialoguePending ? t('photo.observe.pending') : t('photo.observe.action')}
                   </button>
                 </div>
-              </form>
-            </>
+              ) : (
+                <>
+                  <article className={css.grounding}>
+                    <span>{t('photo.observe.unconfirmed')}</span>
+                    <p>{active.observation.grounding.visualSummary}</p>
+                    {active.observation.grounding.visibleElements.length > 0 && (
+                      <ul aria-label={t('photo.observe.visible')}>
+                        {active.observation.grounding.visibleElements.map(element => <li key={element}>{element}</li>)}
+                      </ul>
+                    )}
+                    {active.observation.grounding.uncertainDetails.length > 0 && (
+                      <details>
+                        <summary>{t('photo.observe.uncertain')}</summary>
+                        <ul>{active.observation.grounding.uncertainDetails.map(detail => <li key={detail}>{detail}</li>)}</ul>
+                      </details>
+                    )}
+                  </article>
+                  <div className={css.dialogueTurns} role="log" aria-live="polite">
+                    {active.turns.map(turn => (
+                      <article data-role={turn.role} key={String(turn.id)}>
+                        <span>{turn.role === 'user' ? t('photo.dialogue.me') : t('photo.dialogue.companion')}</span>
+                        <p>{turn.content}</p>
+                      </article>
+                    ))}
+                  </div>
+                  {active.quickReplies.length > 0 && (
+                    <div className={css.quickReplies} aria-label={t('photo.dialogue.suggestions')}>
+                      {active.quickReplies.map(reply => (
+                        <button
+                          type="button"
+                          disabled={dialoguePending}
+                          key={reply.kind}
+                          onClick={() => { void continueStory(active, reply.label, reply.kind) }}
+                        >
+                          {reply.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <form className={css.dialogueForm} onSubmit={(event) => { submitDialogue(event, active) }}>
+                    <label htmlFor="mind-garden-photo-dialogue-input">{t('photo.dialogue.input')}</label>
+                    <div>
+                      <textarea
+                        id="mind-garden-photo-dialogue-input"
+                        maxLength={8_000}
+                        placeholder={t('photo.dialogue.placeholder')}
+                        value={dialogueDraft}
+                        onChange={(event) => { setDialogueDraft(event.target.value) }}
+                      />
+                      <button type="submit" disabled={dialoguePending || dialogueDraft.trim() === ''}>
+                        {dialoguePending ? t('photo.dialogue.pending') : t('photo.dialogue.send')}
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
+            </section>
+          </aside>
+        </div>
+        <Modal
+          open={preview && activeImage !== undefined}
+          title={t('photo.previewDialog')}
+          closeLabel={t('photo.previewClose')}
+          className={css.previewModal ?? ''}
+          contentClassName={css.previewModalContent ?? ''}
+          onClose={() => { setPreview(false) }}
+        >
+          {activeImage !== undefined && (
+            <img className={css.previewImage} src={activeImage} alt={title || t('photo.scene')} />
           )}
-        </section>
-        {preview && activeImage !== undefined && (
-          <ImageLightbox
-            src={activeImage}
-            alt={title || t('photo.scene')}
-            labels={{ dialog: t('photo.previewDialog'), close: t('photo.previewClose') }}
-            onClose={() => { setPreview(false) }}
-          />
-        )}
+        </Modal>
       </main>
     )
   }

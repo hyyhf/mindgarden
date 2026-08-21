@@ -10,7 +10,6 @@
     { "path": "../locale" },
     { "path": "../../api/remotes/tsconfig.client.json" },
     { "path": "../runtime" },
-    { "path": "../ui-attachment" },
     { "path": "../ui-conversation" },
     { "path": "../ui-slots" },
     { "path": "../../mind-garden/mind-garden-core" },

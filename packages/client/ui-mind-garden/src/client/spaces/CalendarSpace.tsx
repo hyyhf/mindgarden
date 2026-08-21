@@ -11,7 +11,7 @@ import type {
   MindGardenCalendarEvent,
   MindGardenCalendarMonthValue,
   MindGardenReflectionTrendValue,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import {
   CalendarIcon,
   CheckinIcon,

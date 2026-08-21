@@ -12,16 +12,16 @@ import { DomainFacility } from '@deepseek-ai/dsh-storage-domain'
 import MindGardenVault, {
   MindGardenVaultError,
   MindGardenVaultRecordId,
-} from '@deepseek-ai/dsh-mind-garden-vault'
+} from '@deepseek-ai/dsh-mind-garden/vault'
 import MindGardenMemory, {
   storedExtractionRunSchema,
   storedMemorySchema,
   type Config,
-} from '@deepseek-ai/dsh-mind-garden-memory'
+} from '@deepseek-ai/dsh-mind-garden/memory'
 import AgentRegistry, { agentEvents, type Agent, type PreStepDecision } from '@deepseek-ai/dsh-agent'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
-import MindGardenService from '@deepseek-ai/dsh-mind-garden-core'
-import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden-core'
+import MindGardenService from '@deepseek-ai/dsh-mind-garden/core'
+import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden/core'
 import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
 import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
 import ToolRuntime from '@deepseek-ai/dsh-tools'

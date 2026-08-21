@@ -29,11 +29,15 @@ dsh plugin --profile web why @deepseek-ai/dsh-mind-garden
 dsh web
 ```
 
-Requires DeepSeek Harness `0.1.1-rc.1` or newer, `pnpm` on `PATH`, and a configured model provider. See [Install](#install) for profile requirements, updates, and local development.
+Requires DeepSeek Harness `0.1.1-rc.1` or newer, `pnpm` on `PATH`, and a configured model provider. Photo observation uses the official DeepSeek route and requires a Harness-managed `DEEPSEEK_API_KEY`. See [Install](#install) for profile requirements, updates, and local development.
 
 ![A real DeepSeek-V4-Flash companion turn rendered inside Mind Garden](assets/mind-garden-real-companion.png)
 
 This capture comes from the opt-in real-provider path: `deepseek-v4-flash` answers through the shipped DeepSeek adapter, the reply passes the Mind Garden safety plugin, and the real Harness Web composition renders the result.
+
+![A real DeepSeek-V4-Flash-Vision-Exp observation grounded in the attached photograph](assets/mind-garden-real-photo-story.png)
+
+This is a second real-provider run, not seeded gallery copy. `deepseek-v4-flash-vision-exp` receives the admitted photograph through Harness, identifies only visible details, and returns a provisional observation that remains unconfirmed until the user accepts it.
 
 ## A garden that leaves conclusions with you
 
@@ -150,6 +154,7 @@ Prerequisites:
 - DeepSeek Harness `0.1.1-rc.1` or newer with a working `web` profile;
 - `pnpm` on `PATH` for profile-forwarded plugin commands;
 - at least one configured Harness model provider;
+- a DeepSeek credential available to Harness as `DEEPSEEK_API_KEY` for Photo Story observation, which is pinned to `deepseek-official` / `deepseek-v4-flash-vision-exp`;
 - a durable credentials and storage composition, which the standard Web profile already supplies.
 
 Install the bundle directly from GitHub, confirm that the profile resolved the package, then start Web:
@@ -179,7 +184,7 @@ The bundle's [`cordis.patch.yml`](cordis.patch.yml) inserts every Host and Web r
 
 ## First session
 
-1. Configure the desired provider and model in the ordinary Harness Models settings. Provider credentials remain owned by Harness; Mind Garden has no API-key field.
+1. Configure the desired provider and model for ordinary companion dialogue in Harness Models. Provider credentials remain owned by Harness; Mind Garden has no API-key field. Explicit Photo Story observation uses the bundle's `deepseek-official` / `deepseek-v4-flash-vision-exp` route.
 2. Create a blank Session and select the shipped **Mind Garden** preset when it is available from the active roster.
 3. Choose **Enter Mind Garden** before the first message.
 4. Read the storage, provider, and confirmation boundaries, then select **Serenity** for gentle presence or **Clarity** for more structured reflection.
@@ -189,12 +194,13 @@ The bundle can be activated with another preset, but that preset's persona and t
 
 ## Architecture
 
-One installable package composes ten independently testable plugins:
+One installable package composes eleven independently testable plugins:
 
 | Loader row | Package | Responsibility |
 |---|---|---|
 | `mind-garden-vault` | [`mind-garden-vault`](packages/mind-garden/mind-garden-vault) | AES-256-GCM private-record storage and journaled key rotation. |
 | `mind-garden-core` | [`mind-garden-core`](packages/mind-garden/mind-garden-core) | Event-sourced activation, dialogue posture, support intent, and disclosure acceptance. |
+| `mind-garden-skills` | [`mind-garden-skills`](packages/mind-garden/mind-garden-skills) | Fifteen Harness-native companion, continuity, memory-governance, practice, philosophy, and Observer skills with explicit invocation and disclosure. |
 | `mind-garden-memory` | [`mind-garden-memory`](packages/mind-garden/mind-garden-memory) | Governed long-term memory lifecycle, extraction, bounded recall, and encrypted audit. |
 | `mind-garden-media` | [`mind-garden-media`](packages/mind-garden/mind-garden-media) | Verified photo stories, particle configuration, explicit visual observation, and story dialogue. |
 | `mind-garden-reflection` | [`mind-garden-reflection`](packages/mind-garden/mind-garden-reflection) | Check-ins, journals, concerns, experiments, principles, questions, reviews, and projections. |
@@ -252,14 +258,14 @@ The original archive is read-only throughout inspection and restore. Keep it unt
 
 ## Verification
 
-The repository-level checks confirm that all ten runtime packages, compiled entrypoints, and Loader rows are present and that no install manifest retains a Harness workspace-only dependency:
+The repository-level checks confirm that all eleven runtime packages, compiled entrypoints, and Loader rows are present and that no install manifest retains a Harness workspace-only dependency:
 
 ```sh
 npm test
 npm run check
 ```
 
-Release validation also installs the Git repository into a clean `web` profile, checks the resolved dependency with `dsh plugin --profile web why`, dumps the composed Loader configuration, starts the real Web server, and requests its browser entrypoint. The screenshots in this README additionally come from deterministic gallery coverage and an opt-in real-provider run against the full Harness Web composition.
+Release validation also installs the Git repository into a clean `web` profile, checks the resolved dependency with `dsh plugin --profile web why`, dumps the composed Loader configuration, starts the real Web server, and requests its browser entrypoint. The screenshots in this README additionally come from deterministic gallery coverage and real-provider runs against `deepseek-v4-flash` and `deepseek-v4-flash-vision-exp` in the full Harness Web composition.
 
 ## Provider and safety behavior
 
@@ -272,7 +278,7 @@ Mind Garden does not make a model request for every UI action.
 | Check-in, journal, concern, calendar, experiment, principle, question, review storage | No provider call. |
 | Manual or authorized automatic memory review | One bounded auxiliary call; every proposal still requires user review. |
 | Star Observer draw or card follow-up | One bounded auxiliary call scoped to the card and explicitly authorized evidence. |
-| Photo observation or photo-owned follow-up | One bounded auxiliary call scoped to the verified story; it is not appended to ordinary Session history. |
+| Photo observation or photo-owned follow-up | One bounded auxiliary call through `deepseek-official` / `deepseek-v4-flash-vision-exp`, scoped to the verified story; it is not appended to ordinary Session history. |
 | Backup, restore, migration or key rotation | No provider call. |
 
 Activated Mind Garden dialogue caps model output at 4,096 tokens unless the caller already requested less. This keeps the complete answer inside the deterministic publication buffer even when a provider adapter has a much larger deployment default. Other Harness agents and Mind Garden auxiliary calls retain their own limits.

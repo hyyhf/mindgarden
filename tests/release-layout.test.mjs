@@ -10,6 +10,7 @@ const patch = readFileSync(resolve(root, 'cordis.patch.yml'), 'utf8')
 const expectedRows = [
   '@deepseek-ai/dsh-mind-garden/vault',
   '@deepseek-ai/dsh-mind-garden/core',
+  '@deepseek-ai/dsh-mind-garden/skills',
   '@deepseek-ai/dsh-mind-garden/memory',
   '@deepseek-ai/dsh-mind-garden/media',
   '@deepseek-ai/dsh-mind-garden/reflection',

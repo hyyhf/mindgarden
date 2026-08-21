@@ -1,9 +1,9 @@
-/** Package-owned invariant companion. @module @deepseek-ai/dsh-mind-garden-memory/invariant */
+/** Package-owned invariant companion. @module @deepseek-ai/dsh-mind-garden/memory/invariant */
 
 import type { Context } from '@deepseek-ai/cordis'
 import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden-memory'
+const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden/memory'
 
 /** Cordis companion plugin name. */
 export const name = 'mind-garden-memory-invariant'

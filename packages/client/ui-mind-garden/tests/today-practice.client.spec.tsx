@@ -5,7 +5,7 @@ import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import type {
   MindGardenCheckin,
   MindGardenJournal,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { emotionWords, TodayPractice } from '../src/client/spaces/TodayPractice.tsx'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
 

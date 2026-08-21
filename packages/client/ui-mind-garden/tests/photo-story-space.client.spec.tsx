@@ -2,7 +2,7 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import type { MindGardenPhotoParticleConfig, MindGardenPhotoStory } from '@deepseek-ai/dsh-mind-garden-media/types'
+import type { MindGardenPhotoParticleConfig, MindGardenPhotoStory } from '@deepseek-ai/dsh-mind-garden/media/types'
 import { PhotoStorySpace } from '../src/client/photo-story/PhotoStorySpace.tsx'
 import { DEFAULT_PHOTO_PARTICLE_CONFIG } from '../src/client/photo-story/presets.ts'
 import type { MindGardenViewActions } from '../src/client/slots.ts'
@@ -183,6 +183,7 @@ describe('PhotoStorySpace', () => {
     await waitFor(() => { expect(view.getByTestId('particle-scene')).toBeTruthy() })
     fireEvent.click(view.getByTestId('particle-scene'))
     expect(view.getByText(/43,210 粒子/)).toBeTruthy()
+    fireEvent.click(view.getByRole('button', { name: zh['photo.panel.edit'] }))
 
     fireEvent.change(view.getByLabelText(zh['photo.storyTitle']), { target: { value: 'Renamed frame' } })
     fireEvent.change(view.getByLabelText(zh['photo.storyNote']), { target: { value: 'A private story' } })
@@ -242,6 +243,7 @@ describe('PhotoStorySpace', () => {
     expect(view.getByText(zh['photo.sceneLoading'])).toBeTruthy()
     fireEvent.click(view.getByRole('button', { name: zh['photo.retry'] }))
     await waitFor(() => { expect(view.getByTestId('particle-scene')).toBeTruthy() })
+    fireEvent.click(view.getByRole('button', { name: zh['photo.panel.edit'] }))
     fireEvent.click(view.getByRole('button', { name: zh['photo.save'] }))
     await waitFor(() => { expect(api.onUpdatePhotoStory).toHaveBeenCalledOnce() })
     fireEvent.click(view.getByRole('button', { name: zh['photo.save'] }))

@@ -1,9 +1,9 @@
-/** Package-owned invariant companion. @module @deepseek-ai/dsh-mind-garden-portability/invariant */
+/** Package-owned invariant companion. @module @deepseek-ai/dsh-mind-garden/portability/invariant */
 
 import type { Context } from '@deepseek-ai/cordis'
 import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden-portability'
+const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden/portability'
 
 /** Cordis companion plugin name. */
 export const name = 'mind-garden-portability-invariant'

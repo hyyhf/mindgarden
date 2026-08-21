@@ -13,7 +13,7 @@ import type {
   MindGardenMode,
   MindGardenSessionProjection,
   MindGardenSupportIntent,
-} from '@deepseek-ai/dsh-mind-garden-core/client'
+} from '@deepseek-ai/dsh-mind-garden/core/client'
 import type { MindGardenActionResult, MindGardenDockActions } from './slots.ts'
 import type { MindGardenKey } from './locales.ts'
 import { ConcernsIcon, GardenMarkIcon, PhilosophyIcon, PrivateIcon } from './GardenIcons.tsx'

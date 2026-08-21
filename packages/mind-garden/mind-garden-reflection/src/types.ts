@@ -1,6 +1,6 @@
 /**
  * Client-safe contracts for encrypted Mind Garden reflections and calendar views.
- * @module @deepseek-ai/dsh-mind-garden-reflection/types
+ * @module @deepseek-ai/dsh-mind-garden/reflection/types
  */
 
 import type { Branded } from '@deepseek-ai/dsh-brand'

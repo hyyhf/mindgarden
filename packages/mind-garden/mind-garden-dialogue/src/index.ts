@@ -1,14 +1,14 @@
 /**
  * Model-visible dialogue policy for activated Mind Garden sessions.
  *
- * @module @deepseek-ai/dsh-mind-garden-dialogue
+ * @module @deepseek-ai/dsh-mind-garden/dialogue
  */
 
 import type { Context } from '@deepseek-ai/cordis'
 import type { PreStepDecision } from '@deepseek-ai/dsh-agent'
 import { createUserMessage } from '@deepseek-ai/dsh-llm'
-import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden-core'
-import type {} from '@deepseek-ai/dsh-mind-garden-core'
+import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden/core'
+import type {} from '@deepseek-ai/dsh-mind-garden/core'
 
 /** Cordis plugin and durable model-message source name. */
 export const name = 'mind-garden-dialogue'

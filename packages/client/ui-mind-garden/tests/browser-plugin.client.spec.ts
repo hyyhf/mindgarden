@@ -2,15 +2,15 @@ import { describe, expect, it, vi } from 'vitest'
 import { Context } from '@deepseek-ai/cordis'
 import type { ClientContext, SessionId } from '@deepseek-ai/dsh-client-runtime/client'
 import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
-import type { MindGardenPhotoStory } from '@deepseek-ai/dsh-mind-garden-media/types'
-import type { MindGardenStarCard, MindGardenStarMapOverview, MindGardenStarTrait } from '@deepseek-ai/dsh-mind-garden-star-map/types'
+import type { MindGardenPhotoStory } from '@deepseek-ai/dsh-mind-garden/media/types'
+import type { MindGardenStarCard, MindGardenStarMapOverview, MindGardenStarTrait } from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type {
   MindGardenMemoryAutomationPolicy,
   MindGardenMemoryExtractValue,
   MindGardenMemoryItem,
   MindGardenMemoryResolveRelationshipValue,
   MindGardenMemoryRevision,
-} from '@deepseek-ai/dsh-mind-garden-memory/types'
+} from '@deepseek-ai/dsh-mind-garden/memory/types'
 import type {
   MindGardenCalendarDayValue,
   MindGardenCalendarMonthValue,
@@ -26,7 +26,7 @@ import type {
   MindGardenReflectionTrendValue,
   MindGardenPrinciple,
   MindGardenPrincipleProposal,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { apply, inject } from '../src/client/index.ts'
 import type { MindGardenDockActions, MindGardenViewActions } from '../src/client/slots.ts'
 import { apply as nodeApply } from '../src/index.ts'
@@ -600,7 +600,7 @@ describe('Mind Garden browser plugin', () => {
     })
     const ctx = { invariants: { register } } as never
     await expect(invariantApply(ctx)).resolves.toBe(disposer)
-    expect(register).toHaveBeenCalledWith('@deepseek-ai/dsh-client-ui-mind-garden', expect.any(Function))
+    expect(register).toHaveBeenCalledWith('@deepseek-ai/dsh-mind-garden/ui', expect.any(Function))
     const installer = installed
     if (installer === undefined) throw new Error('invariant installer was not registered')
     await installer(new Context(), () => { throw new Error('unused') })

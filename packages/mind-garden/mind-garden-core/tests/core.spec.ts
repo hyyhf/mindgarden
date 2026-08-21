@@ -14,12 +14,12 @@ import MindGardenService, {
   mindGardenProjectionDefinition,
   mindGardenProjectionSchema,
   mindGardenSessionStateSchema,
-} from '@deepseek-ai/dsh-mind-garden-core'
+} from '@deepseek-ai/dsh-mind-garden/core'
 import type {
   MindGardenOperation,
   MindGardenSessionState,
   MindGardenSessionStateEvent,
-} from '@deepseek-ai/dsh-mind-garden-core'
+} from '@deepseek-ai/dsh-mind-garden/core'
 
 const activated: MindGardenSessionState = {
   revision: 1,
@@ -176,7 +176,7 @@ describe('Mind Garden service and projection', () => {
     expect(mindGardenProjectionDefinition.init()).toBeNull()
     expect(mindGardenProjectionDefinition.key).toBe('mind-garden')
     expect(mindGardenProjectionDefinition.stateVersion).toBe(1)
-    expect(mindGardenProjectionDefinition.view(null)).toBeNull()
+    expect(mindGardenProjectionDefinition.wire.view(null)).toBeNull()
     const first = applyMindGardenProjection(null, event())
     expect(first).toEqual({ state: activated })
     expect(mindGardenProjectionSchema.parse(first)).toEqual(first)

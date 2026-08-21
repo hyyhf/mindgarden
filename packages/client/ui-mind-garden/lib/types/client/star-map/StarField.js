@@ -122,8 +122,9 @@ function maximumPixelRatio() {
 }
 function makeStarField(scene, colors, pixelRatio, materials, geometries) {
     const fields = [
-        [860, 82, 112, 2.05, 0.9, 31, colors.orbit],
-        [220, 38, 64, 2.8, 0.78, 79, colors.question],
+        [1_480, 42, 142, 1.65, 0.88, 31, colors.orbit],
+        [520, 24, 96, 2.35, 0.76, 79, colors.question],
+        [180, 18, 74, 3.8, 0.34, 131, colors.review],
     ];
     return fields.map(([count, minimumRadius, radiusRange, pointSize, opacity, seed, fieldColor]) => {
         const field = starPositions(count, minimumRadius, radiusRange, seed);
@@ -212,17 +213,19 @@ export function mountGardenStarField(host, model, reducedMotion, selectedId = 'c
     const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: 'high-performance' });
     let pixelRatio = maximumPixelRatio();
     renderer.setPixelRatio(pixelRatio);
-    renderer.setClearColor(colors.background, 0.82);
+    renderer.setClearColor(colors.background, 0.56);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.04;
     host.replaceChildren(renderer.domElement);
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(colors.background, 0.00235);
+    scene.fog = new THREE.FogExp2(colors.background, 0.0019);
     const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 400);
     camera.position.set(0, 7, 68);
     let targetCameraZ = 68;
     const constellation = new THREE.Group();
+    constellation.position.y = -4.2;
+    constellation.rotation.x = -0.06;
     scene.add(constellation);
     scene.add(new THREE.HemisphereLight(colors.orbit, colors.background, 2.25));
     const centerLight = new THREE.PointLight(colors.center, 46, 125, 1.65);

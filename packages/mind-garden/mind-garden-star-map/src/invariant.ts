@@ -1,9 +1,9 @@
-/** Package-owned invariant companion. @module @deepseek-ai/dsh-mind-garden-star-map/invariant */
+/** Package-owned invariant companion. @module @deepseek-ai/dsh-mind-garden/star-map/invariant */
 
 import type { Context } from '@deepseek-ai/cordis'
 import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden-star-map'
+const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden/star-map'
 
 /** Cordis companion plugin name. */
 export const name = 'mind-garden-star-map-invariant'

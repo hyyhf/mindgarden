@@ -13,9 +13,9 @@ import ToolRuntime from '@deepseek-ai/dsh-tools'
 import AgentRegistry, { type Agent } from '@deepseek-ai/dsh-agent'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
 import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
-import MindGardenService from '@deepseek-ai/dsh-mind-garden-core'
-import * as mindGardenDialogue from '@deepseek-ai/dsh-mind-garden-dialogue'
-import * as mindGardenSafety from '@deepseek-ai/dsh-mind-garden-safety'
+import MindGardenService from '@deepseek-ai/dsh-mind-garden/core'
+import * as mindGardenDialogue from '@deepseek-ai/dsh-mind-garden/dialogue'
+import * as mindGardenSafety from '@deepseek-ai/dsh-mind-garden/safety'
 
 function textResponse(text: string): StreamChunk[] {
   return [

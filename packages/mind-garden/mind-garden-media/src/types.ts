@@ -1,6 +1,6 @@
 /**
  * Client-safe contracts for encrypted Mind Garden photo stories.
- * @module @deepseek-ai/dsh-mind-garden-media/types
+ * @module @deepseek-ai/dsh-mind-garden/media/types
  */
 
 import type { ImageAdmissionErrorCode, ImageAttachmentRef, ImageMediaType } from '@deepseek-ai/dsh-attachment'

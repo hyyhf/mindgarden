@@ -39,10 +39,13 @@ export function applyMindGardenProjection(state, event) {
 /** Projection unit registered with DeepSeek Harness. */
 export const mindGardenProjectionDefinition = {
     key: 'mind-garden',
-    schema: mindGardenProjectionSchema,
+    stateSchema: mindGardenProjectionSchema,
     init: () => null,
     apply: applyMindGardenProjection,
-    view: state => state,
+    wire: {
+        viewSchema: mindGardenProjectionSchema,
+        view: state => state,
+    },
     stateVersion: 1,
 };
 //# sourceMappingURL=projection.js.map

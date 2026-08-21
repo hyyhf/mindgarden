@@ -19,31 +19,30 @@ describe('Mind Garden bundle', () => {
     expect(manifest.dsh?.bundle?.patch).toBe('./cordis.patch.yml')
     const parsed = yaml.load(readFileSync(resolve(root, 'cordis.patch.yml'), 'utf8'), {
       schema: entryListSchema,
-    }) as Array<{ insert?: Array<{ id?: string; name?: string }> }>
+    }) as Array<{ insert?: Array<{ id?: string; name?: string; config?: Record<string, unknown> }> }>
     expect(parsed.flatMap(item => item.insert ?? [])).toEqual([
-      { id: 'mind-garden-vault', name: '@deepseek-ai/dsh-mind-garden-vault' },
-      { id: 'mind-garden-core', name: '@deepseek-ai/dsh-mind-garden-core' },
-      { id: 'mind-garden-memory', name: '@deepseek-ai/dsh-mind-garden-memory' },
-      { id: 'mind-garden-media', name: '@deepseek-ai/dsh-mind-garden-media' },
-      { id: 'mind-garden-reflection', name: '@deepseek-ai/dsh-mind-garden-reflection' },
-      { id: 'mind-garden-star-map', name: '@deepseek-ai/dsh-mind-garden-star-map' },
-      { id: 'mind-garden-dialogue', name: '@deepseek-ai/dsh-mind-garden-dialogue' },
-      { id: 'mind-garden-safety', name: '@deepseek-ai/dsh-mind-garden-safety' },
-      { id: 'mind-garden-portability', name: '@deepseek-ai/dsh-mind-garden-portability' },
-      { id: 'ui-mind-garden', name: '@deepseek-ai/dsh-client-ui-mind-garden' },
+      { id: 'mind-garden-vault', name: '@deepseek-ai/dsh-mind-garden/vault' },
+      { id: 'mind-garden-core', name: '@deepseek-ai/dsh-mind-garden/core' },
+      { id: 'mind-garden-skills', name: '@deepseek-ai/dsh-mind-garden/skills' },
+      { id: 'mind-garden-memory', name: '@deepseek-ai/dsh-mind-garden/memory' },
+      {
+        id: 'mind-garden-media',
+        name: '@deepseek-ai/dsh-mind-garden/media',
+        config: {
+          observerProvider: 'deepseek-official',
+          observerModel: 'deepseek-v4-flash-vision-exp',
+        },
+      },
+      { id: 'mind-garden-reflection', name: '@deepseek-ai/dsh-mind-garden/reflection' },
+      { id: 'mind-garden-star-map', name: '@deepseek-ai/dsh-mind-garden/star-map' },
+      { id: 'mind-garden-dialogue', name: '@deepseek-ai/dsh-mind-garden/dialogue' },
+      { id: 'mind-garden-safety', name: '@deepseek-ai/dsh-mind-garden/safety' },
+      { id: 'mind-garden-portability', name: '@deepseek-ai/dsh-mind-garden/portability' },
+      { id: 'ui-mind-garden', name: '@deepseek-ai/dsh-mind-garden/ui' },
     ])
-    expect(Object.keys(manifest.dependencies ?? {}).sort()).toEqual([
-      '@deepseek-ai/dsh-client-ui-mind-garden',
-      '@deepseek-ai/dsh-mind-garden-core',
-      '@deepseek-ai/dsh-mind-garden-dialogue',
-      '@deepseek-ai/dsh-mind-garden-media',
-      '@deepseek-ai/dsh-mind-garden-memory',
-      '@deepseek-ai/dsh-mind-garden-portability',
-      '@deepseek-ai/dsh-mind-garden-reflection',
-      '@deepseek-ai/dsh-mind-garden-safety',
-      '@deepseek-ai/dsh-mind-garden-star-map',
-      '@deepseek-ai/dsh-mind-garden-vault',
-    ])
+    expect(manifest.dependencies?.['@deepseek-ai/dsh-skill-filesystem']).toBeDefined()
+    expect(Object.values(manifest.dependencies ?? {}).some(spec => spec.startsWith('workspace:'))).toBe(false)
+    expect(Object.keys(manifest.dependencies ?? {}).some(name => /^@deepseek-ai\/dsh-mind-garden-/.test(name))).toBe(false)
   })
 
   it('has an inert runtime entry and a registrable invariant companion', async () => {

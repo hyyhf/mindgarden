@@ -3,9 +3,9 @@
 import { Buffer } from 'node:buffer'
 import { createHash } from 'node:crypto'
 import type { DatabaseSync, SQLOutputValue } from 'node:sqlite'
-import { decodeStoredRecord } from '@deepseek-ai/dsh-mind-garden-memory'
-import { decodeStoredReflection } from '@deepseek-ai/dsh-mind-garden-reflection'
-import { decodeStoredStarState } from '@deepseek-ai/dsh-mind-garden-star-map'
+import { decodeStoredRecord } from '@deepseek-ai/dsh-mind-garden/memory'
+import { decodeStoredReflection } from '@deepseek-ai/dsh-mind-garden/reflection'
+import { decodeStoredStarState } from '@deepseek-ai/dsh-mind-garden/star-map'
 import type { JsonValue } from '@deepseek-ai/dsh-session'
 import { z } from 'zod'
 import {

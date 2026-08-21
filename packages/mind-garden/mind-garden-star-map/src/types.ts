@@ -1,6 +1,6 @@
 /**
  * Client-safe contracts for the encrypted Mind Garden Star Map.
- * @module @deepseek-ai/dsh-mind-garden-star-map/types
+ * @module @deepseek-ai/dsh-mind-garden/star-map/types
  */
 
 import type { Branded } from '@deepseek-ai/dsh-brand'

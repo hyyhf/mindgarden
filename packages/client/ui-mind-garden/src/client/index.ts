@@ -4,11 +4,11 @@ import type { ClientContext, SessionId } from '@deepseek-ai/dsh-client-runtime/c
 import type {} from '@deepseek-ai/dsh-api-remotes/client'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type {} from '@deepseek-ai/dsh-client-locale/client'
-import type { MindGardenMode, MindGardenSupportIntent } from '@deepseek-ai/dsh-mind-garden-core/client'
+import type { MindGardenMode, MindGardenSupportIntent } from '@deepseek-ai/dsh-mind-garden/core/client'
 import type {
   MindGardenPhotoStory,
   MindGardenPhotoStoryImageValue,
-} from '@deepseek-ai/dsh-mind-garden-media/types'
+} from '@deepseek-ai/dsh-mind-garden/media/types'
 import type {
   MindGardenMemoryAutomationPolicy,
   MindGardenMemoryExtractValue,
@@ -17,7 +17,7 @@ import type {
   MindGardenMemoryLatestAuditValue,
   MindGardenMemoryResolveRelationshipValue,
   MindGardenMemoryRevision,
-} from '@deepseek-ai/dsh-mind-garden-memory/types'
+} from '@deepseek-ai/dsh-mind-garden/memory/types'
 import type {
   MindGardenCalendarDayValue,
   MindGardenCalendarMonthValue,
@@ -32,18 +32,18 @@ import type {
   MindGardenPrinciple,
   MindGardenPrincipleProposal,
   MindGardenReflectionTrendValue,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import type {
   MindGardenStarCard,
   MindGardenStarMapOverview,
   MindGardenStarTrait,
-} from '@deepseek-ai/dsh-mind-garden-star-map/types'
+} from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type {
   MindGardenBackupExportValue,
   MindGardenBackupInspectValue,
   MindGardenBackupRestoreValue,
   MindGardenKeyRotationValue,
-} from '@deepseek-ai/dsh-mind-garden-portability/types'
+} from '@deepseek-ai/dsh-mind-garden/portability/types'
 import type { RemoteResult } from '@deepseek-ai/dsh-typert-protocol'
 import type { MindGardenDataResult, MindGardenDockActions, MindGardenViewActions } from './slots.ts'
 import { MindGardenDock } from './MindGardenDock.tsx'

@@ -49,7 +49,7 @@ async function loadComposition(home: string): Promise<Context> {
     `    path: ${JSON.stringify(credentialsPath)}`,
     '    watch: false',
     '- id: mind-garden-vault',
-    "  name: '@deepseek-ai/dsh-mind-garden-vault'",
+    "  name: '@deepseek-ai/dsh-mind-garden/vault'",
     '',
   ].join('\n'))
 
@@ -63,7 +63,7 @@ async function loadComposition(home: string): Promise<Context> {
     ['@deepseek-ai/dsh-storage-json', StorageJson],
     ['@deepseek-ai/dsh-storage-domain', StorageDomain],
     ['@deepseek-ai/dsh-credentials-local', LocalCredentialProvider],
-    ['@deepseek-ai/dsh-mind-garden-vault', MindGardenVault],
+    ['@deepseek-ai/dsh-mind-garden/vault', MindGardenVault],
   ])
   ctx.loader.internal = {
     version: 'v2',

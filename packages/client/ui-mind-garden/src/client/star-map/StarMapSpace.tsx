@@ -1,11 +1,11 @@
 /** Harness-native constellation space backed by an encrypted Star Map profile. */
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { MindGardenMode } from '@deepseek-ai/dsh-mind-garden-core/client'
+import type { MindGardenMode } from '@deepseek-ai/dsh-mind-garden/core/client'
 import type {
   MindGardenOpenQuestion,
   MindGardenPeriodReview,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import type {
   MindGardenCompleteStarRitualRequest,
   MindGardenSaveStarRitualRequest,
@@ -16,7 +16,7 @@ import type {
   MindGardenStarTrait,
   MindGardenUpdateStarProfileRequest,
   MindGardenUpdateStarTraitRequest,
-} from '@deepseek-ai/dsh-mind-garden-star-map/types'
+} from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type { MindGardenDataResult } from '../slots.ts'
 import type { MindGardenKey } from '../locales.ts'
 import { createGardenStarMap } from './model.ts'

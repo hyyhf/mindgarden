@@ -16,9 +16,9 @@ import {
 import type {
   MindGardenVaultMergeCandidates,
   MindGardenVaultSnapshot,
-} from '@deepseek-ai/dsh-mind-garden-vault'
-import { decodeStoredReflection } from '@deepseek-ai/dsh-mind-garden-reflection'
-import { decodeStoredStarState } from '@deepseek-ai/dsh-mind-garden-star-map'
+} from '@deepseek-ai/dsh-mind-garden/vault'
+import { decodeStoredReflection } from '@deepseek-ai/dsh-mind-garden/reflection'
+import { decodeStoredStarState } from '@deepseek-ai/dsh-mind-garden/star-map'
 import { decryptMindGardenBackup, encryptMindGardenBackup } from '../src/backup.ts'
 import MindGardenPortabilityService from '../src/index.ts'
 import { loadLegacyMindGardenBackup } from '../src/legacy.ts'

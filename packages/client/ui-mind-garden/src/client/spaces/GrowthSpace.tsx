@@ -8,7 +8,7 @@ import {
   IconSendOutline14,
   IconStopFill16,
 } from '@deepseek-ai/dsh-client-ui-primitives'
-import type { MindGardenExperiment } from '@deepseek-ai/dsh-mind-garden-reflection/types'
+import type { MindGardenExperiment } from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { calendarStamp } from '../calendar.ts'
 import { GrowthIcon, PrivateIcon } from '../GardenIcons.tsx'
 import type { MindGardenKey } from '../locales.ts'

@@ -18,6 +18,7 @@ const packageRoots = [
   'packages/mind-garden/mind-garden-portability',
   'packages/mind-garden/mind-garden-reflection',
   'packages/mind-garden/mind-garden-safety',
+  'packages/mind-garden/mind-garden-skills',
   'packages/mind-garden/mind-garden-star-map',
   'packages/mind-garden/mind-garden-vault',
 ]
@@ -43,7 +44,10 @@ for (const required of [
 for (const [subpath, target] of Object.entries(manifest.exports ?? {})) {
   const paths = typeof target === 'string' ? [target] : Object.values(target)
   for (const relative of paths) {
-    if (typeof relative === 'string' && relative.startsWith('./') && !existsSync(resolve(root, relative))) {
+    const exportTarget = typeof relative === 'string' && relative.includes('*')
+      ? relative.slice(0, relative.indexOf('*'))
+      : relative
+    if (typeof exportTarget === 'string' && exportTarget.startsWith('./') && !existsSync(resolve(root, exportTarget))) {
       failures.push(`export ${subpath} points at missing file: ${relative}`)
     }
   }

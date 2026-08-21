@@ -36,6 +36,11 @@ export interface MindGardenSessionProjection {
 }
 
 declare module '@deepseek-ai/dsh-session-projection/types' {
+  interface SessionProjectionStateMap {
+    /** Host fold state for the Mind Garden client projection. */
+    'mind-garden': MindGardenSessionProjection | null
+  }
+
   interface SessionProjectionMap {
     /** Null before activation; otherwise the latest complete session state. */
     'mind-garden': MindGardenSessionProjection | null

@@ -12,7 +12,7 @@ import type {
   MindGardenPrinciple,
   MindGardenPrincipleProposal,
   MindGardenPrincipleStatus,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { calendarStamp } from '../calendar.ts'
 import { PhilosophyIcon, PrivateIcon } from '../GardenIcons.tsx'
 import type { MindGardenKey } from '../locales.ts'

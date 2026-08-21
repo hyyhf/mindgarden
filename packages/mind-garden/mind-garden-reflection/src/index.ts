@@ -1,6 +1,6 @@
 /**
  * Encrypted reflections, governed principles, calendar projections, trends, and authorized context.
- * @module @deepseek-ai/dsh-mind-garden-reflection
+ * @module @deepseek-ai/dsh-mind-garden/reflection
  */
 
 import { Buffer } from 'node:buffer'
@@ -8,11 +8,11 @@ import { createHash, randomUUID } from 'node:crypto'
 import { Context } from '@deepseek-ai/cordis'
 import s from '@deepseek-ai/schemastery'
 import type { Agent } from '@deepseek-ai/dsh-agent'
-import type {} from '@deepseek-ai/dsh-mind-garden-core'
+import type {} from '@deepseek-ai/dsh-mind-garden/core'
 import {
   MindGardenVaultError,
   MindGardenVaultRecordId,
-} from '@deepseek-ai/dsh-mind-garden-vault'
+} from '@deepseek-ai/dsh-mind-garden/vault'
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
 import {
   decodeStoredReflection,

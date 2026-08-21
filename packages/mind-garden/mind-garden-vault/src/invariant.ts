@@ -5,7 +5,7 @@ import type { InvariantFailure, InvariantInstaller } from '@deepseek-ai/dsh-inva
 import type {} from './index.ts'
 import { MIND_GARDEN_VAULT_ASSERT } from './private.ts'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden-vault'
+const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden/vault'
 
 /** Cordis companion plugin name. */
 export const name = 'mind-garden-vault-invariant'

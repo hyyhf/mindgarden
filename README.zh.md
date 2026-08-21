@@ -29,11 +29,15 @@ dsh plugin --profile web why @deepseek-ai/dsh-mind-garden
 dsh web
 ```
 
-需要 DeepSeek Harness `0.1.1-rc.1` 或更高版本、位于 `PATH` 的 `pnpm`，以及已配置的模型提供方。profile 要求、升级与本地开发方式见[安装](#安装)。
+需要 DeepSeek Harness `0.1.1-rc.1` 或更高版本、位于 `PATH` 的 `pnpm`，以及已配置的模型提供方。照片观察走 DeepSeek 官方路由，需要由 Harness 管理的 `DEEPSEEK_API_KEY`。profile 要求、升级与本地开发方式见[安装](#安装)。
 
 ![由 DeepSeek-V4-Flash 真实生成并在心智庭院中渲染的一轮陪伴对话](assets/mind-garden-real-companion.png)
 
 这张截图来自可选择开启的真实提供方路径：`deepseek-v4-flash` 通过内置 DeepSeek 适配器生成回复，回复经过心智庭院安全插件，再由实际 Harness Web 装配渲染。
+
+![由 DeepSeek-V4-Flash-Vision-Exp 基于所附照片真实生成的观察](assets/mind-garden-real-photo-story.png)
+
+这是第二次真实提供方运行，不是预先写好的图册文案。`deepseek-v4-flash-vision-exp` 通过 Harness 接收已准入的照片，只描述画面中可见的细节，并返回仍待用户确认的临时观察。
 
 ## 把结论留给你的庭院
 
@@ -150,6 +154,7 @@ dsh web
 - DeepSeek Harness `0.1.1-rc.1` 或更高版本，且已能运行 `web` profile；
 - `pnpm` 位于 `PATH`，用于 profile 转发的插件命令；
 - 至少配置了一个 Harness 模型提供方；
+- 如需使用照片故事观察，需让 Harness 能以 `DEEPSEEK_API_KEY` 取得 DeepSeek 凭据；该动作固定使用 `deepseek-official` / `deepseek-v4-flash-vision-exp`；
 - 使用持久凭据与存储装配，标准 Web profile 已提供这些依赖。
 
 直接从 GitHub 安装组合包，确认 profile 已解析到该包，然后启动 Web：
@@ -179,7 +184,7 @@ dsh plugin --profile web add .
 
 ## 第一次使用
 
-1. 在 Harness 普通的模型设置中配置提供方和模型。提供方凭据继续由 Harness 管理，心智庭院没有 API Key 输入框。
+1. 在 Harness 模型设置中为普通陪伴对话配置提供方和模型。提供方凭据继续由 Harness 管理，心智庭院没有 API Key 输入框；显式照片观察使用组合包指定的 `deepseek-official` / `deepseek-v4-flash-vision-exp` 路由。
 2. 新建空白 Session；如果当前 roster 已提供内置**心智庭院**预设，请选择它。
 3. 在发送第一条消息前选择**进入心智庭院**。
 4. 阅读存储、提供方与确认权边界，再选择偏温柔陪伴的**观心**或偏结构化反思的**玄思**。
@@ -189,12 +194,13 @@ dsh plugin --profile web add .
 
 ## 架构
 
-一个可安装组合包装配十个可独立测试的插件：
+一个可安装组合包装配十一个可独立测试的插件：
 
 | Loader 配置行 | 包 | 职责 |
 |---|---|---|
 | `mind-garden-vault` | [`mind-garden-vault`](packages/mind-garden/mind-garden-vault) | AES-256-GCM 私密记录存储与 journal 化换钥。 |
 | `mind-garden-core` | [`mind-garden-core`](packages/mind-garden/mind-garden-core) | 事件溯源的启用状态、对话姿态、支持意图和披露确认。 |
+| `mind-garden-skills` | [`mind-garden-skills`](packages/mind-garden/mind-garden-skills) | 十五个 Harness 原生技能，覆盖陪伴、连续性、记忆治理、练习、人生哲学与 Observer，并遵守显式调用和披露边界。 |
 | `mind-garden-memory` | [`mind-garden-memory`](packages/mind-garden/mind-garden-memory) | 长期记忆治理、提取、有界召回和加密审计。 |
 | `mind-garden-media` | [`mind-garden-media`](packages/mind-garden/mind-garden-media) | 已验证照片故事、粒子参数、显式视觉观察和故事对话。 |
 | `mind-garden-reflection` | [`mind-garden-reflection`](packages/mind-garden/mind-garden-reflection) | 签到、日记、关切、实验、原则、问题、回望和投影。 |
@@ -252,14 +258,14 @@ Host 包负责权限和持久状态。Web 客户端通过生成的 Typert Remote
 
 ## 验证
 
-仓库级检查会确认十个运行时包、编译入口和 Loader 配置行完整存在，并确保安装清单不再含 Harness 工作区专用依赖：
+仓库级检查会确认十一个运行时包、编译入口和 Loader 配置行完整存在，并确保安装清单不再含 Harness 工作区专用依赖：
 
 ```sh
 npm test
 npm run check
 ```
 
-发布验证还会把 Git 仓库安装进一个干净的 `web` profile，通过 `dsh plugin --profile web why` 检查解析结果，导出组合后的 Loader 配置，启动真实 Web 服务器并请求浏览器入口。本 README 的截图还经过完整 Harness Web 装配下的确定性图册覆盖与可选择开启的真实提供方运行验证。
+发布验证还会把 Git 仓库安装进一个干净的 `web` profile，通过 `dsh plugin --profile web why` 检查解析结果，导出组合后的 Loader 配置，启动真实 Web 服务器并请求浏览器入口。本 README 的截图还经过完整 Harness Web 装配下的确定性图册覆盖，以及 `deepseek-v4-flash` 与 `deepseek-v4-flash-vision-exp` 的真实提供方运行验证。
 
 ## 提供方与安全行为
 
@@ -272,7 +278,7 @@ npm run check
 | 签到、日记、心事、日历、实验、原则、问题与回望存储 | 不调用提供方。 |
 | 手动或已授权自动记忆整理 | 一次有界辅助调用；每条候选仍需用户审阅。 |
 | Star Observer 抽卡或星卡追问 | 一次辅助调用，只包含星卡与显式授权证据。 |
-| 照片观察或照片自有追问 | 一次辅助调用，只属于已验证故事，不写入普通 Session 历史。 |
+| 照片观察或照片自有追问 | 通过 `deepseek-official` / `deepseek-v4-flash-vision-exp` 发起一次有界辅助调用，只属于已验证故事，不写入普通 Session 历史。 |
 | 备份、恢复、迁移或换钥 | 不调用提供方。 |
 
 已启用的心智庭院普通对话会把模型输出限制为 4096 tokens，除非调用方已经设置了更小值。这样即使适配器具有非常大的部署默认值，完整答案也能留在确定性发布缓冲内。其他 Harness Agent 与心智庭院辅助调用保留各自的上限。

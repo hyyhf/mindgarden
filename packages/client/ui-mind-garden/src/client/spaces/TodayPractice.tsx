@@ -5,7 +5,7 @@ import type { FormEvent } from 'react'
 import type {
   MindGardenCheckin,
   MindGardenJournal,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { calendarStamp } from '../calendar.ts'
 import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenViewActions } from '../slots.ts'

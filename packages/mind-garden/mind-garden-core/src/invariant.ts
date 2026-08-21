@@ -6,7 +6,7 @@ import type { Session, SessionEvent } from '@deepseek-ai/dsh-session'
 import { applyMindGardenEvent } from './fold.ts'
 import type { MindGardenSessionState } from './types.ts'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden-core'
+const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden/core'
 
 /** Cordis companion plugin name. */
 export const name = 'mind-garden-core-invariant'

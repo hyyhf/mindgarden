@@ -12,7 +12,7 @@ import {
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { ConvViewProps } from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type { PropsLocale, PropsStore } from '@deepseek-ai/dsh-client-ui-slots'
-import type { MindGardenSessionProjection } from '@deepseek-ai/dsh-mind-garden-core/client'
+import type { MindGardenSessionProjection } from '@deepseek-ai/dsh-mind-garden/core/client'
 import type {
   MindGardenOpenQuestion,
   MindGardenOpenQuestionStatus,
@@ -21,8 +21,8 @@ import type {
   MindGardenPeriodReviewMaterialValue,
   MindGardenPeriodReviewStatus,
   MindGardenPeriodReviewType,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
-import type { MindGardenStarMapOverview } from '@deepseek-ai/dsh-mind-garden-star-map/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
+import type { MindGardenStarMapOverview } from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import { calendarStamp, currentPeriod, localDate } from './calendar.ts'
 import type { MindGardenDataResult, MindGardenViewActions } from './slots.ts'
 import type { MindGardenKey } from './locales.ts'

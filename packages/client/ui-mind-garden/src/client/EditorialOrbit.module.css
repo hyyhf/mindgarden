@@ -151,7 +151,7 @@
   inset: 0 auto auto 50%;
   width: 10px;
   height: 32px;
-  border-radius: 4px;
+  border-radius: 5px;
   transform: translate(-50%, -36%) translateZ(28px);
 }
 

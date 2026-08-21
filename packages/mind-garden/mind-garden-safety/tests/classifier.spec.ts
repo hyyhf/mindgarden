@@ -3,7 +3,7 @@ import {
   assessMindGardenInput,
   normalizeMindGardenSafetyText,
   recoverMindGardenSafetyState,
-} from '@deepseek-ai/dsh-mind-garden-safety'
+} from '@deepseek-ai/dsh-mind-garden/safety'
 
 const cases: ReadonlyArray<readonly [string, number]> = [
   ['我现在要跳楼，已经在楼顶。', 3],

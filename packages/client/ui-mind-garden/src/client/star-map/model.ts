@@ -1,14 +1,14 @@
 /** Deterministic constellation model derived from encrypted reflection records. */
 
-import type { MindGardenMode } from '@deepseek-ai/dsh-mind-garden-core/client'
+import type { MindGardenMode } from '@deepseek-ai/dsh-mind-garden/core/client'
 import type {
   MindGardenOpenQuestion,
   MindGardenPeriodReview,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import type {
   MindGardenStarProfile,
   MindGardenStarTrait,
-} from '@deepseek-ai/dsh-mind-garden-star-map/types'
+} from '@deepseek-ai/dsh-mind-garden/star-map/types'
 
 /** Visual meaning of one constellation node. */
 export type GardenStarKind = 'center' | 'trait' | 'question' | 'review'

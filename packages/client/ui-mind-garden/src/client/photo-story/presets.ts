@@ -3,7 +3,7 @@
 import type {
   MindGardenPhotoParticleConfig,
   MindGardenPhotoParticlePreset,
-} from '@deepseek-ai/dsh-mind-garden-media/types'
+} from '@deepseek-ai/dsh-mind-garden/media/types'
 
 /** Complete defaults used before a freshly uploaded story is reloaded. */
 export const DEFAULT_PHOTO_PARTICLE_CONFIG: MindGardenPhotoParticleConfig = {

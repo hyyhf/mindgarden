@@ -1,6 +1,6 @@
 /**
  * Encrypted Star Map ritual, profile, and governed constellation traits.
- * @module @deepseek-ai/dsh-mind-garden-star-map
+ * @module @deepseek-ai/dsh-mind-garden/star-map
  */
 
 import { Buffer } from 'node:buffer'
@@ -10,13 +10,13 @@ import s from '@deepseek-ai/schemastery'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import { BlockAssembler, createUserMessage } from '@deepseek-ai/dsh-llm'
 import type { FinishReason, GenerateOptions } from '@deepseek-ai/dsh-llm'
-import type {} from '@deepseek-ai/dsh-mind-garden-core'
-import type {} from '@deepseek-ai/dsh-mind-garden-memory'
-import type {} from '@deepseek-ai/dsh-mind-garden-reflection'
+import type {} from '@deepseek-ai/dsh-mind-garden/core'
+import type {} from '@deepseek-ai/dsh-mind-garden/memory'
+import type {} from '@deepseek-ai/dsh-mind-garden/reflection'
 import {
   MindGardenVaultError,
   MindGardenVaultRecordId,
-} from '@deepseek-ai/dsh-mind-garden-vault'
+} from '@deepseek-ai/dsh-mind-garden/vault'
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
 import {
   decodeStoredStarState,

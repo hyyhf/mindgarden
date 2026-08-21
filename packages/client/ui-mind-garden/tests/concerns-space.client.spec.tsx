@@ -2,7 +2,7 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import type { MindGardenConcern, MindGardenConcernConversionValue } from '@deepseek-ai/dsh-mind-garden-reflection/types'
+import type { MindGardenConcern, MindGardenConcernConversionValue } from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { ConcernsSpace } from '../src/client/spaces/ConcernsSpace.tsx'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
 

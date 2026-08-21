@@ -51,6 +51,15 @@
       "types": "./packages/mind-garden/mind-garden-dialogue/lib/types/invariant.d.ts",
       "default": "./packages/mind-garden/mind-garden-dialogue/lib/invariant.js"
     },
+    "./skills": {
+      "types": "./packages/mind-garden/mind-garden-skills/lib/types/index.d.ts",
+      "default": "./packages/mind-garden/mind-garden-skills/lib/index.js"
+    },
+    "./skills/invariant": {
+      "types": "./packages/mind-garden/mind-garden-skills/lib/types/invariant.d.ts",
+      "default": "./packages/mind-garden/mind-garden-skills/lib/invariant.js"
+    },
+    "./skills/skills/*": "./packages/mind-garden/mind-garden-skills/skills/*",
     "./media": {
       "types": "./packages/mind-garden/mind-garden-media/lib/types/index.d.ts",
       "default": "./packages/mind-garden/mind-garden-media/lib/index.js"
@@ -209,7 +218,6 @@
         "@deepseek-ai/dsh-client-runtime",
         "@deepseek-ai/dsh-api-remotes",
         "@deepseek-ai/dsh-client-locale",
-        "@deepseek-ai/dsh-client-ui-attachment",
         "@deepseek-ai/dsh-client-ui-conversation"
       ],
       "platform": "web"
@@ -222,10 +230,15 @@
     "@deepseek-ai/dsh-brand": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-client-ui-primitives": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-credentials": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-fs": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-home-paths": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-invariants": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-llm": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-sandbox": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-scope": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-session": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-skill": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-skill-filesystem": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-storage": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-storage-domain": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-timeout": "^0.1.0-rc.8",

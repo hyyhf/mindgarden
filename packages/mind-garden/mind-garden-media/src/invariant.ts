@@ -1,9 +1,9 @@
-/** Package-owned invariant companion. @module @deepseek-ai/dsh-mind-garden-media/invariant */
+/** Package-owned invariant companion. @module @deepseek-ai/dsh-mind-garden/media/invariant */
 
 import type { Context } from '@deepseek-ai/cordis'
 import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden-media'
+const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden/media'
 
 /** Cordis companion plugin name. */
 export const name = 'mind-garden-media-invariant'

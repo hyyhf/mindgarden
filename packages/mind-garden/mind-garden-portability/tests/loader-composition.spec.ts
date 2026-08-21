@@ -12,9 +12,9 @@ import Loader from '@deepseek-ai/cordis-plugin-loader'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import LocalAttachmentStore from '@deepseek-ai/dsh-attachment-local'
 import LocalCredentialProvider from '@deepseek-ai/dsh-credentials-local'
-import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden-core'
-import MindGardenMedia from '@deepseek-ai/dsh-mind-garden-media'
-import MindGardenVault, { MindGardenVaultRecordId } from '@deepseek-ai/dsh-mind-garden-vault'
+import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden/core'
+import MindGardenMedia from '@deepseek-ai/dsh-mind-garden/media'
+import MindGardenVault, { MindGardenVaultRecordId } from '@deepseek-ai/dsh-mind-garden/vault'
 import { Session as SessionValue, SessionId, type Session } from '@deepseek-ai/dsh-session'
 import Storage from '@deepseek-ai/dsh-storage'
 import * as StorageDomain from '@deepseek-ai/dsh-storage-domain'
@@ -75,11 +75,11 @@ async function loadComposition(home: string): Promise<{ ctx: Context; makeAgent:
     '  config:',
     `    dshHome: ${JSON.stringify(home)}`,
     '- id: mind-garden-vault',
-    "  name: '@deepseek-ai/dsh-mind-garden-vault'",
+    "  name: '@deepseek-ai/dsh-mind-garden/vault'",
     '- id: mind-garden-media',
-    "  name: '@deepseek-ai/dsh-mind-garden-media'",
+    "  name: '@deepseek-ai/dsh-mind-garden/media'",
     '- id: mind-garden-portability',
-    "  name: '@deepseek-ai/dsh-mind-garden-portability'",
+    "  name: '@deepseek-ai/dsh-mind-garden/portability'",
     '',
   ].join('\n'))
 
@@ -102,9 +102,9 @@ async function loadComposition(home: string): Promise<{ ctx: Context; makeAgent:
     ['@deepseek-ai/dsh-credentials-local', LocalCredentialProvider],
     ['test:mind-garden-portability-runtime', TestRuntime],
     ['@deepseek-ai/dsh-attachment-local', LocalAttachmentStore],
-    ['@deepseek-ai/dsh-mind-garden-vault', MindGardenVault],
-    ['@deepseek-ai/dsh-mind-garden-media', MindGardenMedia],
-    ['@deepseek-ai/dsh-mind-garden-portability', MindGardenPortability],
+    ['@deepseek-ai/dsh-mind-garden/vault', MindGardenVault],
+    ['@deepseek-ai/dsh-mind-garden/media', MindGardenMedia],
+    ['@deepseek-ai/dsh-mind-garden/portability', MindGardenPortability],
   ])
   ctx.loader.internal = {
     version: 'v2',

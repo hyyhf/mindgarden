@@ -400,7 +400,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_createPhotoStory_result
   'maxBytes': z.number().readonly().optional(),
 }), z.object({
   'code': z.literal("attachment-rejected").readonly(),
-  'reason': z.union([z.literal("TOO_MANY_IMAGES"), z.literal("IMAGES_TOO_LARGE"), z.literal("UNSUPPORTED_IMAGE_TYPE"), z.literal("INVALID_IMAGE_BASE64"), z.literal("INVALID_IMAGE"), z.literal("IMAGE_TYPE_MISMATCH"), z.literal("IMAGE_TOO_LARGE"), z.literal("IMAGE_TOO_MANY_PIXELS")]).readonly(),
+  'reason': z.union([z.literal("TOO_MANY_IMAGES"), z.literal("IMAGES_TOO_LARGE"), z.literal("UNSUPPORTED_IMAGE_TYPE"), z.literal("INVALID_IMAGE_BASE64"), z.literal("INVALID_IMAGE"), z.literal("IMAGE_TYPE_MISMATCH"), z.literal("IMAGE_TOO_LARGE"), z.literal("IMAGE_TOO_MANY_PIXELS"), z.literal("IMAGE_DIMENSION_TOO_LARGE")]).readonly(),
 }), z.object({
   'code': z.literal("attachment-unavailable").readonly(),
 })]).readonly(),

@@ -1,8 +1,8 @@
 import { Context } from '@deepseek-ai/cordis'
 import { createUserMessage } from '@deepseek-ai/dsh-llm'
-import { foldMindGarden } from '@deepseek-ai/dsh-mind-garden-core'
-import * as DialogueInvariant from '@deepseek-ai/dsh-mind-garden-dialogue/invariant'
-import { name, renderMindGardenDialoguePolicy } from '@deepseek-ai/dsh-mind-garden-dialogue'
+import { foldMindGarden } from '@deepseek-ai/dsh-mind-garden/core'
+import * as DialogueInvariant from '@deepseek-ai/dsh-mind-garden/dialogue/invariant'
+import { name, renderMindGardenDialoguePolicy } from '@deepseek-ai/dsh-mind-garden/dialogue'
 import InvariantRegistry, { InvariantError } from '@deepseek-ai/dsh-invariants'
 import SessionStore, { SessionId, type Session } from '@deepseek-ai/dsh-session'
 import { describe, expect, it } from 'vitest'
@@ -58,7 +58,7 @@ describe('Mind Garden dialogue invariant', () => {
     })
     expect(() => inactive.append('user/message', fake, { surfaceOp: 'append' }))
       .toThrow(expect.objectContaining<Partial<InvariantError>>({
-        code: 'INVARIANT', packageName: '@deepseek-ai/dsh-mind-garden-dialogue',
+        code: 'INVARIANT', packageName: '@deepseek-ai/dsh-mind-garden/dialogue',
       }))
 
     const undisclosed = ctx.sessions.create(SessionId('dialogue-invariant-undisclosed'))

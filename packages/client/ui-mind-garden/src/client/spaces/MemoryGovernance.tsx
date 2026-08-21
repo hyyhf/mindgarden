@@ -19,7 +19,7 @@ import type {
   MindGardenMemoryRetrievalAudit,
   MindGardenMemoryRevision,
   MindGardenMemorySensitivity,
-} from '@deepseek-ai/dsh-mind-garden-memory/types'
+} from '@deepseek-ai/dsh-mind-garden/memory/types'
 import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenViewActions } from '../slots.ts'
 import shared from './GardenSpace.module.css'

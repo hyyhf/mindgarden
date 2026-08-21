@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { DatabaseSync, SQLOutputValue } from 'node:sqlite'
 import { AttachmentId, type ImageAttachmentRef, type ImageMediaType } from '@deepseek-ai/dsh-attachment'
-import { decodeStoredMediaRecord } from '@deepseek-ai/dsh-mind-garden-media'
+import { decodeStoredMediaRecord } from '@deepseek-ai/dsh-mind-garden/media'
 import type { JsonValue } from '@deepseek-ai/dsh-session'
 import { z } from 'zod'
 import {

@@ -9,7 +9,7 @@ import type {
   MindGardenStarCard,
   MindGardenStarDeck,
   MindGardenStarProfile,
-} from '@deepseek-ai/dsh-mind-garden-star-map/types'
+} from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type { MindGardenDataResult } from '../slots.ts'
 import type { MindGardenKey } from '../locales.ts'
 import css from './StarObserver.module.css'

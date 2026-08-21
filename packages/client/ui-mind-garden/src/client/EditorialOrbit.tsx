@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from 'react'
 import type { CSSProperties, PointerEvent, ReactNode } from 'react'
-import type { MindGardenOpenQuestion, MindGardenPeriodReview } from '@deepseek-ai/dsh-mind-garden-reflection/types'
-import type { MindGardenMode } from '@deepseek-ai/dsh-mind-garden-core/client'
+import type { MindGardenOpenQuestion, MindGardenPeriodReview } from '@deepseek-ai/dsh-mind-garden/reflection/types'
+import type { MindGardenMode } from '@deepseek-ai/dsh-mind-garden/core/client'
 import type { MindGardenKey } from './locales.ts'
 import css from './EditorialOrbit.module.css'
 

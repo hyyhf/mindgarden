@@ -400,7 +400,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_createPhotoStory_result
   'maxBytes': z.number().readonly().optional(),
 }), z.object({
   'code': z.literal("attachment-rejected").readonly(),
-  'reason': z.union([z.literal("TOO_MANY_IMAGES"), z.literal("IMAGES_TOO_LARGE"), z.literal("UNSUPPORTED_IMAGE_TYPE"), z.literal("INVALID_IMAGE_BASE64"), z.literal("INVALID_IMAGE"), z.literal("IMAGE_TYPE_MISMATCH"), z.literal("IMAGE_TOO_LARGE"), z.literal("IMAGE_TOO_MANY_PIXELS")]).readonly(),
+  'reason': z.union([z.literal("TOO_MANY_IMAGES"), z.literal("IMAGES_TOO_LARGE"), z.literal("UNSUPPORTED_IMAGE_TYPE"), z.literal("INVALID_IMAGE_BASE64"), z.literal("INVALID_IMAGE"), z.literal("IMAGE_TYPE_MISMATCH"), z.literal("IMAGE_TOO_LARGE"), z.literal("IMAGE_TOO_MANY_PIXELS"), z.literal("IMAGE_DIMENSION_TOO_LARGE")]).readonly(),
 }), z.object({
   'code': z.literal("attachment-unavailable").readonly(),
 })]).readonly(),
@@ -1574,6 +1574,10 @@ export const TYPERT = {
             "declaration": "export interface CommandSourceMap {\n    user: { kind: 'user'; };\n}"
           },
           {
+            "name": "CompactionId",
+            "declaration": "export type CompactionId = Branded<'CompactionId'>;"
+          },
+          {
             "name": "ContentBlock",
             "declaration": "export type ContentBlock = ContentBlockMap[ContentBlockType];"
           },
@@ -1699,7 +1703,7 @@ export const TYPERT = {
           },
           {
             "name": "MessageSourceMap",
-            "declaration": "export interface MessageSourceMap {\n    user: { kind: 'user'; };\n    plugin: { kind: 'plugin'; plugin: string; } & ContextFormed;\n    model: ModelMessageSource;\n    tool: ToolMessageSource;\n    goal: GoalMessageSource;\n}"
+            "declaration": "export interface MessageSourceMap {\n    user: { kind: 'user'; };\n    plugin: { kind: 'plugin'; plugin: string; } & ContextFormed;\n    model: ModelMessageSource;\n    tool: ToolMessageSource;\n    goal: GoalMessageSource;\n    'session-reference': SessionReferenceSource;\n}"
           },
           {
             "name": "MindGardenContinuePhotoStoryRequest",
@@ -1951,7 +1955,7 @@ export const TYPERT = {
           },
           {
             "name": "SessionEventMap",
-            "declaration": "export interface SessionEventMap {\n    'turn/start': { turn: number; };\n    'turn/end': { turn: number; reason: TurnEndReason; };\n    'step/start': { turn: number; step: number; };\n    'step/end': { turn: number; step: number; };\n    'user/message': UserMessage;\n    'assistant/chunk': { turn: number; step: number; chunk: StreamChunk; };\n    'assistant/message': { turn: number; step: number; message: AssistantMessage; usage?: TokenUsage; };\n    'tool/call': { turn: number; step: number; callId: CallId; name: string; arguments: string; };\n    'tool/result': { turn: number; step: number; message: ToolResultMessage; error?: { name: string; code: string; }; meta?: JsonValue; };\n    'todo/write': { todos: TodoItem[]; };\n    'request/header': { header: EpochHeader; reason: RequestHeaderReason; };\n    'request/context': RequestContext;\n    'session/end-seed': Record<string, never>;\n    'agent/inbox/spliced': { target: InboxTarget; start: number; removedCount?: number; inserted: UserMessage[]; outcome?: 'canceled'; };\n    'command/run': { commandId: CommandId; name: string; args?: string; source: CommandSource; };\n    'command/done': { commandId: CommandId; kind: 'success' | 'error'; text?: string; sourceEventSeq?: number; };\n    'approval/asked': { id: ApprovalRequestId; toolName: string; callId?: CallId; reason?: string; };\n    'approval/decided': { id: ApprovalRequestId; outcome: ApprovalOutcome; };\n    'approval/policy': { policy: ApprovalPolicy; source?: 'delegation'; };\n    'tool/code-dispatch-start': CodeDispatchStartEventData;\n    'tool/code-dispatch': CodeDispatchEventData;\n    'goal/change': GoalChangeMeta;\n    'mind-garden/session-state': MindGardenSessionStateEvent;\n}"
+            "declaration": "export interface SessionEventMap {\n    'turn/start': { turn: number; };\n    'turn/end': { turn: number; reason: TurnEndReason; };\n    'step/start': { turn: number; step: number; };\n    'step/end': { turn: number; step: number; };\n    'user/message': UserMessage;\n    'assistant/chunk': { turn: number; step: number; chunk: StreamChunk; };\n    'assistant/message': { turn: number; step: number; message: AssistantMessage; usage?: TokenUsage; interrupted?: true; };\n    'tool/call': { turn: number; step: number; callId: CallId; name: string; arguments: string; };\n    'tool/result': { turn: number; step: number; message: ToolResultMessage; error?: { name: string; code: string; }; meta?: JsonValue; };\n    'todo/write': { todos: TodoItem[]; };\n    'request/header': { header: EpochHeader; reason: RequestHeaderReason; };\n    'request/context': RequestContext;\n    'session/end-seed': Record<string, never>;\n    'agent/inbox/spliced': { target: InboxTarget; start: number; removedCount?: number; inserted: UserMessage[]; outcome?: 'canceled'; };\n    'command/run': { commandId: CommandId; name: string; args?: string; source: CommandSource; };\n    'command/done': { commandId: CommandId; kind: 'success' | 'error'; text?: string; sourceEventSeq?: number; };\n    'approval/asked': { id: ApprovalRequestId; toolName: string; callId?: CallId; reason?: string; };\n    'approval/decided': { id: ApprovalRequestId; outcome: ApprovalOutcome; };\n    'approval/policy': { policy: ApprovalPolicy; source?: 'delegation'; };\n    'tool/code-dispatch-start': CodeDispatchStartEventData;\n    'tool/code-dispatch': CodeDispatchEventData;\n    'goal/change': GoalChangeMeta;\n    'mind-garden/session-state': MindGardenSessionStateEvent;\n    'session/title': SessionTitleEventData;\n    'compaction/start': { compactionId: CompactionId; sourceCommandId?: CommandId; turn: number | null; };\n    'compaction/summary': { compactionId: CompactionId; sourceCommandId?: CommandId; summary: ContentBlock[]; shadowedRange: { start: number; end: number; }; shadowedSeqs: number[]; shadowedTokenCount: number; provider: string; model: string; maxTokens?: number; usage?: TokenUsage; } & ({ rawOutput: ContentBlock[]; llmStreamCall: true; } | { rawOutput?: ContentBlock[]; llmStreamCall?: never; });\n    'compaction/end': { compactionId: CompactionId; sourceCommandId?: CommandId; turn: number | null; error?: string; };\n    'compaction/prune': { shadowedRange: { start: number; end: number; }; shadowedSeqs: number[]; shadowedTokenCount: number; };\n}"
           },
           {
             "name": "SessionEventType",
@@ -1966,8 +1970,28 @@ export const TYPERT = {
             "declaration": "export type SessionId = Branded<'SessionId'>;"
           },
           {
+            "name": "SessionReferenceSource",
+            "declaration": "export interface SessionReferenceSource {\n    kind: 'session-reference';\n    form: 'recall';\n    version: 1;\n    references: { sessionId: string; label: string; capturedThroughSeq: number | null; compacted: boolean; originalMessages: number; retainedMessages: number; omittedMessages: number; omittedBytes: number; truncated: boolean; inputIndex: number; }[];\n}"
+          },
+          {
             "name": "SessionSurface",
             "declaration": "export interface SessionSurface {\n    readonly nodes: readonly number[];\n    readonly replaceGeneration: number;\n}"
+          },
+          {
+            "name": "SessionTitleEventData",
+            "declaration": "export interface SessionTitleEventData {\n    readonly title: string;\n    readonly messageSeqs: number[];\n    readonly source: SessionTitleSource;\n}"
+          },
+          {
+            "name": "SessionTitleModelProvenance",
+            "declaration": "export interface SessionTitleModelProvenance {\n    readonly provider: string;\n    readonly model: string;\n}"
+          },
+          {
+            "name": "SessionTitleProviderId",
+            "declaration": "export type SessionTitleProviderId = Branded<'SessionTitleProviderId'>;"
+          },
+          {
+            "name": "SessionTitleSource",
+            "declaration": "export type SessionTitleSource = { readonly kind: 'fallback'; } | { readonly kind: 'provider'; readonly provider: SessionTitleProviderId; readonly model?: SessionTitleModelProvenance; } | { readonly kind: 'user'; };"
           },
           {
             "name": "StreamChunk",

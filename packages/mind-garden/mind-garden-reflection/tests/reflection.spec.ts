@@ -10,8 +10,8 @@ import MindGardenVault, {
   createMindGardenDataKey,
   MindGardenVaultError,
   MindGardenVaultRecordId,
-} from '@deepseek-ai/dsh-mind-garden-vault'
-import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden-core'
+} from '@deepseek-ai/dsh-mind-garden/vault'
+import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden/core'
 import MindGardenReflection, {
   storedContemplationSchema,
   storedConcernSchema,
@@ -22,7 +22,7 @@ import MindGardenReflection, {
   type Config,
   type MindGardenCalendarStamp,
   type MindGardenPrincipleContent,
-} from '@deepseek-ai/dsh-mind-garden-reflection'
+} from '@deepseek-ai/dsh-mind-garden/reflection'
 import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
 import { MemoryCredentials } from '../../../credentials/credentials/tests/memory.ts'
 import {
@@ -2474,7 +2474,7 @@ describe('Mind Garden reflection service', () => {
       return disposer
     })
     await expect(invariantApply({ invariants: { register } } as never)).resolves.toBe(disposer)
-    expect(register).toHaveBeenCalledWith('@deepseek-ai/dsh-mind-garden-reflection', expect.any(Function))
+    expect(register).toHaveBeenCalledWith('@deepseek-ai/dsh-mind-garden/reflection', expect.any(Function))
     if (installer === undefined) throw new Error('invariant installer missing')
     await installer(new Context(), () => { throw new Error('unused') })
   })

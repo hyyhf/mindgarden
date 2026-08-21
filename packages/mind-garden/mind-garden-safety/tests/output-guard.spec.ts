@@ -4,7 +4,7 @@ import {
   assessMindGardenOutput,
   renderMindGardenGuardReplacement,
   renderMindGardenSupportResponse,
-} from '@deepseek-ai/dsh-mind-garden-safety'
+} from '@deepseek-ai/dsh-mind-garden/safety'
 
 describe('Mind Garden deterministic response policy', () => {
   it.each([

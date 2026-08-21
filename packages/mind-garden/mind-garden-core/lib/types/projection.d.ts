@@ -1,6 +1,5 @@
 /** Fail-soft read projection for the latest complete Mind Garden state. */
 import type { SessionEvent } from '@deepseek-ai/dsh-session';
-import type { ProjectionDefinition } from '@deepseek-ai/dsh-session-projection';
 import { z } from 'zod';
 import type { MindGardenSessionProjection, MindGardenSessionState } from './types.ts';
 /** Runtime schema shared with Host-to-browser projection validation. */
@@ -15,5 +14,15 @@ export declare const mindGardenProjectionSchema: z.ZodType<MindGardenSessionProj
  */
 export declare function applyMindGardenProjection(state: MindGardenSessionProjection | null, event: SessionEvent): MindGardenSessionProjection | null;
 /** Projection unit registered with DeepSeek Harness. */
-export declare const mindGardenProjectionDefinition: ProjectionDefinition<'mind-garden', MindGardenSessionProjection | null>;
+export declare const mindGardenProjectionDefinition: {
+    key: "mind-garden";
+    stateSchema: z.ZodType<MindGardenSessionProjection | null, unknown, z.core.$ZodTypeInternals<MindGardenSessionProjection | null, unknown>>;
+    init: () => null;
+    apply: typeof applyMindGardenProjection;
+    wire: {
+        viewSchema: z.ZodType<MindGardenSessionProjection | null, unknown, z.core.$ZodTypeInternals<MindGardenSessionProjection | null, unknown>>;
+        view: (state: NoInfer<MindGardenSessionProjection | null>) => MindGardenSessionProjection | null;
+    };
+    stateVersion: number;
+};
 //# sourceMappingURL=projection.d.ts.map

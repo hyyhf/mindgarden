@@ -3,8 +3,8 @@ import type { Context } from '@deepseek-ai/cordis'
 import type { Agent, PreStepDecision } from '@deepseek-ai/dsh-agent'
 import { createUserMessage } from '@deepseek-ai/dsh-llm'
 import { Session, SessionId } from '@deepseek-ai/dsh-session'
-import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden-core'
-import { apply, name, renderMindGardenDialoguePolicy } from '@deepseek-ai/dsh-mind-garden-dialogue'
+import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden/core'
+import { apply, name, renderMindGardenDialoguePolicy } from '@deepseek-ai/dsh-mind-garden/dialogue'
 
 const base: MindGardenSessionState = {
   revision: 4,

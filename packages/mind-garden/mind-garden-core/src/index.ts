@@ -1,6 +1,6 @@
 /**
  * Event-sourced Mind Garden session identity and dialogue preferences.
- * @module @deepseek-ai/dsh-mind-garden-core
+ * @module @deepseek-ai/dsh-mind-garden/core
  */
 
 import { Context } from '@deepseek-ai/cordis'

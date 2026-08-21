@@ -6,17 +6,17 @@ import { Context } from '@deepseek-ai/cordis'
 import s from '@deepseek-ai/schemastery'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import { AttachmentError, type ImageAttachmentRef } from '@deepseek-ai/dsh-attachment'
-import type {} from '@deepseek-ai/dsh-mind-garden-core'
-import { decodeStoredRecord } from '@deepseek-ai/dsh-mind-garden-memory'
-import { decodeStoredMediaRecord } from '@deepseek-ai/dsh-mind-garden-media'
-import { decodeStoredReflection } from '@deepseek-ai/dsh-mind-garden-reflection'
-import { decodeStoredStarState } from '@deepseek-ai/dsh-mind-garden-star-map'
+import type {} from '@deepseek-ai/dsh-mind-garden/core'
+import { decodeStoredRecord } from '@deepseek-ai/dsh-mind-garden/memory'
+import { decodeStoredMediaRecord } from '@deepseek-ai/dsh-mind-garden/media'
+import { decodeStoredReflection } from '@deepseek-ai/dsh-mind-garden/reflection'
+import { decodeStoredStarState } from '@deepseek-ai/dsh-mind-garden/star-map'
 import {
   MindGardenVaultError,
   MindGardenVaultRecordId,
   type MindGardenVaultMergeCandidates,
   type MindGardenVaultSnapshot,
-} from '@deepseek-ai/dsh-mind-garden-vault'
+} from '@deepseek-ai/dsh-mind-garden/vault'
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
 import {
   encryptMindGardenBackup,

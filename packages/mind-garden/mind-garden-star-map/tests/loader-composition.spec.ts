@@ -15,8 +15,8 @@ import Storage from '@deepseek-ai/dsh-storage'
 import * as StorageDomain from '@deepseek-ai/dsh-storage-domain'
 import * as StorageJson from '@deepseek-ai/dsh-storage-json'
 import LocalCredentialProvider from '@deepseek-ai/dsh-credentials-local'
-import MindGardenVault from '@deepseek-ai/dsh-mind-garden-vault'
-import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden-core'
+import MindGardenVault from '@deepseek-ai/dsh-mind-garden/vault'
+import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden/core'
 import MindGardenStarMap from '../src/index.ts'
 
 let root: string | undefined
@@ -63,9 +63,9 @@ async function loadComposition(home: string): Promise<{ ctx: Context; makeAgent:
     '- id: test-runtime',
     "  name: 'test:mind-garden-runtime'",
     '- id: mind-garden-vault',
-    "  name: '@deepseek-ai/dsh-mind-garden-vault'",
+    "  name: '@deepseek-ai/dsh-mind-garden/vault'",
     '- id: mind-garden-star-map',
-    "  name: '@deepseek-ai/dsh-mind-garden-star-map'",
+    "  name: '@deepseek-ai/dsh-mind-garden/star-map'",
     '',
   ].join('\n'))
 
@@ -123,8 +123,8 @@ async function loadComposition(home: string): Promise<{ ctx: Context; makeAgent:
     ['@deepseek-ai/dsh-storage-domain', StorageDomain],
     ['@deepseek-ai/dsh-credentials-local', LocalCredentialProvider],
     ['test:mind-garden-runtime', TestRuntime],
-    ['@deepseek-ai/dsh-mind-garden-vault', MindGardenVault],
-    ['@deepseek-ai/dsh-mind-garden-star-map', MindGardenStarMap],
+    ['@deepseek-ai/dsh-mind-garden/vault', MindGardenVault],
+    ['@deepseek-ai/dsh-mind-garden/star-map', MindGardenStarMap],
   ])
   ctx.loader.internal = {
     version: 'v2',

@@ -16,7 +16,7 @@ import type {
   MindGardenBackupMergeCounts,
   MindGardenBackupRestoreValue,
   MindGardenKeyRotationValue,
-} from '@deepseek-ai/dsh-mind-garden-portability/types'
+} from '@deepseek-ai/dsh-mind-garden/portability/types'
 import type { MindGardenDataResult } from './slots.ts'
 import type { MindGardenKey } from './locales.ts'
 import css from './GardenPortabilityPanel.module.css'

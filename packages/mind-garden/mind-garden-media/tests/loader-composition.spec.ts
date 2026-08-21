@@ -16,8 +16,8 @@ import Storage from '@deepseek-ai/dsh-storage'
 import * as StorageDomain from '@deepseek-ai/dsh-storage-domain'
 import * as StorageJson from '@deepseek-ai/dsh-storage-json'
 import LocalCredentialProvider from '@deepseek-ai/dsh-credentials-local'
-import MindGardenVault from '@deepseek-ai/dsh-mind-garden-vault'
-import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden-core'
+import MindGardenVault from '@deepseek-ai/dsh-mind-garden/vault'
+import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden/core'
 import MindGardenMedia from '../src/index.ts'
 
 const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
@@ -92,9 +92,9 @@ async function loadComposition(home: string): Promise<{ ctx: Context; makeAgent:
     '  config:',
     `    dshHome: ${JSON.stringify(home)}`,
     '- id: mind-garden-vault',
-    "  name: '@deepseek-ai/dsh-mind-garden-vault'",
+    "  name: '@deepseek-ai/dsh-mind-garden/vault'",
     '- id: mind-garden-media',
-    "  name: '@deepseek-ai/dsh-mind-garden-media'",
+    "  name: '@deepseek-ai/dsh-mind-garden/media'",
     '  config:',
     '    observerProvider: test-vision',
     '    observerModel: test-eye',
@@ -131,8 +131,8 @@ async function loadComposition(home: string): Promise<{ ctx: Context; makeAgent:
     ['@deepseek-ai/dsh-credentials-local', LocalCredentialProvider],
     ['test:mind-garden-runtime', TestRuntime],
     ['@deepseek-ai/dsh-attachment-local', LocalAttachmentStore],
-    ['@deepseek-ai/dsh-mind-garden-vault', MindGardenVault],
-    ['@deepseek-ai/dsh-mind-garden-media', MindGardenMedia],
+    ['@deepseek-ai/dsh-mind-garden/vault', MindGardenVault],
+    ['@deepseek-ai/dsh-mind-garden/media', MindGardenMedia],
   ])
   ctx.loader.internal = {
     version: 'v2',

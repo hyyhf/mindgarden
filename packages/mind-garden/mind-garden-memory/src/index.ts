@@ -1,6 +1,6 @@
 /**
  * Encrypted, confirmation-gated long-term memory for Mind Garden.
- * @module @deepseek-ai/dsh-mind-garden-memory
+ * @module @deepseek-ai/dsh-mind-garden/memory
  */
 
 import { Buffer } from 'node:buffer'
@@ -12,12 +12,12 @@ import { BlockAssembler, createUserMessage, MessageId } from '@deepseek-ai/dsh-l
 import type { FinishReason, GenerateOptions } from '@deepseek-ai/dsh-llm'
 import type { JsonValue } from '@deepseek-ai/dsh-session'
 import { SessionId } from '@deepseek-ai/dsh-session'
-import type {} from '@deepseek-ai/dsh-mind-garden-core'
+import type {} from '@deepseek-ai/dsh-mind-garden/core'
 import {
   MindGardenVaultError,
   MindGardenVaultRecordId,
-} from '@deepseek-ai/dsh-mind-garden-vault'
-import type {} from '@deepseek-ai/dsh-mind-garden-vault'
+} from '@deepseek-ai/dsh-mind-garden/vault'
+import type {} from '@deepseek-ai/dsh-mind-garden/vault'
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
 import {
   decodeStoredRecord,

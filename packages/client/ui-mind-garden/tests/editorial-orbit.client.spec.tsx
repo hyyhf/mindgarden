@@ -2,7 +2,7 @@
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { cleanup, render } from '@testing-library/react'
-import type { MindGardenOpenQuestion, MindGardenPeriodReview } from '@deepseek-ai/dsh-mind-garden-reflection/types'
+import type { MindGardenOpenQuestion, MindGardenPeriodReview } from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { EditorialOrbit } from '../src/client/EditorialOrbit.tsx'
 import { GardenMarkIcon } from '../src/client/GardenIcons.tsx'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'

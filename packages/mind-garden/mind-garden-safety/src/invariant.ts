@@ -1,16 +1,16 @@
-/** Package-owned safety-event invariants. @module @deepseek-ai/dsh-mind-garden-safety/invariant */
+/** Package-owned safety-event invariants. @module @deepseek-ai/dsh-mind-garden/safety/invariant */
 
 import type { Context } from '@deepseek-ai/cordis'
 import type { Session, SessionEvent, UserMessage } from '@deepseek-ai/dsh-session'
 import type { InvariantFailure, InvariantInstaller } from '@deepseek-ai/dsh-invariants'
-import { foldMindGarden } from '@deepseek-ai/dsh-mind-garden-core'
+import { foldMindGarden } from '@deepseek-ai/dsh-mind-garden/core'
 import { assessMindGardenInput, recoverMindGardenSafetyState } from './classifier.ts'
 import type {
   MindGardenOutputViolation,
   MindGardenSafetyAssessmentEvent,
 } from './types.ts'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden-safety'
+const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden/safety'
 const OUTPUT_VIOLATIONS: ReadonlySet<string> = new Set<MindGardenOutputViolation>([
   'exclusive-dependence',
   'diagnosis',

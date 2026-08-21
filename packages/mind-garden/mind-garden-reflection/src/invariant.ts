@@ -1,9 +1,9 @@
-/** Package-owned invariant companion. @module @deepseek-ai/dsh-mind-garden-reflection/invariant */
+/** Package-owned invariant companion. @module @deepseek-ai/dsh-mind-garden/reflection/invariant */
 
 import type { Context } from '@deepseek-ai/cordis'
 import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden-reflection'
+const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden/reflection'
 
 /** Cordis companion plugin name. */
 export const name = 'mind-garden-reflection-invariant'

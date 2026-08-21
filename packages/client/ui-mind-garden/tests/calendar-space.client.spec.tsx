@@ -6,7 +6,7 @@ import type {
   MindGardenCalendarDayValue,
   MindGardenCalendarMonthValue,
   MindGardenReflectionTrendValue,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { CalendarSpace, gardenCalendarCells } from '../src/client/spaces/CalendarSpace.tsx'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
 

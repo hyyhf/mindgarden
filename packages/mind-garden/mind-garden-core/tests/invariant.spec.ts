@@ -1,6 +1,6 @@
 import { Context } from '@deepseek-ai/cordis'
-import MindGardenService from '@deepseek-ai/dsh-mind-garden-core'
-import * as MindGardenInvariant from '@deepseek-ai/dsh-mind-garden-core/invariant'
+import MindGardenService from '@deepseek-ai/dsh-mind-garden/core'
+import * as MindGardenInvariant from '@deepseek-ai/dsh-mind-garden/core/invariant'
 import InvariantRegistry, { InvariantError } from '@deepseek-ai/dsh-invariants'
 import SessionStore, { SessionId } from '@deepseek-ai/dsh-session'
 import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
@@ -46,7 +46,7 @@ describe('Mind Garden stream invariant', () => {
       })
     }).toThrow(expect.objectContaining<Partial<InvariantError>>({
       code: 'INVARIANT',
-      packageName: '@deepseek-ai/dsh-mind-garden-core',
+      packageName: '@deepseek-ai/dsh-mind-garden/core',
     }))
     expect(session.seq).toBe(0)
     expect(() => ctx.mindGarden.activate(session, { mode: 'clarity', privacy: 'durable' })).not.toThrow()

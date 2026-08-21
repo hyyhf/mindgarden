@@ -2,7 +2,7 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import type { MindGardenSessionProjection } from '@deepseek-ai/dsh-mind-garden-core/client'
+import type { MindGardenSessionProjection } from '@deepseek-ai/dsh-mind-garden/core/client'
 import type { LocaleKeysOf } from '@deepseek-ai/dsh-client-ui-slots'
 import { MindGardenDock, MindGardenPanel } from '../src/client/MindGardenDock.tsx'
 import type { MindGardenDockActions } from '../src/client/slots.ts'

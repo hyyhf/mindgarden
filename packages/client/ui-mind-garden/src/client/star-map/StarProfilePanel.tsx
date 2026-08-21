@@ -7,7 +7,7 @@ import type {
   MindGardenStarMapOverview,
   MindGardenStarObserverTone,
   MindGardenStarProfile,
-} from '@deepseek-ai/dsh-mind-garden-star-map/types'
+} from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type { MindGardenDataResult } from '../slots.ts'
 import type { MindGardenKey } from '../locales.ts'
 import css from './StarProfilePanel.module.css'

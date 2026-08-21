@@ -2,7 +2,7 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import type { MindGardenExperiment, MindGardenExperimentStatus } from '@deepseek-ai/dsh-mind-garden-reflection/types'
+import type { MindGardenExperiment, MindGardenExperimentStatus } from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { GrowthSpace } from '../src/client/spaces/GrowthSpace.tsx'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
 

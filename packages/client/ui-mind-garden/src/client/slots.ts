@@ -1,12 +1,12 @@
 /** Injected action face for the Mind Garden conversation dock. */
 
 import type { RemoteResult } from '@deepseek-ai/dsh-typert-protocol'
-import type { MindGardenMode, MindGardenSupportIntent } from '@deepseek-ai/dsh-mind-garden-core/client'
+import type { MindGardenMode, MindGardenSupportIntent } from '@deepseek-ai/dsh-mind-garden/core/client'
 import type {
   MindGardenMediaStamp,
   MindGardenPhotoParticleConfig,
   MindGardenPhotoStory,
-} from '@deepseek-ai/dsh-mind-garden-media/types'
+} from '@deepseek-ai/dsh-mind-garden/media/types'
 import type {
   MindGardenMemoryAutomationInterval,
   MindGardenMemoryAutomationPolicy,
@@ -20,7 +20,7 @@ import type {
   MindGardenMemoryResolveRelationshipValue,
   MindGardenMemoryRevision,
   MindGardenMemoryUpdateRequest,
-} from '@deepseek-ai/dsh-mind-garden-memory/types'
+} from '@deepseek-ai/dsh-mind-garden/memory/types'
 import type {
   MindGardenCalendarDayValue,
   MindGardenCalendarMonthValue,
@@ -41,7 +41,7 @@ import type {
   MindGardenPrincipleProposal,
   MindGardenPrincipleStatus,
   MindGardenReflectionTrendValue,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import type {
   MindGardenApplyStarCardRevisionRequest,
   MindGardenCalibrateStarCardRequest,
@@ -55,13 +55,13 @@ import type {
   MindGardenStarTrait,
   MindGardenUpdateStarProfileRequest,
   MindGardenUpdateStarTraitRequest,
-} from '@deepseek-ai/dsh-mind-garden-star-map/types'
+} from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type {
   MindGardenBackupExportValue,
   MindGardenBackupInspectValue,
   MindGardenBackupRestoreValue,
   MindGardenKeyRotationValue,
-} from '@deepseek-ai/dsh-mind-garden-portability/types'
+} from '@deepseek-ai/dsh-mind-garden/portability/types'
 
 /** Settled outcome rendered by the dock while projection updates arrive independently. */
 export type MindGardenActionResult = RemoteResult<unknown>

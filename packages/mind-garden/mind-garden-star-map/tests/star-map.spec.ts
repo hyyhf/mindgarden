@@ -14,8 +14,8 @@ import MindGardenVault, {
   createMindGardenDataKey,
   MindGardenVaultError,
   MindGardenVaultRecordId,
-} from '@deepseek-ai/dsh-mind-garden-vault'
-import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden-core'
+} from '@deepseek-ai/dsh-mind-garden/vault'
+import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden/core'
 import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
 import MindGardenStarMap, {
   type Config,

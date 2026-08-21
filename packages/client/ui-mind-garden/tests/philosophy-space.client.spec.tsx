@@ -8,7 +8,7 @@ import type {
   MindGardenPrincipleProposal,
   MindGardenPrincipleProposalStatus,
   MindGardenPrincipleStatus,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { PhilosophySpace } from '../src/client/spaces/PhilosophySpace.tsx'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
 

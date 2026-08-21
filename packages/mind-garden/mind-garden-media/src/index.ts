@@ -1,6 +1,6 @@
 /**
  * Attachment-backed photo stories with encrypted metadata and particle settings.
- * @module @deepseek-ai/dsh-mind-garden-media
+ * @module @deepseek-ai/dsh-mind-garden/media
  */
 
 import { Buffer } from 'node:buffer'
@@ -17,12 +17,12 @@ import {
 } from '@deepseek-ai/dsh-attachment'
 import { BlockAssembler, createUserMessage } from '@deepseek-ai/dsh-llm'
 import type { FinishReason, GenerateOptions } from '@deepseek-ai/dsh-llm'
-import type {} from '@deepseek-ai/dsh-mind-garden-core'
+import type {} from '@deepseek-ai/dsh-mind-garden/core'
 import type { JsonValue } from '@deepseek-ai/dsh-session/types'
 import {
   MindGardenVaultError,
   MindGardenVaultRecordId,
-} from '@deepseek-ai/dsh-mind-garden-vault'
+} from '@deepseek-ai/dsh-mind-garden/vault'
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
 import {
   decodeStoredMediaRecord,

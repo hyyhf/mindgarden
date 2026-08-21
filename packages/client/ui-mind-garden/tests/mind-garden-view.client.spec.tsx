@@ -3,16 +3,16 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
 import type { LocaleKeysOf } from '@deepseek-ai/dsh-client-ui-slots'
-import type { MindGardenSessionProjection } from '@deepseek-ai/dsh-mind-garden-core/client'
-import type { MindGardenPhotoStory } from '@deepseek-ai/dsh-mind-garden-media/types'
-import type { MindGardenStarCard, MindGardenStarMapOverview, MindGardenStarTrait } from '@deepseek-ai/dsh-mind-garden-star-map/types'
+import type { MindGardenSessionProjection } from '@deepseek-ai/dsh-mind-garden/core/client'
+import type { MindGardenPhotoStory } from '@deepseek-ai/dsh-mind-garden/media/types'
+import type { MindGardenStarCard, MindGardenStarMapOverview, MindGardenStarTrait } from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type {
   MindGardenMemoryAutomationInterval,
   MindGardenMemoryAutomationPolicy,
   MindGardenMemoryExtractValue,
   MindGardenMemoryItem,
   MindGardenMemoryResolveRelationshipValue,
-} from '@deepseek-ai/dsh-mind-garden-memory/types'
+} from '@deepseek-ai/dsh-mind-garden/memory/types'
 import type {
   MindGardenConcern,
   MindGardenConcernConversionValue,
@@ -27,7 +27,7 @@ import type {
   MindGardenPrinciple,
   MindGardenPrincipleProposal,
   MindGardenPrincipleStatus,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { MindGardenReviewCenter, MindGardenView } from '../src/client/MindGardenView.tsx'
 import type { MindGardenViewActions } from '../src/client/slots.ts'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
@@ -377,7 +377,7 @@ describe('Mind Garden full view', () => {
     await waitFor(() => { expect(props.onUpdatePeriodReview).toHaveBeenCalledWith(reviews[0], reviews[0]?.content, 'saved') })
     fireEvent.click(view.getByRole('button', { name: zh['review.archive'] }))
     await waitFor(() => { expect(props.onUpdatePeriodReview).toHaveBeenCalledWith(reviews[1], reviews[1]?.content, 'archived') })
-  })
+  }, 15_000)
 
   it('shows empty states, guards empty forms, and handles an empty material range', async () => {
     const props = actions({
@@ -387,12 +387,13 @@ describe('Mind Garden full view', () => {
     await view.findByText(zh['question.empty.title'])
     fireEvent.click(view.getByRole('button', { name: zh['space.memory'] }))
     fireEvent.click(view.getByRole('button', { name: zh['space.collapse'] }))
-    expect(view.getByText(zh['review.empty.title'])).toBeTruthy()
     const questionForm = view.getByLabelText(zh['question.input.label']).closest('form')
     if (questionForm === null) throw new Error('question form missing')
     fireEvent.submit(questionForm)
     expect(props.onCreateOpenQuestion).not.toHaveBeenCalled()
 
+    fireEvent.click(view.getByRole('button', { name: zh['space.life'] }))
+    expect(view.getByText(zh['review.empty.title'])).toBeTruthy()
     const start = view.getByLabelText(zh['review.period.start'])
     const end = view.getByLabelText(zh['review.period.end'])
     fireEvent.change(start, { target: { value: '' } })

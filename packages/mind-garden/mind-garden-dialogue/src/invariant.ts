@@ -1,12 +1,12 @@
-/** Package-owned invariants for Mind Garden dialogue snapshots. @module @deepseek-ai/dsh-mind-garden-dialogue/invariant */
+/** Package-owned invariants for Mind Garden dialogue snapshots. @module @deepseek-ai/dsh-mind-garden/dialogue/invariant */
 
 import type { Context } from '@deepseek-ai/cordis'
 import type { Session, SessionEvent } from '@deepseek-ai/dsh-session'
 import type { InvariantFailure, InvariantInstaller } from '@deepseek-ai/dsh-invariants'
-import { foldMindGarden } from '@deepseek-ai/dsh-mind-garden-core'
+import { foldMindGarden } from '@deepseek-ai/dsh-mind-garden/core'
 import { name as sourceName, renderMindGardenDialoguePolicy } from './index.ts'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden-dialogue'
+const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden/dialogue'
 
 /** Cordis companion plugin name. */
 export const name = 'mind-garden-dialogue-invariant'

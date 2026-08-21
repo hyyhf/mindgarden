@@ -1,7 +1,7 @@
 import { Context } from '@deepseek-ai/cordis'
 import { createUserMessage } from '@deepseek-ai/dsh-llm'
-import * as SafetyInvariant from '@deepseek-ai/dsh-mind-garden-safety/invariant'
-import { assessMindGardenInput } from '@deepseek-ai/dsh-mind-garden-safety'
+import * as SafetyInvariant from '@deepseek-ai/dsh-mind-garden/safety/invariant'
+import { assessMindGardenInput } from '@deepseek-ai/dsh-mind-garden/safety'
 import InvariantRegistry, { InvariantError } from '@deepseek-ai/dsh-invariants'
 import SessionStore, { SessionId, type Session } from '@deepseek-ai/dsh-session'
 import { describe, expect, it } from 'vitest'
@@ -110,7 +110,7 @@ describe('Mind Garden safety invariant', () => {
       assessment: assessMindGardenInput('我已经割腕。'),
       response: 'local',
     })).toThrow(expect.objectContaining<Partial<InvariantError>>({
-      code: 'INVARIANT', packageName: '@deepseek-ai/dsh-mind-garden-safety',
+      code: 'INVARIANT', packageName: '@deepseek-ai/dsh-mind-garden/safety',
     }))
 
     const active = ctx.sessions.create(SessionId('safety-invariant-counterfeit'))

@@ -2,12 +2,12 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import type { MindGardenOpenQuestion, MindGardenPeriodReview } from '@deepseek-ai/dsh-mind-garden-reflection/types'
+import type { MindGardenOpenQuestion, MindGardenPeriodReview } from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import type {
   MindGardenCompleteStarRitualRequest,
   MindGardenSaveStarRitualRequest,
   MindGardenStarMapOverview,
-} from '@deepseek-ai/dsh-mind-garden-star-map/types'
+} from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import { StarMapSpace } from '../src/client/star-map/StarMapSpace.tsx'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
 

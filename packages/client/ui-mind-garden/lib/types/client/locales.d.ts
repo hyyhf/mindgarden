@@ -359,6 +359,9 @@ export declare const zh: {
     'photo.date': string;
     'photo.open': string;
     'photo.back': string;
+    'photo.panel.controls': string;
+    'photo.panel.dialogue': string;
+    'photo.panel.edit': string;
     'photo.preview': string;
     'photo.recompose': string;
     'photo.previewDialog': string;
@@ -1183,6 +1186,9 @@ export declare const en: {
     'photo.date': string;
     'photo.open': string;
     'photo.back': string;
+    'photo.panel.controls': string;
+    'photo.panel.dialogue': string;
+    'photo.panel.edit': string;
     'photo.preview': string;
     'photo.recompose': string;
     'photo.previewDialog': string;

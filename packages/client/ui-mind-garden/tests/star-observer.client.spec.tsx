@@ -10,7 +10,7 @@ import type {
   MindGardenFinalizeStarCardRequest,
   MindGardenStarCard,
   MindGardenStarProfile,
-} from '@deepseek-ai/dsh-mind-garden-star-map/types'
+} from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import { StarObserver } from '../src/client/star-map/StarObserver.tsx'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
 
@@ -63,7 +63,7 @@ describe('StarObserver', () => {
       onContinue={vi.fn()}
       onApplyRevision={vi.fn()}
     />)
-    fireEvent.click(view.getByRole('button', { name: /召唤星之观察者/ }))
+    fireEvent.click(view.getByRole('button', { name: /抽一张心象卡/ }))
     expect(view.getByText(/2\/4/)).toBeTruthy()
     fireEvent.click(view.getByRole('button', { name: zh['star.observer.deck.inner-debate'] }))
     fireEvent.change(view.getByLabelText(zh['star.observer.question']), { target: { value: '  我要怎样开始？  ' } })

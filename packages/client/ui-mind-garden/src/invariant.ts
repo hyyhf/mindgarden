@@ -1,9 +1,9 @@
-/** Package-owned invariant companion for the Mind Garden UI. @module @deepseek-ai/dsh-client-ui-mind-garden/invariant */
+/** Package-owned invariant companion for the Mind Garden UI. @module @deepseek-ai/dsh-mind-garden/ui/invariant */
 
 import type { Context } from '@deepseek-ai/cordis'
 import type { InvariantInstaller } from '@deepseek-ai/dsh-invariants'
 
-const PACKAGE_NAME = '@deepseek-ai/dsh-client-ui-mind-garden'
+const PACKAGE_NAME = '@deepseek-ai/dsh-mind-garden/ui'
 
 /** Cordis companion plugin name. */
 export const name = 'client-ui-mind-garden-invariant'

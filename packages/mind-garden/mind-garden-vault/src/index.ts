@@ -1,6 +1,6 @@
 /**
  * Credential-backed encrypted private-record service for Mind Garden.
- * @module @deepseek-ai/dsh-mind-garden-vault
+ * @module @deepseek-ai/dsh-mind-garden/vault
  */
 
 import { Buffer } from 'node:buffer'

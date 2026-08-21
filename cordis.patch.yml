@@ -7,11 +7,17 @@
     - id: mind-garden-core
       name: '@deepseek-ai/dsh-mind-garden/core'
 
+    - id: mind-garden-skills
+      name: '@deepseek-ai/dsh-mind-garden/skills'
+
     - id: mind-garden-memory
       name: '@deepseek-ai/dsh-mind-garden/memory'
 
     - id: mind-garden-media
       name: '@deepseek-ai/dsh-mind-garden/media'
+      config:
+        observerProvider: deepseek-official
+        observerModel: deepseek-v4-flash-vision-exp
 
     - id: mind-garden-reflection
       name: '@deepseek-ai/dsh-mind-garden/reflection'

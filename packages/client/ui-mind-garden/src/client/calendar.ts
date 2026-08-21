@@ -3,7 +3,7 @@
 import type {
   MindGardenCalendarStamp,
   MindGardenPeriodReviewType,
-} from '@deepseek-ai/dsh-mind-garden-reflection/types'
+} from '@deepseek-ai/dsh-mind-garden/reflection/types'
 
 /**
  * Format one local civil date without allowing UTC conversion to shift the day.

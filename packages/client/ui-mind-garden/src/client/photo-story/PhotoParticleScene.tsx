@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
-import type { MindGardenPhotoParticleConfig } from '@deepseek-ai/dsh-mind-garden-media/types'
+import type { MindGardenPhotoParticleConfig } from '@deepseek-ai/dsh-mind-garden/media/types'
 import css from './PhotoParticleScene.module.css'
 
 const QUALITY_EDGE = { low: 128, medium: 208, high: 320 } as const

@@ -1,7 +1,7 @@
 /** Constellation derivation from open questions and period reviews. */
 
 import { describe, expect, it } from 'vitest'
-import type { MindGardenOpenQuestion, MindGardenPeriodReview } from '@deepseek-ai/dsh-mind-garden-reflection/types'
+import type { MindGardenOpenQuestion, MindGardenPeriodReview } from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { createGardenStarMap, type GardenStarMapLabels } from '../src/client/star-map/model.ts'
 
 const stamp = { localDate: '2026-08-19', timeZone: 'Asia/Shanghai', utcOffsetMinutes: 480 }

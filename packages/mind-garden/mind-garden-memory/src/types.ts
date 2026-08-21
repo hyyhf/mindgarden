@@ -1,6 +1,6 @@
 /**
  * Client-safe contracts for governed Mind Garden memories.
- * @module @deepseek-ai/dsh-mind-garden-memory/types
+ * @module @deepseek-ai/dsh-mind-garden/memory/types
  */
 
 import type { Branded } from '@deepseek-ai/dsh-brand'

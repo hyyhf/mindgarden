@@ -6,7 +6,7 @@ import {
   storedAutomationStateSchema,
   storedExtractionRunSchema,
   storedMemorySchema,
-} from '@deepseek-ai/dsh-mind-garden-memory'
+} from '@deepseek-ai/dsh-mind-garden/memory'
 
 const base = {
   recordType: 'memory' as const,

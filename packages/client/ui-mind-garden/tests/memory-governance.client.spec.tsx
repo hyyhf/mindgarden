@@ -7,7 +7,7 @@ import type {
   MindGardenMemoryExtractValue,
   MindGardenMemoryItem,
   MindGardenMemoryRevision,
-} from '@deepseek-ai/dsh-mind-garden-memory/types'
+} from '@deepseek-ai/dsh-mind-garden/memory/types'
 import type { SessionId } from '@deepseek-ai/dsh-client-runtime/client'
 import { MemoryGovernance } from '../src/client/spaces/MemoryGovernance.tsx'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'

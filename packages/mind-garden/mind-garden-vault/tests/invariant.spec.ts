@@ -13,7 +13,7 @@ describe('Mind Garden vault invariant companion', () => {
       return disposer
     })
     await expect(apply({ invariants: { register } } as never)).resolves.toBe(disposer)
-    expect(register).toHaveBeenCalledWith('@deepseek-ai/dsh-mind-garden-vault', expect.any(Function))
+    expect(register).toHaveBeenCalledWith('@deepseek-ai/dsh-mind-garden/vault', expect.any(Function))
 
     const ctx = new Context()
     const assertInvariants = vi.fn()

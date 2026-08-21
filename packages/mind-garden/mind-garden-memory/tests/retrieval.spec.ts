@@ -5,7 +5,7 @@ import {
   retrievalTerms,
   retrieveMemories,
   userQuery,
-} from '@deepseek-ai/dsh-mind-garden-memory'
+} from '@deepseek-ai/dsh-mind-garden/memory'
 import type { StoredMemory } from '../src/records.ts'
 
 let counter = 0

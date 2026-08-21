@@ -4,7 +4,7 @@ import {
   buildExtractionEnvelope,
   decodeExtractionOutput,
   EXTRACTION_SYSTEM_PROMPT,
-} from '@deepseek-ai/dsh-mind-garden-memory'
+} from '@deepseek-ai/dsh-mind-garden/memory'
 
 describe('Mind Garden governed extraction codec', () => {
   it('selects newest complete human/model text and excludes plugin context', () => {

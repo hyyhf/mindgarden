@@ -1,7 +1,7 @@
 /**
  * Deterministic input triage and pre-publication output guard for activated
  * Mind Garden sessions.
- * @module @deepseek-ai/dsh-mind-garden-safety
+ * @module @deepseek-ai/dsh-mind-garden/safety
  */
 
 import type { Context } from '@deepseek-ai/cordis'
@@ -14,7 +14,7 @@ import {
   type UserMessage,
 } from '@deepseek-ai/dsh-llm'
 import type { Session, SessionEvent } from '@deepseek-ai/dsh-session'
-import type {} from '@deepseek-ai/dsh-mind-garden-core'
+import type {} from '@deepseek-ai/dsh-mind-garden/core'
 import { assessMindGardenInput, recoverMindGardenSafetyState } from './classifier.ts'
 import {
   assessMindGardenOutput,
