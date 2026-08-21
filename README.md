@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/mind-garden-header.png" alt="A warm night garden path leading to a celestial instrument" width="100%">
+  <img src="assets/mind-garden-header.png" alt="A warm illustrated garden path beneath a gentle constellation" width="100%">
 </p>
 
 <h1 align="center">Mind Garden</h1>

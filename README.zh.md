@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/mind-garden-header.png" alt="暖夜庭院小径通向一座星象仪" width="100%">
+  <img src="assets/mind-garden-header.png" alt="温暖插画中的庭院小径与柔和星图" width="100%">
 </p>
 
 <h1 align="center">心智庭院</h1>
