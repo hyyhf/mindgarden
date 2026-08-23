@@ -53,6 +53,19 @@ The sequence below comes from one fresh Harness Web session. A user enters Mind 
   <sub>The same session in a 390 px viewport; the main actions and the Harness composer remain reachable.</sub>
 </p>
 
+## Conversation posture, at the point of use
+
+At rest, Mind Garden adds only one compact control to the Harness composer toolbar: its icon and the current posture. Opening it reveals the two dialogue postures and five support intents in a focused, non-modal panel—without placing a full-width control strip above the conversation.
+
+<table>
+  <tr>
+    <td width="68%"><img src="assets/mind-garden-demo-dialogue-posture.png" alt="Mind Garden dialogue posture popover opened from the desktop Harness composer toolbar"><br><strong>Precise when opened</strong><br>The panel stays anchored to the compact composer control and leaves the active conversation readable.</td>
+    <td width="32%"><img src="assets/mind-garden-demo-mobile-dialogue-posture.png" alt="Mind Garden dialogue posture popover in a real 390 pixel Harness viewport"><br><strong>Reachable at 390 px</strong><br>The same controls fit the viewport and preserve the send path.</td>
+  </tr>
+</table>
+
+Posture and support intent apply only to the current Session. A successful change closes the panel; a failed change keeps it open with a localized status. Outside click and <kbd>Esc</kbd> dismiss it, keyboard focus returns to the trigger, and backup, restore, migration, and key rotation remain in Garden settings. Both frames above were captured from the installed plugin after a real Harness conversation turn.
+
 ## A garden that leaves conclusions with you
 
 Mind Garden is for conversations that benefit from patience, continuity, and user authority rather than another task dashboard. Its design follows four rules:
@@ -156,7 +169,7 @@ Philosophy keeps confirmed contemplation, inert proposal, and adopted principle 
 
 ![Mind Garden profile settings opened over the real DeepSeek Harness composition](assets/mind-garden-demo-settings.png)
 
-Settings calibrate the current Session posture and support intent while keeping encrypted profile backup, authenticated restore, original Fun Garden migration, and crash-recoverable key rotation in one focused sheet. Harness still owns providers, models, Sessions, and attachments.
+Settings provide a second path to the same Session posture and support intent while keeping encrypted profile backup, authenticated restore, original Fun Garden migration, and crash-recoverable key rotation in one focused sheet. The everyday posture control remains in the composer toolbar; Harness still owns providers, models, Sessions, and attachments.
 
 ### Mobile composition
 
@@ -166,7 +179,7 @@ Settings calibrate the current Session posture and support intent while keeping 
   <img src="assets/mind-garden-demo-mobile-star-map.png" width="31%" alt="Mind Garden constellation in the compact Harness shell">
 </p>
 
-The same plugin participates in the compact Harness shell. Navigation collapses, dense controls simplify, canvas work is bounded, and the fixed Harness composer remains available. Reduced-motion and non-WebGL paths keep records usable without the visual scene. The integration gallery also captures compact entry, check-in, concerns, calendar, memory, growth, review, philosophy, and settings states under `assets/mind-garden-demo-mobile-*.png`.
+The same plugin participates in the compact Harness shell. Navigation collapses, dense controls simplify, canvas work is bounded, and the fixed Harness composer remains available. The posture panel measures the viewport and flips above or below its trigger instead of creating a wide mobile bar. Reduced-motion and non-WebGL paths keep records usable without the visual scene. The integration gallery also captures compact entry, check-in, concerns, calendar, memory, growth, review, philosophy, and settings states under `assets/mind-garden-demo-mobile-*.png`.
 
 ## Install
 
@@ -209,7 +222,8 @@ The bundle's [`cordis.patch.yml`](cordis.patch.yml) inserts every Host and Web r
 2. Create a blank Session and select the shipped **Mind Garden** preset when it is available from the active roster.
 3. Choose **Enter Mind Garden** before the first message.
 4. Read the storage, provider, and confirmation boundaries, then select **Serenity** for gentle presence or **Clarity** for more structured reflection.
-5. Use the conversation normally. The **Mind Garden** tab opens the nine-space workspace, and garden settings holds backup, restore, and key rotation.
+5. After entry, use the compact posture control in the composer toolbar whenever the current Session needs a different posture or support intent.
+6. Use the conversation normally. The **Mind Garden** tab opens the nine-space workspace, and garden settings holds backup, restore, and key rotation.
 
 The bundle can be activated with another preset, but that preset's persona and tools still participate. Only the Mind Garden preset supplies the intended tool-free companion persona. External preset discovery is a Harness roster boundary; a separately installed npm bundle does not mutate another installation's roster.
 
@@ -229,7 +243,7 @@ One installable package composes eleven independently testable plugins:
 | `mind-garden-dialogue` | [`mind-garden-dialogue`](packages/mind-garden/mind-garden-dialogue) | Stable model-visible companion policy and authorized context injection. |
 | `mind-garden-safety` | [`mind-garden-safety`](packages/mind-garden/mind-garden-safety) | Deterministic input triage, local support responses, output buffering, and publication checks. |
 | `mind-garden-portability` | [`mind-garden-portability`](packages/mind-garden/mind-garden-portability) | Encrypted backup, restore, original-profile migration, and user-confirmed key rotation. |
-| `ui-mind-garden` | [`ui-mind-garden`](packages/client/ui-mind-garden) | Entry disclosure, conversation contribution, settings, nine spaces, 3D, particles, and responsive UI. |
+| `ui-mind-garden` | [`ui-mind-garden`](packages/client/ui-mind-garden) | Entry disclosure, composer-toolbar posture control, settings, nine spaces, 3D, particles, and responsive UI. |
 
 Host packages own authorization and durable state. The Web client uses generated Typert Remotes and cannot bypass version checks, confirmation gates, attachment admission, or vault policy. Ordinary dialogue remains an ordinary Harness Session, so session history, provider selection, trajectory, and infrastructure are not reimplemented inside the plugin.
 

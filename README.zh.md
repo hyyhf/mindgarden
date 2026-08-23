@@ -53,6 +53,19 @@ dsh web
   <sub>同一 Session 的 390px 视口；主要操作与 Harness 输入区仍然可达。</sub>
 </p>
 
+## 对话姿态，就在输入处
+
+常态下，心智庭院只在 Harness 输入框工具栏中增加一个紧凑控件，只显示图标与当前姿态。点击后才展开两种对话姿态与五种支持意图；它是一块聚焦但非模态的浮层，不会在对话上方占据一整条控制栏。
+
+<table>
+  <tr>
+    <td width="68%"><img src="assets/mind-garden-demo-dialogue-posture.png" alt="从桌面 Harness 输入框工具栏打开的心智庭院对话姿态浮层"><br><strong>需要时才完整展开</strong><br>浮层紧贴输入框里的紧凑控件，同时让正在进行的对话保持可读。</td>
+    <td width="32%"><img src="assets/mind-garden-demo-mobile-dialogue-posture.png" alt="真实 390 像素 Harness 视口中的心智庭院对话姿态浮层"><br><strong>390px 仍然清楚可达</strong><br>同一组控件适应窄视口，并保留完整发送路径。</td>
+  </tr>
+</table>
+
+姿态与支持意图只作用于当前 Session。更新成功后浮层自动收起；失败时保留现场并显示本地化状态。点击外部或按 <kbd>Esc</kbd> 可关闭，键盘焦点会回到触发按钮；备份、恢复、迁移与换钥仍然位于庭院设置。上面两帧均来自已安装插件在一次真实 Harness 对话后的实际运行画面。
+
 ## 把结论留给你的庭院
 
 心智庭院服务于那些需要耐心、连续性和用户决定权，而不是另一个任务面板的对话。它遵循四条原则：
@@ -156,7 +169,7 @@ dsh web
 
 ![在真实 DeepSeek Harness 装配上打开的心智庭院 profile 设置](assets/mind-garden-demo-settings.png)
 
-设置面板负责校准当前 Session 的对话姿态和支持意图，并在同一聚焦面板中提供加密 profile 备份、认证恢复、原版 Fun Garden 迁移与崩溃可恢复换钥；提供方、模型、Session 和附件仍由 Harness 管理。
+设置面板提供当前 Session 对话姿态与支持意图的另一处校准入口，并在同一聚焦面板中提供加密 profile 备份、认证恢复、原版 Fun Garden 迁移与崩溃可恢复换钥。日常姿态控件仍位于输入框工具栏；提供方、模型、Session 和附件仍由 Harness 管理。
 
 ### 移动端装配
 
@@ -166,7 +179,7 @@ dsh web
   <img src="assets/mind-garden-demo-mobile-star-map.png" width="31%" alt="Harness 紧凑壳层中的心智庭院星图">
 </p>
 
-同一个插件会进入 Harness 紧凑壳层：导航收起、密集控制简化、Canvas 工作量受限，同时保留 Harness 固定输入区。开启减少动态效果或缺少 WebGL 时，记录仍可通过列表与静态图片使用。集成图册还会在 `assets/mind-garden-demo-mobile-*.png` 下生成紧凑入口、签到、心事、日历、记忆、生活议题、回望、哲学和设置状态。
+同一个插件会进入 Harness 紧凑壳层：导航收起、密集控制简化、Canvas 工作量受限，同时保留 Harness 固定输入区。姿态浮层会测量视口，并根据空间在触发按钮上方或下方展开，不会在移动端形成宽控制条。开启减少动态效果或缺少 WebGL 时，记录仍可通过列表与静态图片使用。集成图册还会在 `assets/mind-garden-demo-mobile-*.png` 下生成紧凑入口、签到、心事、日历、记忆、生活议题、回望、哲学和设置状态。
 
 ## 安装
 
@@ -209,7 +222,8 @@ dsh plugin --profile web add .
 2. 新建空白 Session；如果当前 roster 已提供内置**心智庭院**预设，请选择它。
 3. 在发送第一条消息前选择**进入心智庭院**。
 4. 阅读存储、提供方与确认权边界，再选择偏温柔陪伴的**观心**或偏结构化反思的**玄思**。
-5. 像普通 Harness 对话一样使用。**心智庭院**标签页会打开九空间工作区；备份、恢复与换钥位于庭院设置。
+5. 进入后，需要改变当前 Session 的姿态或支持意图时，使用输入框工具栏中的紧凑姿态控件。
+6. 像普通 Harness 对话一样使用。**心智庭院**标签页会打开九空间工作区；备份、恢复与换钥位于庭院设置。
 
 也可以在其他预设下启用组合包，但该预设的 persona 和工具仍会参与。只有心智庭院预设提供预期的无工具陪伴 persona。外部预设发现属于 Harness roster 边界；单独安装的 npm 包不会修改另一份安装的 roster。
 
@@ -229,7 +243,7 @@ dsh plugin --profile web add .
 | `mind-garden-dialogue` | [`mind-garden-dialogue`](packages/mind-garden/mind-garden-dialogue) | 稳定且模型可见的陪伴策略与已授权上下文注入。 |
 | `mind-garden-safety` | [`mind-garden-safety`](packages/mind-garden/mind-garden-safety) | 确定性输入分流、本地支持回复、输出缓冲和发布检查。 |
 | `mind-garden-portability` | [`mind-garden-portability`](packages/mind-garden/mind-garden-portability) | 加密备份、恢复、原版迁移和用户确认换钥。 |
-| `ui-mind-garden` | [`ui-mind-garden`](packages/client/ui-mind-garden) | 进入披露、对话贡献、设置、九空间、3D、粒子与响应式 UI。 |
+| `ui-mind-garden` | [`ui-mind-garden`](packages/client/ui-mind-garden) | 进入披露、输入框工具栏姿态控件、设置、九空间、3D、粒子与响应式 UI。 |
 
 Host 包负责权限和持久状态。Web 客户端通过生成的 Typert Remote 工作，不能绕过版本检查、确认门、附件准入或 vault 策略。普通陪伴仍是普通 Harness Session，因此历史、提供方选择、轨迹和基础设施不会在插件里重复实现。
 
