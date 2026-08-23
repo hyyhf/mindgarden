@@ -535,8 +535,8 @@ function viewActions(ctx: ClientContext, sessionId: SessionId): MindGardenViewAc
 export function apply(ctx: ClientContext): void {
   ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'ui-mind-garden: dictionaries')
   const t = ctx.locale.bind(NS)
-  ctx.slots.inject('conversation.input.dock', () => ctx.slots.register({
-    name: 'conversation.input.dock',
+  ctx.slots.inject('conversation.input.left', () => ctx.slots.register({
+    name: 'conversation.input.left',
     id: 'mind-garden',
     order: 5,
     locale: NS,

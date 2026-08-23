@@ -93,8 +93,10 @@ describe('MindGardenPanel', () => {
       {...actions({ onSelectMode, onSelectSupportIntent })}
       t={t}
     />)
-    expect(view.getByText(`${zh['mode.serenity']} · ${zh['intent.auto']}`)).toBeTruthy()
-    fireEvent.click(view.getByRole('button', { name: zh['garden.expand'] }))
+    const trigger = view.getByRole('button', { name: zh['garden.expand'] })
+    expect(trigger.getAttribute('title')).toBe(`${zh['mode.serenity']} · ${zh['intent.auto']}`)
+    expect(view.getByText(zh['mode.serenity'])).toBeTruthy()
+    fireEvent.click(trigger)
     fireEvent.click(view.getByRole('button', { name: zh['mode.clarity'] }))
     await waitFor(() => { expect(onSelectMode).toHaveBeenCalledWith(7, 'clarity') })
     expect(view.getByRole('button', { name: zh['garden.expand'] })).toBeTruthy()
@@ -114,6 +116,16 @@ describe('MindGardenPanel', () => {
     expect((await view.findByRole('alert')).textContent).toBe(zh['error.generic'])
     view.rerender(<MindGardenPanel projection={active(3)} {...props} t={t} />)
     await waitFor(() => { expect(view.queryByRole('alert')).toBeNull() })
+  })
+
+  it('dismisses the compact posture popover with Escape and restores trigger focus', async () => {
+    const view = render(<MindGardenPanel projection={active()} {...actions()} t={t} />)
+    const trigger = view.getByRole('button', { name: zh['garden.expand'] })
+    fireEvent.click(trigger)
+    expect(view.getByRole('group', { name: zh['section.mode'] })).toBeTruthy()
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(view.queryByRole('group', { name: zh['section.mode'] })).toBeNull()
+    await waitFor(() => { expect(document.activeElement).toBe(trigger) })
   })
 
   it('keeps the dedicated settings instrument open after a successful calibration', async () => {
@@ -138,6 +150,7 @@ describe('MindGardenDock adapter', () => {
     const props = { useProjection, ...actions(), t } as unknown as Parameters<typeof MindGardenDock>[0]
     const view = render(<MindGardenDock {...props} />)
     expect(useProjection).toHaveBeenCalledWith('mind-garden')
-    expect(view.getByText(zh['garden.title'])).toBeTruthy()
+    expect(view.getByRole('button', { name: zh['garden.expand'] }).getAttribute('title'))
+      .toBe(`${zh['mode.serenity']} · ${zh['intent.auto']}`)
   })
 })

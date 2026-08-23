@@ -34,8 +34,8 @@ import { apply as invariantApply } from '../src/invariant.ts'
 import { DEFAULT_PHOTO_PARTICLE_CONFIG } from '../src/client/photo-story/presets.ts'
 
 describe('Mind Garden browser plugin', () => {
-  it('registers the dock and full view whose actions call the live Remote namespaces', async () => {
-    const entries: Array<{ id?: string; order?: number; locale?: string; label?: () => string; inject?: (id: SessionId) => unknown }> = []
+  it('registers the composer posture control and full view whose actions call the live Remote namespaces', async () => {
+    const entries: Array<{ name?: string; id?: string; order?: number; locale?: string; label?: () => string; inject?: (id: SessionId) => unknown }> = []
     const calls: Array<{ method: string; args: unknown[] }> = []
     const answer = (method: string) => (...args: unknown[]) => {
       calls.push({ method, args })
@@ -259,13 +259,17 @@ describe('Mind Garden browser plugin', () => {
     expect(inject).toContain('remote.mindGardenPortability')
     expect(registerLocale).toHaveBeenCalledTimes(1)
     expect(entries).toHaveLength(2)
-    const dock = entries.find(entry => entry.order === 5)
+    const composerControl = entries.find(entry => entry.order === 5)
     const view = entries.find(entry => entry.order === 20)
-    expect(dock).toMatchObject({ id: 'mind-garden', locale: 'mindGarden' })
+    expect(composerControl).toMatchObject({
+      name: 'conversation.input.left',
+      id: 'mind-garden',
+      locale: 'mindGarden',
+    })
     expect(view).toMatchObject({ id: 'mind-garden', locale: 'mindGarden' })
     expect(view?.label?.()).toBe('view.garden')
-    const actions = dock?.inject?.('session-1' as SessionId) as MindGardenDockActions | undefined
-    if (actions === undefined) throw new Error('dock actions were not registered')
+    const actions = composerControl?.inject?.('session-1' as SessionId) as MindGardenDockActions | undefined
+    if (actions === undefined) throw new Error('composer posture actions were not registered')
     await actions.onActivate('clarity')
     await actions.onSelectMode(2, 'serenity')
     await actions.onSelectSupportIntent(3, 'listen')

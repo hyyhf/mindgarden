@@ -126,7 +126,7 @@ window.__ModuleLoader__.load({
 		});
 		//#endregion
 		//#region \0dsh-css:E:\test code\deepseekharness_modified\deepseek-harness\packages\client\ui-mind-garden-qa\src\client\MindGardenDock.module.css.mjs
-		const css$18 = ".oOUw7q_dock{box-sizing:border-box;width:100%;color:var(--dsw-alias-label-primary);padding:0 12px 8px}.oOUw7q_entry,.oOUw7q_panel,.oOUw7q_activePanel{box-sizing:border-box;border:1px solid color-mix(in srgb, var(--dsw-alias-state-warn-primary) 16%, var(--dsw-alias-border-l2));background:color-mix(in srgb, var(--dsw-alias-bg-base) 96%, var(--dsw-alias-state-warn-secondary));border-radius:7px;width:100%}.oOUw7q_entry{min-height:56px;color:var(--dsw-alias-label-primary);text-align:start;cursor:pointer;align-items:center;gap:11px;padding:9px 12px;display:flex;position:relative;overflow:hidden}.oOUw7q_entry:hover,.oOUw7q_activeHeader:hover{background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 10%, var(--dsw-alias-interactive-bg-hover))}.oOUw7q_mark,.oOUw7q_markActive,.oOUw7q_modeIcon,.oOUw7q_optionIcon{flex:none;place-items:center;display:inline-grid}.oOUw7q_mark,.oOUw7q_markActive{aspect-ratio:1;border:1px solid color-mix(in srgb, var(--dsw-alias-state-success-primary) 18%, var(--dsw-alias-border-l2));width:30px;color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 70%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-success-secondary) 7%, transparent);border-radius:7px}.oOUw7q_entryCopy,.oOUw7q_activeIdentity,.oOUw7q_activeIdentity>span:last-child{min-width:0;display:flex}.oOUw7q_entryCopy,.oOUw7q_activeIdentity>span:last-child{flex-direction:column}.oOUw7q_entryCopy{flex:1}.oOUw7q_entryTitle,.oOUw7q_activeTitle,.oOUw7q_modeTitle{color:var(--dsw-alias-label-primary);font-size:13px;font-weight:600;line-height:20px}.oOUw7q_entryHint,.oOUw7q_activeSummary,.oOUw7q_modeDescription{color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:17px}.oOUw7q_chevron,.oOUw7q_chevronOpen{color:var(--dsw-alias-label-tertiary);flex:none;transition:transform .16s}.oOUw7q_chevronOpen{transform:rotate(180deg)}.oOUw7q_panel{background:radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--dsw-alias-state-success-secondary) 11%, transparent), transparent 16rem), color-mix(in srgb, var(--dsw-alias-bg-base) 95%, var(--dsw-alias-state-warn-secondary));padding:18px}.oOUw7q_panelHeader{align-items:flex-start;gap:14px;display:flex}.oOUw7q_panelHeader>div{flex:1;min-width:0}.oOUw7q_title{color:var(--dsw-alias-label-primary);margin:0 0 7px;font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:18px;font-weight:520;line-height:1.4}.oOUw7q_disclosure,.oOUw7q_acceptance,.oOUw7q_error{margin:0;font-size:11px;line-height:1.6}.oOUw7q_disclosure{color:var(--dsw-alias-label-secondary)}.oOUw7q_acceptance{color:var(--dsw-alias-label-tertiary);margin-block-start:14px}.oOUw7q_close{aspect-ratio:1;width:28px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:0;border-radius:6px;place-items:center;display:grid}.oOUw7q_close:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}.oOUw7q_contract{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:16px 0 0;padding:0;list-style:none;display:grid}.oOUw7q_contract li{color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 64%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-success-secondary) 5%, transparent);border-radius:6px;grid-template-columns:20px minmax(0,1fr);gap:8px;padding:11px 10px;display:grid}.oOUw7q_contract li>span{gap:2px;display:grid}.oOUw7q_contract strong{color:var(--dsw-alias-label-primary);font-size:10px;font-weight:600;line-height:1.5}.oOUw7q_contract small{color:var(--dsw-alias-label-tertiary);font-size:9px;line-height:1.55}.oOUw7q_modeGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-block-start:14px;display:grid}.oOUw7q_modeCard{min-height:78px;color:var(--dsw-alias-label-primary);background:color-mix(in srgb, var(--dsw-alias-bg-layer-2) 58%, transparent);text-align:start;cursor:pointer;border:0;border-radius:6px;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:9px;padding:12px;display:grid}.oOUw7q_modeCard:hover{background:color-mix(in srgb, var(--dsw-alias-state-success-secondary) 7%, transparent)}.oOUw7q_modeCard>span:last-child{display:grid}.oOUw7q_modeIcon,.oOUw7q_optionIcon{aspect-ratio:1;border:1px solid color-mix(in srgb, var(--dsw-alias-state-warn-primary) 26%, var(--dsw-alias-border-l2));width:30px;color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 64%, var(--dsw-alias-label-primary));border-radius:50%}.oOUw7q_modeDescription{margin-block-start:2px}.oOUw7q_activeHeader{width:100%;min-height:50px;color:var(--dsw-alias-label-primary);text-align:start;cursor:pointer;background:0 0;border:0;border-radius:6px;justify-content:space-between;align-items:center;padding:8px 10px;display:flex}.oOUw7q_activeIdentity{align-items:center;gap:10px}.oOUw7q_controls{padding:8px 11px 12px}.oOUw7q_controlSection{margin-block-start:10px}.oOUw7q_controlLabel{color:var(--dsw-alias-label-tertiary);margin-block-end:6px;font-size:10px;line-height:16px;display:block}.oOUw7q_segmented,.oOUw7q_intentList{flex-wrap:wrap;gap:4px;display:flex}.oOUw7q_segment,.oOUw7q_segmentActive,.oOUw7q_intent,.oOUw7q_intentActive{min-height:30px;color:var(--dsw-alias-label-secondary);font:inherit;cursor:pointer;background:0 0;border:1px solid #0000;border-radius:6px;padding:4px 9px;font-size:11px;line-height:18px}.oOUw7q_segment,.oOUw7q_segmentActive{align-items:center;gap:7px;display:inline-flex}.oOUw7q_segment:hover,.oOUw7q_intent:hover{background:var(--dsw-alias-interactive-bg-hover)}.oOUw7q_segmentActive,.oOUw7q_intentActive{border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 24%, var(--dsw-alias-border-l2));color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 70%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-success-secondary) 8%, transparent)}.oOUw7q_optionIcon{width:24px}.oOUw7q_optionCopy{text-align:start;display:grid}.oOUw7q_optionCopy strong{font-size:11px;font-weight:600}.oOUw7q_optionCopy small{color:var(--dsw-alias-label-tertiary);font-size:9px;line-height:1.5}.oOUw7q_storage{color:var(--dsw-alias-label-caption);align-items:center;gap:6px;margin-block-start:11px;font-size:10px;line-height:16px;display:flex}.oOUw7q_error{color:var(--dsw-alias-state-error-primary);margin-block-start:8px}.oOUw7q_settingsIdentity{grid-template-columns:40px minmax(0,1fr);align-items:center;gap:12px;padding-block-end:18px;display:grid}.oOUw7q_settingsIdentity>span:last-child{gap:3px;display:grid}.oOUw7q_settingsIdentity strong{font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:22px;font-weight:520;line-height:1.35}.oOUw7q_settingsIdentity small{color:var(--dsw-alias-label-secondary);font-size:11px;line-height:1.6}.oOUw7q_dock[data-surface=settings]{padding:0}.oOUw7q_dock[data-surface=settings] .oOUw7q_activePanel{background:0 0;border:0;border-radius:0}.oOUw7q_dock[data-surface=settings] .oOUw7q_markActive{width:38px;color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 68%, var(--dsw-alias-label-primary));border-radius:50%}.oOUw7q_dock[data-surface=settings] .oOUw7q_controls{background:color-mix(in srgb, var(--dsw-alias-bg-layer-2) 46%, transparent);border-radius:8px;grid-template-columns:minmax(230px,.8fr) minmax(0,1.2fr);gap:0;padding:0;display:grid}.oOUw7q_dock[data-surface=settings] .oOUw7q_controlSection{margin:0;padding:18px}.oOUw7q_dock[data-surface=settings] .oOUw7q_controlSection+.oOUw7q_controlSection{border-inline-start:1px solid var(--dsw-alias-border-l2)}.oOUw7q_dock[data-surface=settings] .oOUw7q_controlLabel{color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 58%, var(--dsw-alias-label-primary));letter-spacing:.08em;margin-block-end:11px;font-size:9px;font-weight:650}.oOUw7q_dock[data-surface=settings] .oOUw7q_segmented{grid-template-columns:1fr;gap:7px;display:grid}.oOUw7q_dock[data-surface=settings] .oOUw7q_segment,.oOUw7q_dock[data-surface=settings] .oOUw7q_segmentActive{border-color:var(--dsw-alias-border-l2);border-radius:6px;min-height:58px;padding:9px 10px}.oOUw7q_dock[data-surface=settings] .oOUw7q_segmentActive{border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 34%, var(--dsw-alias-border-l2));background:linear-gradient(90deg, color-mix(in srgb, var(--dsw-alias-state-success-secondary) 10%, transparent), transparent), color-mix(in srgb, var(--dsw-alias-bg-base) 96%, var(--dsw-alias-state-warn-secondary))}.oOUw7q_dock[data-surface=settings] .oOUw7q_intentList{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;display:grid}.oOUw7q_dock[data-surface=settings] .oOUw7q_intent,.oOUw7q_dock[data-surface=settings] .oOUw7q_intentActive{text-align:start;min-height:38px;padding:7px 9px}.oOUw7q_dock[data-surface=settings] .oOUw7q_storage{color:var(--dsw-alias-label-tertiary);grid-column:1/-1;margin:0;padding:12px 18px}.oOUw7q_dock[data-surface=settings] .oOUw7q_error{border-block-start:1px solid var(--dsw-alias-state-error-secondary);grid-column:1/-1;margin:0;padding:10px 18px}.oOUw7q_entry:focus-visible,.oOUw7q_close:focus-visible,.oOUw7q_activeHeader:focus-visible,.oOUw7q_modeCard:focus-visible,.oOUw7q_segment:focus-visible,.oOUw7q_segmentActive:focus-visible,.oOUw7q_intent:focus-visible,.oOUw7q_intentActive:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:2px}.oOUw7q_segment:disabled,.oOUw7q_segmentActive:disabled,.oOUw7q_intent:disabled,.oOUw7q_intentActive:disabled,.oOUw7q_modeCard:disabled,.oOUw7q_close:disabled{cursor:default;opacity:.5}@media (width<=620px){.oOUw7q_contract{grid-template-columns:1fr}.oOUw7q_dock[data-surface=settings] .oOUw7q_controls{grid-template-columns:1fr;gap:6px}.oOUw7q_dock[data-surface=settings] .oOUw7q_controlSection+.oOUw7q_controlSection{border-inline-start:0}}@media (width<=430px){.oOUw7q_panel{padding:14px}.oOUw7q_modeGrid,.oOUw7q_dock[data-surface=settings] .oOUw7q_intentList{grid-template-columns:1fr}}@media (prefers-reduced-motion:reduce){.oOUw7q_chevron,.oOUw7q_chevronOpen,.oOUw7q_entry:after{transition:none}}";
+		const css$18 = ".oOUw7q_dock{box-sizing:border-box;color:var(--dsw-alias-label-primary);font-family:\"Noto Sans SC\", var(--dsw-font-family), \"PingFang SC\", \"Microsoft YaHei\", sans-serif;flex:none;align-items:center;display:inline-flex;position:relative}.oOUw7q_entry,.oOUw7q_activeHeader{box-sizing:border-box;height:28px;color:var(--dsw-alias-label-secondary);font:inherit;white-space:nowrap;cursor:pointer;background:0 0;border:0;border-radius:7px;align-items:center;gap:6px;padding:0 7px 0 5px;transition:color .12s,background-color .12s;display:inline-flex}.oOUw7q_entry:hover,.oOUw7q_activeHeader:hover,.oOUw7q_entry[aria-expanded=true],.oOUw7q_activeHeader[aria-expanded=true]{color:var(--dsw-alias-label-primary);background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 8%, var(--dsw-alias-interactive-bg-hover))}.oOUw7q_mark,.oOUw7q_markActive,.oOUw7q_modeIcon,.oOUw7q_optionIcon{flex:none;place-items:center;display:inline-grid}.oOUw7q_mark,.oOUw7q_markActive{width:19px;height:19px;color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 54%, var(--dsw-alias-label-primary))}.oOUw7q_entryTitle,.oOUw7q_activeTitle,.oOUw7q_modeTitle{color:currentColor;font-size:11px;font-weight:600;line-height:16px}.oOUw7q_activeTitle{letter-spacing:.01em}.oOUw7q_postureSignal{background:var(--dsw-alias-state-business-primary);width:4px;height:4px;box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-secondary) 24%, transparent);border-radius:50%}.oOUw7q_visuallyHidden{clip:rect(0, 0, 0, 0);white-space:nowrap;border:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}.oOUw7q_chevron,.oOUw7q_chevronOpen{color:var(--dsw-alias-label-tertiary);flex:none;transition:transform .16s cubic-bezier(.2,.8,.2,1)}.oOUw7q_chevronOpen{transform:rotate(180deg)}.oOUw7q_panel,.oOUw7q_controls{z-index:80;box-sizing:border-box;overscroll-behavior:contain;background:linear-gradient(145deg, color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 7%, transparent), transparent 44%), var(--dsw-alias-bg-layer-1,var(--dsw-alias-bg-base));box-shadow:var(--dsw-shadow-lv3);scrollbar-color:var(--dsw-alias-scrollbar-bg-l2) transparent;border:0;border-radius:11px;animation:.15s cubic-bezier(.16,1,.3,1) both oOUw7q_posturePopoverIn;position:fixed;overflow:auto}.oOUw7q_panel[data-positioned=false],.oOUw7q_controls[data-positioned=false]{visibility:hidden}.oOUw7q_panel{padding:18px}.oOUw7q_panelHeader,.oOUw7q_popoverHeader{align-items:flex-start;gap:14px;display:flex}.oOUw7q_panelHeader>div,.oOUw7q_popoverHeader>span{flex:1;min-width:0}.oOUw7q_title{color:var(--dsw-alias-label-primary);letter-spacing:-.015em;margin:0 0 6px;font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:18px;font-weight:520;line-height:1.4}.oOUw7q_disclosure,.oOUw7q_acceptance,.oOUw7q_error{margin:0;font-size:11px;line-height:1.65}.oOUw7q_disclosure{max-width:64ch;color:var(--dsw-alias-label-secondary)}.oOUw7q_acceptance{color:var(--dsw-alias-label-tertiary);margin-block-start:13px}.oOUw7q_close{width:28px;height:28px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:0;border-radius:6px;flex:none;place-items:center;padding:0;display:grid}.oOUw7q_close:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}.oOUw7q_contract{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 0;padding:0;list-style:none;display:grid}.oOUw7q_contract li{color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 55%, var(--dsw-alias-label-primary));grid-template-columns:18px minmax(0,1fr);align-items:start;gap:8px;display:grid}.oOUw7q_contract li>span{gap:2px;display:grid}.oOUw7q_contract strong{color:var(--dsw-alias-label-primary);font-size:10px;font-weight:650;line-height:1.5}.oOUw7q_contract small{color:var(--dsw-alias-label-tertiary);font-size:9px;line-height:1.55}.oOUw7q_modeGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-block-start:16px;display:grid}.oOUw7q_modeCard{min-height:70px;color:var(--dsw-alias-label-primary);background:color-mix(in srgb, var(--dsw-alias-bg-layer-2) 64%, transparent);text-align:start;cursor:pointer;border:1px solid #0000;border-radius:8px;grid-template-columns:32px minmax(0,1fr);align-items:center;gap:9px;padding:10px 11px;transition:border-color .12s,background-color .12s;display:grid}.oOUw7q_modeCard:hover{border-color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 20%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 7%, var(--dsw-alias-bg-layer-2))}.oOUw7q_modeCard>span:last-child{display:grid}.oOUw7q_modeIcon,.oOUw7q_optionIcon{width:28px;height:28px;color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 58%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 10%, transparent);border-radius:50%}.oOUw7q_modeDescription{color:var(--dsw-alias-label-tertiary);margin-block-start:2px;font-size:10px;line-height:1.55}.oOUw7q_activePanel{align-items:center;display:inline-flex;position:relative}.oOUw7q_controls{padding:14px}.oOUw7q_popoverHeader{align-items:center;margin-block-end:14px}.oOUw7q_popoverHeader>span{gap:2px;display:grid}.oOUw7q_popoverHeader strong{color:var(--dsw-alias-label-primary);font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:16px;font-weight:520;line-height:1.4}.oOUw7q_popoverHeader small{color:var(--dsw-alias-label-tertiary);font-size:10px;line-height:1.5}.oOUw7q_controlSection+.oOUw7q_controlSection{margin-block-start:14px}.oOUw7q_controlLabel{color:var(--dsw-alias-label-tertiary);letter-spacing:.06em;margin-block-end:7px;font-size:9px;font-weight:650;line-height:15px;display:block}.oOUw7q_segmented{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;display:grid}.oOUw7q_intentList{flex-wrap:wrap;gap:5px;display:flex}.oOUw7q_segment,.oOUw7q_segmentActive,.oOUw7q_intent,.oOUw7q_intentActive{min-height:32px;color:var(--dsw-alias-label-secondary);font:inherit;cursor:pointer;background:0 0;border:1px solid #0000;border-radius:7px;padding:5px 9px;font-size:11px;line-height:18px;transition:color .12s,border-color .12s,background-color .12s}.oOUw7q_segment,.oOUw7q_segmentActive{text-align:start;align-items:center;gap:7px;min-width:0;display:inline-flex}.oOUw7q_segment:hover,.oOUw7q_intent:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}.oOUw7q_segmentActive,.oOUw7q_intentActive{border-color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 22%, transparent);color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 72%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-business-secondary) 8%, transparent)}.oOUw7q_optionIcon{color:currentColor;background:color-mix(in srgb, currentColor 6%, transparent);width:24px;height:24px}.oOUw7q_optionCopy{text-align:start;min-width:0;display:grid}.oOUw7q_optionCopy strong{font-size:11px;font-weight:650}.oOUw7q_optionCopy small{color:var(--dsw-alias-label-tertiary);font-size:9px;line-height:1.5}.oOUw7q_storage{color:var(--dsw-alias-label-caption);align-items:center;gap:6px;margin-block-start:13px;font-size:9px;line-height:15px;display:flex}.oOUw7q_error{color:var(--dsw-alias-state-error-primary);background:color-mix(in srgb, var(--dsw-alias-state-error-secondary) 10%, transparent);border-radius:7px;margin-block-start:10px;padding:8px 9px}.oOUw7q_settingsIdentity{grid-template-columns:40px minmax(0,1fr);align-items:center;gap:12px;padding-block-end:18px;display:grid}.oOUw7q_settingsIdentity>span:last-child{gap:3px;display:grid}.oOUw7q_settingsIdentity strong{font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:22px;font-weight:520;line-height:1.35}.oOUw7q_settingsIdentity small{color:var(--dsw-alias-label-secondary);font-size:11px;line-height:1.6}.oOUw7q_dock[data-surface=settings],.oOUw7q_dock[data-surface=settings] .oOUw7q_activePanel{width:100%;display:block}.oOUw7q_dock[data-surface=settings] .oOUw7q_markActive{width:38px;height:38px;color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 68%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 10%, transparent);border-radius:50%}.oOUw7q_dock[data-surface=settings] .oOUw7q_controls{background:color-mix(in srgb, var(--dsw-alias-bg-layer-2) 46%, transparent);width:auto;max-height:none;box-shadow:none;border-radius:8px;grid-template-columns:minmax(230px,.8fr) minmax(0,1.2fr);gap:0;padding:0;animation:none;display:grid;position:static;overflow:visible}.oOUw7q_dock[data-surface=settings] .oOUw7q_controlSection{margin:0;padding:18px}.oOUw7q_dock[data-surface=settings] .oOUw7q_controlSection+.oOUw7q_controlSection{border-inline-start:1px solid var(--dsw-alias-border-l2)}.oOUw7q_dock[data-surface=settings] .oOUw7q_controlLabel{color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 58%, var(--dsw-alias-label-primary));letter-spacing:.08em;margin-block-end:11px;font-size:9px}.oOUw7q_dock[data-surface=settings] .oOUw7q_segmented{grid-template-columns:1fr;gap:7px}.oOUw7q_dock[data-surface=settings] .oOUw7q_segment,.oOUw7q_dock[data-surface=settings] .oOUw7q_segmentActive{border-color:var(--dsw-alias-border-l2);border-radius:6px;min-height:58px;padding:9px 10px}.oOUw7q_dock[data-surface=settings] .oOUw7q_segmentActive{border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 34%, var(--dsw-alias-border-l2));background:linear-gradient(90deg, color-mix(in srgb, var(--dsw-alias-state-success-secondary) 10%, transparent), transparent), color-mix(in srgb, var(--dsw-alias-bg-base) 96%, var(--dsw-alias-state-warn-secondary))}.oOUw7q_dock[data-surface=settings] .oOUw7q_intentList{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;display:grid}.oOUw7q_dock[data-surface=settings] .oOUw7q_intent,.oOUw7q_dock[data-surface=settings] .oOUw7q_intentActive{text-align:start;min-height:38px;padding:7px 9px}.oOUw7q_dock[data-surface=settings] .oOUw7q_storage{color:var(--dsw-alias-label-tertiary);grid-column:1/-1;margin:0;padding:12px 18px}.oOUw7q_dock[data-surface=settings] .oOUw7q_error{grid-column:1/-1;margin:0 18px 14px}.oOUw7q_entry:focus-visible,.oOUw7q_close:focus-visible,.oOUw7q_activeHeader:focus-visible,.oOUw7q_modeCard:focus-visible,.oOUw7q_segment:focus-visible,.oOUw7q_segmentActive:focus-visible,.oOUw7q_intent:focus-visible,.oOUw7q_intentActive:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:2px}.oOUw7q_segment:disabled,.oOUw7q_segmentActive:disabled,.oOUw7q_intent:disabled,.oOUw7q_intentActive:disabled,.oOUw7q_modeCard:disabled,.oOUw7q_close:disabled{cursor:default;opacity:.5}@keyframes oOUw7q_posturePopoverIn{0%{opacity:.01;filter:blur(2px);transform:translateY(4px)scale(.992)}to{opacity:1;filter:blur();transform:translateY(0)scale(1)}}@container (width<=500px){.oOUw7q_entry,.oOUw7q_activeHeader{padding-inline:4px}.oOUw7q_entryTitle{text-overflow:ellipsis;max-width:76px;overflow:hidden}}@media (width<=620px){.oOUw7q_contract{grid-template-columns:1fr;gap:8px}.oOUw7q_dock[data-surface=settings] .oOUw7q_controls{grid-template-columns:1fr;gap:6px}.oOUw7q_dock[data-surface=settings] .oOUw7q_controlSection+.oOUw7q_controlSection{border-inline-start:0}}@media (width<=430px){.oOUw7q_panel{padding:15px}.oOUw7q_modeGrid,.oOUw7q_dock[data-surface=settings] .oOUw7q_intentList{grid-template-columns:1fr}}@media (prefers-reduced-motion:reduce){.oOUw7q_panel,.oOUw7q_controls{animation:none}.oOUw7q_entry,.oOUw7q_activeHeader,.oOUw7q_chevron,.oOUw7q_chevronOpen,.oOUw7q_modeCard,.oOUw7q_segment,.oOUw7q_segmentActive,.oOUw7q_intent,.oOUw7q_intentActive{transition:none}}";
 		const tagId$18 = "@deepseek-ai/dsh-client-ui-mind-garden/MindGardenDock.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId$18) + "]") === null) {
 			const tag = document.createElement("style");
@@ -138,9 +138,7 @@ window.__ModuleLoader__.load({
 		var MindGardenDock_module_css_default = {
 			"acceptance": "oOUw7q_acceptance",
 			"activeHeader": "oOUw7q_activeHeader",
-			"activeIdentity": "oOUw7q_activeIdentity",
 			"activePanel": "oOUw7q_activePanel",
-			"activeSummary": "oOUw7q_activeSummary",
 			"activeTitle": "oOUw7q_activeTitle",
 			"chevron": "oOUw7q_chevron",
 			"chevronOpen": "oOUw7q_chevronOpen",
@@ -152,8 +150,6 @@ window.__ModuleLoader__.load({
 			"disclosure": "oOUw7q_disclosure",
 			"dock": "oOUw7q_dock",
 			"entry": "oOUw7q_entry",
-			"entryCopy": "oOUw7q_entryCopy",
-			"entryHint": "oOUw7q_entryHint",
 			"entryTitle": "oOUw7q_entryTitle",
 			"error": "oOUw7q_error",
 			"intent": "oOUw7q_intent",
@@ -170,12 +166,16 @@ window.__ModuleLoader__.load({
 			"optionIcon": "oOUw7q_optionIcon",
 			"panel": "oOUw7q_panel",
 			"panelHeader": "oOUw7q_panelHeader",
+			"popoverHeader": "oOUw7q_popoverHeader",
+			"posturePopoverIn": "oOUw7q_posturePopoverIn",
+			"postureSignal": "oOUw7q_postureSignal",
 			"segment": "oOUw7q_segment",
 			"segmentActive": "oOUw7q_segmentActive",
 			"segmented": "oOUw7q_segmented",
 			"settingsIdentity": "oOUw7q_settingsIdentity",
 			"storage": "oOUw7q_storage",
-			"title": "oOUw7q_title"
+			"title": "oOUw7q_title",
+			"visuallyHidden": "oOUw7q_visuallyHidden"
 		};
 		//#endregion
 		//#region src/client/MindGardenDock.tsx
@@ -199,10 +199,96 @@ window.__ModuleLoader__.load({
 			const [pending, setPending] = (0, react.useState)(false);
 			const [error, setError] = (0, react.useState)(null);
 			const pendingRef = (0, react.useRef)(false);
+			const surfaceRef = (0, react.useRef)(null);
+			const triggerRef = (0, react.useRef)(null);
+			const disclosureId = (0, react.useId)();
+			const controlsId = (0, react.useId)();
+			const [popoverPosition, setPopoverPosition] = (0, react.useState)();
 			const revision = projection?.state.revision;
 			(0, react.useEffect)(() => {
 				setError(null);
 			}, [revision]);
+			const closeAndRestoreFocus = (0, react.useCallback)(() => {
+				setOpen(false);
+				queueMicrotask(() => {
+					triggerRef.current?.focus();
+				});
+			}, []);
+			(0, react.useEffect)(() => {
+				if (!open || defaultOpen) return;
+				const closeOnEscape = (event) => {
+					if (event.key !== "Escape") return;
+					event.preventDefault();
+					closeAndRestoreFocus();
+				};
+				const closeOutside = (event) => {
+					if (!(event.target instanceof Node) || surfaceRef.current?.contains(event.target)) return;
+					setOpen(false);
+				};
+				document.addEventListener("keydown", closeOnEscape);
+				document.addEventListener("pointerdown", closeOutside, true);
+				return () => {
+					document.removeEventListener("keydown", closeOnEscape);
+					document.removeEventListener("pointerdown", closeOutside, true);
+				};
+			}, [
+				closeAndRestoreFocus,
+				defaultOpen,
+				open
+			]);
+			const positionPopover = (0, react.useCallback)(() => {
+				if (!open || defaultOpen || triggerRef.current === null) return;
+				const rect = triggerRef.current.getBoundingClientRect();
+				const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+				const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+				const edge = 16;
+				const gap = 9;
+				const idealWidth = projection === null ? 520 : 340;
+				const idealHeight = projection === null ? 430 : 330;
+				const availableWidth = viewportWidth - edge * 2;
+				const width = viewportWidth < 480 ? availableWidth : Math.max(280, Math.min(idealWidth, availableWidth));
+				const left = Math.min(Math.max(rect.left, edge), viewportWidth - width - edge);
+				const above = rect.top - edge - gap;
+				const below = viewportHeight - rect.bottom - edge - gap;
+				const placeAbove = above >= Math.min(idealHeight, viewportHeight * .56) || above >= below;
+				const maxHeight = Math.max(180, Math.min(idealHeight, placeAbove ? above : below));
+				setPopoverPosition(placeAbove ? {
+					left,
+					width,
+					maxHeight,
+					bottom: viewportHeight - rect.top + gap,
+					top: "auto"
+				} : {
+					left,
+					width,
+					maxHeight,
+					top: rect.bottom + gap,
+					bottom: "auto"
+				});
+			}, [
+				defaultOpen,
+				open,
+				projection
+			]);
+			(0, react.useLayoutEffect)(() => {
+				if (!open || defaultOpen) return;
+				positionPopover();
+				const visualViewport = window.visualViewport;
+				window.addEventListener("resize", positionPopover);
+				window.addEventListener("scroll", positionPopover, true);
+				visualViewport?.addEventListener("resize", positionPopover);
+				visualViewport?.addEventListener("scroll", positionPopover);
+				return () => {
+					window.removeEventListener("resize", positionPopover);
+					window.removeEventListener("scroll", positionPopover, true);
+					visualViewport?.removeEventListener("resize", positionPopover);
+					visualViewport?.removeEventListener("scroll", positionPopover);
+				};
+			}, [
+				defaultOpen,
+				open,
+				positionPopover
+			]);
 			const run = (0, react.useCallback)(async (action) => {
 				/* v8 ignore next -- React synchronously disables every action after the first click; the ref closes the smaller pre-render window. */
 				if (pendingRef.current) return;
@@ -212,51 +298,60 @@ window.__ModuleLoader__.load({
 				try {
 					const result = await action();
 					setError(errorText(result, t));
-					if (result.ok && !defaultOpen) setOpen(false);
+					if (result.ok && !defaultOpen) closeAndRestoreFocus();
 				} catch {
 					setError(t("error.generic"));
 				} finally {
 					pendingRef.current = false;
 					setPending(false);
 				}
-			}, [defaultOpen, t]);
+			}, [
+				closeAndRestoreFocus,
+				defaultOpen,
+				t
+			]);
 			if (projection === void 0) return null;
 			if (projection === null) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				ref: surfaceRef,
 				className: MindGardenDock_module_css_default.dock,
 				"data-mind-garden-state": "inactive",
-				"data-surface": "dock",
-				children: [!open && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
+				"data-surface": "composer",
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
+					ref: triggerRef,
 					type: "button",
 					className: MindGardenDock_module_css_default.entry,
 					onClick: () => {
-						setOpen(true);
+						setOpen((value) => !value);
 					},
 					"aria-label": t("entry.open"),
+					"aria-expanded": open,
+					"aria-controls": disclosureId,
 					children: [
 						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 							className: MindGardenDock_module_css_default.mark,
-							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(GardenMarkIcon, { size: 18 })
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(GardenMarkIcon, { size: 16 })
 						}),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
-							className: MindGardenDock_module_css_default.entryCopy,
-							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
-								className: MindGardenDock_module_css_default.entryTitle,
-								children: t("entry.open")
-							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
-								className: MindGardenDock_module_css_default.entryHint,
-								children: t("entry.hint")
-							})]
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+							className: MindGardenDock_module_css_default.entryTitle,
+							children: t("entry.open")
 						}),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronRightOutline14, { className: MindGardenDock_module_css_default.chevron })
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+							className: MindGardenDock_module_css_default.visuallyHidden,
+							children: t("entry.hint")
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: open ? MindGardenDock_module_css_default.chevronOpen : MindGardenDock_module_css_default.chevron })
 					]
 				}), open && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
+					id: disclosureId,
 					className: MindGardenDock_module_css_default.panel,
-					"aria-labelledby": "mind-garden-disclosure-title",
+					style: popoverPosition,
+					"data-positioned": popoverPosition === void 0 ? "false" : "true",
+					"aria-labelledby": `${disclosureId}-title`,
 					children: [
 						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: MindGardenDock_module_css_default.panelHeader,
 							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
-								id: "mind-garden-disclosure-title",
+								id: `${disclosureId}-title`,
 								className: MindGardenDock_module_css_default.title,
 								children: t("disclosure.title")
 							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
@@ -265,9 +360,7 @@ window.__ModuleLoader__.load({
 							})] }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 								type: "button",
 								className: MindGardenDock_module_css_default.close,
-								onClick: () => {
-									setOpen(false);
-								},
+								onClick: closeAndRestoreFocus,
 								disabled: pending,
 								"aria-label": t("entry.close"),
 								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseOutline16, { size: 15 })
@@ -317,9 +410,10 @@ window.__ModuleLoader__.load({
 			});
 			const state = projection.state;
 			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				ref: surfaceRef,
 				className: MindGardenDock_module_css_default.dock,
 				"data-mind-garden-state": "active",
-				"data-surface": defaultOpen ? "settings" : "dock",
+				"data-surface": defaultOpen ? "settings" : "composer",
 				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
 					className: MindGardenDock_module_css_default.activePanel,
 					children: [defaultOpen ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
@@ -329,33 +423,60 @@ window.__ModuleLoader__.load({
 							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(GardenMarkIcon, { size: 18 })
 						}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: t("garden.dialogue.title") }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("small", { children: t("garden.dialogue.body") })] })]
 					}) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
+						ref: triggerRef,
 						type: "button",
 						className: MindGardenDock_module_css_default.activeHeader,
 						onClick: () => {
 							setOpen((value) => !value);
 						},
 						"aria-expanded": open,
+						"aria-controls": controlsId,
 						"aria-label": open ? t("garden.collapse") : t("garden.expand"),
-						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
-							className: MindGardenDock_module_css_default.activeIdentity,
-							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+						title: `${t(`mode.${state.mode}`)} · ${t(`intent.${state.supportIntent}`)}`,
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: MindGardenDock_module_css_default.markActive,
-								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(GardenMarkIcon, { size: 18 })
-							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(GardenMarkIcon, { size: 15 })
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 								className: MindGardenDock_module_css_default.activeTitle,
-								children: t("garden.title")
-							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
-								className: MindGardenDock_module_css_default.activeSummary,
+								children: t(`mode.${state.mode}`)
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+								className: MindGardenDock_module_css_default.postureSignal,
+								"aria-hidden": "true"
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+								className: MindGardenDock_module_css_default.visuallyHidden,
 								children: [
-									t(`mode.${state.mode}`),
+									t("garden.title"),
 									" · ",
 									t(`intent.${state.supportIntent}`)
 								]
-							})] })]
-						}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: open ? MindGardenDock_module_css_default.chevronOpen : MindGardenDock_module_css_default.chevron })]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: open ? MindGardenDock_module_css_default.chevronOpen : MindGardenDock_module_css_default.chevron })
+						]
 					}), open && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+						id: controlsId,
 						className: MindGardenDock_module_css_default.controls,
+						style: defaultOpen ? void 0 : popoverPosition,
+						"data-positioned": defaultOpen || popoverPosition !== void 0 ? "true" : "false",
 						children: [
+							!defaultOpen && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: MindGardenDock_module_css_default.popoverHeader,
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: t("garden.dialogue.title") }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("small", { children: [
+									t(`mode.${state.mode}`),
+									" · ",
+									t(`intent.${state.supportIntent}`)
+								] })] }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+									type: "button",
+									className: MindGardenDock_module_css_default.close,
+									onClick: closeAndRestoreFocus,
+									disabled: pending,
+									"aria-label": t("garden.close"),
+									children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCloseOutline16, { size: 15 })
+								})]
+							}),
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ControlSection, {
 								label: t("section.mode"),
 								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
@@ -422,7 +543,7 @@ window.__ModuleLoader__.load({
 				}), children]
 			});
 		}
-		/** Read the typed projection and adapt it to the visual panel. */
+		/** Read the typed projection and adapt it to the compact composer control. */
 		function MindGardenDock({ useProjection, ...props }) {
 			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MindGardenPanel, {
 				projection: useProjection("mind-garden"),
@@ -42886,6 +43007,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"garden.title": "心智庭院",
 			"garden.expand": "展开庭院设置",
 			"garden.collapse": "收起庭院设置",
+			"garden.close": "关闭对话姿态",
 			"garden.storage": "本会话使用持久存储",
 			"garden.settings": "庭院设置",
 			"garden.settings.eyebrow": "对话姿态与支持方式",
@@ -43721,6 +43843,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"garden.title": "Mind Garden",
 			"garden.expand": "Expand Mind Garden settings",
 			"garden.collapse": "Collapse Mind Garden settings",
+			"garden.close": "Close dialogue posture",
 			"garden.storage": "This session uses durable storage",
 			"garden.settings": "Garden settings",
 			"garden.settings.eyebrow": "Dialogue posture and support style",
@@ -44956,8 +45079,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 				en
 			}), "ui-mind-garden: dictionaries");
 			const t = ctx.locale.bind(NS);
-			ctx.slots.inject("conversation.input.dock", () => ctx.slots.register({
-				name: "conversation.input.dock",
+			ctx.slots.inject("conversation.input.left", () => ctx.slots.register({
+				name: "conversation.input.left",
 				id: "mind-garden",
 				order: 5,
 				locale: NS,
