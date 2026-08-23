@@ -5,10 +5,13 @@ import type { ChangeEvent, CSSProperties, FormEvent, PointerEvent as ReactPointe
 import {
   IconChevronLeftOutline14,
   IconChevronRightOutline14,
+  IconFullscreenOutline16,
+  IconNewChatOutline16,
   IconPauseOutline16,
   IconPlayOutline16,
   IconPlusOutline16,
   IconRefreshOutline14,
+  IconSettingsOutline16,
   Modal,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type {
@@ -17,13 +20,12 @@ import type {
   MindGardenPhotoStory,
 } from '@deepseek-ai/dsh-mind-garden/media/types'
 import { calendarStamp } from '../calendar.ts'
+import { PHOTO_MEMORY_STAGE_V5 } from '../generated-assets.ts'
 import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenViewActions } from '../slots.ts'
 import { applyPhotoParticlePreset } from './presets.ts'
 import { PhotoParticleScene } from './PhotoParticleScene.tsx'
 import css from './PhotoStorySpace.module.css'
-import { PhotoStoryIcon } from '../GardenIcons.tsx'
-import { PHOTO_STORY_EMPTY_WARM } from '../generated-assets.ts'
 
 const PAGE_SIZE = 9
 const DYNAMIC_LIMIT = 10
@@ -393,7 +395,12 @@ export function PhotoStorySpace({
   const activeImage = active === null ? undefined : images.get(storyKey(active))
   if (active !== null && config !== null) {
     return (
-      <main className={css.story} data-mind-garden-space="photo-story" data-photo-mode="story">
+      <main
+        className={css.story}
+        data-mind-garden-space="photo-story"
+        data-photo-mode="story"
+        style={{ '--mg-photo-stage': `url("${PHOTO_MEMORY_STAGE_V5}")` } as CSSProperties}
+      >
         <header className={css.storyHeader}>
           <div className={css.storyHeading}>
             <h1>{t('photo.dialogue.title')}</h1>
@@ -426,25 +433,38 @@ export function PhotoStorySpace({
                   recomposeToken={particleRecompose}
                 />
                 <div className={css.sceneTools}>
-                  <button type="button" className={css.preview} onClick={() => { setParticleRecompose(value => value + 1) }}>
-                    <IconRefreshOutline14 />{t('photo.recompose')}
+                  <button type="button" className={css.preview} aria-label={t('photo.preview')} onClick={() => { setPreview(true) }}>
+                    <IconFullscreenOutline16 size={15} /><span aria-hidden="true">{t('photo.toolbar.original')}</span>
                   </button>
-                  <button type="button" className={css.preview} onClick={() => { setPreview(true) }}>{t('photo.preview')}</button>
+                  <button type="button" className={css.preview} aria-label={t('photo.recompose')} onClick={() => { setParticleRecompose(value => value + 1) }}>
+                    <IconRefreshOutline14 /><span aria-hidden="true">{t('photo.toolbar.recompose')}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={css.preview}
+                    aria-controls="mind-garden-photo-workbench"
+                    aria-label={t('photo.panel.dialogue')}
+                    aria-pressed={storyPanel === 'dialogue'}
+                    onClick={() => { setStoryPanel('dialogue') }}
+                  >
+                    <IconNewChatOutline16 size={15} /><span aria-hidden="true">{t('photo.toolbar.dialogue')}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={css.preview}
+                    aria-controls="mind-garden-photo-workbench"
+                    aria-label={t('photo.panel.edit')}
+                    aria-pressed={storyPanel === 'edit'}
+                    onClick={() => { setStoryPanel('edit') }}
+                  >
+                    <IconSettingsOutline16 size={15} /><span aria-hidden="true">{t('photo.toolbar.particles')}</span>
+                  </button>
                 </div>
               </>
             )}
           </section>
 
-          <aside className={css.editor} aria-label={t('photo.panel.controls')}>
-            <nav className={css.storyPanelTabs} aria-label={t('photo.panel.controls')}>
-              <button type="button" aria-pressed={storyPanel === 'dialogue'} onClick={() => { setStoryPanel('dialogue') }}>
-                {t('photo.panel.dialogue')}
-              </button>
-              <button type="button" aria-pressed={storyPanel === 'edit'} onClick={() => { setStoryPanel('edit') }}>
-                {t('photo.panel.edit')}
-              </button>
-            </nav>
-
+          <aside id="mind-garden-photo-workbench" className={css.editor} aria-label={t('photo.panel.controls')}>
             <div className={css.editorForm} hidden={storyPanel !== 'edit'}>
               <label>
                 <span>{t('photo.storyTitle')}</span>
@@ -561,6 +581,26 @@ export function PhotoStorySpace({
             </section>
           </aside>
         </div>
+        {stories.length > 1 && (
+          <nav className={css.memoryRail} aria-label={t('photo.albumView')}>
+            {stories.slice(0, DYNAMIC_LIMIT).map((story, index) => {
+              const key = storyKey(story)
+              return (
+                <button
+                  type="button"
+                  key={key}
+                  data-active={key === storyKey(active)}
+                  aria-current={key === storyKey(active) ? 'true' : undefined}
+                  aria-label={`${t('photo.open')} · ${story.title}`}
+                  onClick={() => { openStory(story) }}
+                >
+                  {images.get(key) === undefined ? <span className={css.shimmer} /> : <img src={images.get(key)} alt="" />}
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                </button>
+              )
+            })}
+          </nav>
+        )}
         <Modal
           open={preview && activeImage !== undefined}
           title={t('photo.previewDialog')}
@@ -578,7 +618,7 @@ export function PhotoStorySpace({
   }
 
   return (
-    <main className={css.album} data-mind-garden-space="photo-story" data-photo-mode="album">
+    <main className={css.album} style={{ '--mg-photo-stage': `url("${PHOTO_MEMORY_STAGE_V5}")` } as CSSProperties} data-mind-garden-space="photo-story" data-photo-mode="album" data-empty={stories.length === 0}>
       <div className={css.aurora} aria-hidden="true" />
       <header className={css.albumHeader}>
         <div>
@@ -613,7 +653,6 @@ export function PhotoStorySpace({
       ) : stories.length === 0 ? (
         <div className={css.empty}>
           <div className={css.emptyCopy}>
-            <span className={css.emptyGlyph}><PhotoStoryIcon size={24} /></span>
             <h2>{t('photo.empty.title')}</h2>
             <p>{t('photo.empty.body')}</p>
             <button
@@ -627,7 +666,6 @@ export function PhotoStorySpace({
               {t('photo.empty.action')}
             </button>
           </div>
-          <img className={css.emptyArtwork} src={PHOTO_STORY_EMPTY_WARM} alt="" />
         </div>
       ) : view === 'classic' ? (
         <>

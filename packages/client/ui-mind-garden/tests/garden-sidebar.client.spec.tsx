@@ -10,7 +10,7 @@ afterEach(cleanup)
 const t = (key: MindGardenKey) => zh[key]
 
 describe('GardenSidebar', () => {
-  it('renders all original groups and opens every migrated destination', () => {
+  it('keeps all nine destinations reachable through five clear regions', () => {
     const onSelect = vi.fn()
     const onToggle = vi.fn()
     const onSettings = vi.fn()
@@ -27,36 +27,51 @@ describe('GardenSidebar', () => {
       />,
     )
 
-    expect(view.getAllByRole('region')).toHaveLength(3)
     for (const label of [
-      'space.today',
-      'space.concerns',
-      'space.calendar',
-      'space.photoStory',
-      'space.memory',
-      'space.growth',
-      'space.starMap',
-      'space.life',
-      'space.philosophy',
-    ] as const) expect(view.getByText(zh[label])).toBeTruthy()
+      'space.region.now',
+      'space.region.innerLife',
+      'space.region.time',
+      'space.region.keepsakes',
+      'space.region.starGarden',
+    ] as const) expect(view.getByRole('button', { name: zh[label] })).toBeTruthy()
     expect(view.getByRole('button', { name: zh['space.today'] }).getAttribute('aria-current')).toBe('page')
-    const photoStory = view.getByRole('button', { name: new RegExp(zh['space.photoStory']) })
-    expect(photoStory).toHaveProperty('disabled', false)
 
-    fireEvent.click(view.getByRole('button', { name: zh['space.memory'] }))
-    expect(onSelect).toHaveBeenCalledWith('memory')
-    fireEvent.click(photoStory)
-    expect(onSelect).toHaveBeenCalledWith('photo-story')
+    const destinations = [
+      { active: 'today', labels: [['space.today', 'today']] },
+      { active: 'concerns', labels: [['space.concerns', 'concerns'], ['space.growth', 'growth']] },
+      { active: 'calendar', labels: [['space.calendar', 'calendar'], ['space.life', 'life']] },
+      { active: 'photo-story', labels: [['space.photoStory', 'photo-story'], ['space.memory', 'memory']] },
+      { active: 'star-map', labels: [['space.starMap', 'star-map'], ['space.philosophy', 'philosophy']] },
+    ] as const
+    for (const region of destinations) {
+      view.rerender(
+        <GardenSidebar
+          activeSpace={region.active}
+          collapsed={false}
+          starState="new-dust"
+          starCount={4}
+          onSelect={onSelect}
+          onSettings={onSettings}
+          onToggle={onToggle}
+          t={t}
+        />,
+      )
+      for (const [label, id] of region.labels) {
+        const destination = view.getByRole('button', { name: zh[label] })
+        fireEvent.click(destination)
+        expect(onSelect).toHaveBeenLastCalledWith(id)
+      }
+    }
+
     fireEvent.click(view.getByRole('button', { name: zh['space.collapse'] }))
     expect(onToggle).toHaveBeenCalledOnce()
-    expect(view.getByText('4 颗星尘等待判断')).toBeTruthy()
-    fireEvent.click(view.getByRole('button', { name: zh['star.sidebar.title'] }))
+    fireEvent.click(view.getByRole('button', { name: new RegExp(zh['star.sidebar.title']) }))
     expect(onSelect).toHaveBeenCalledWith('star-map')
     fireEvent.click(view.getByRole('button', { name: zh['garden.settings'] }))
     expect(onSettings).toHaveBeenCalledOnce()
   })
 
-  it('keeps icon-only navigation accessible and opens the constellation space', () => {
+  it('keeps compact navigation labelled and opens the constellation space', () => {
     const onSelect = vi.fn()
     const view = render(
       <GardenSidebar
@@ -72,7 +87,8 @@ describe('GardenSidebar', () => {
     )
 
     expect(view.getByRole('button', { name: zh['space.expand'] })).toBeTruthy()
-    expect(view.getByRole('button', { name: zh['space.today'] })).toBeTruthy()
+    fireEvent.click(view.getByRole('button', { name: zh['space.region.now'] }))
+    expect(onSelect).toHaveBeenLastCalledWith('today')
     const constellation = view.getByRole('button', { name: zh['space.starMap'] })
     fireEvent.click(constellation)
     expect(onSelect).toHaveBeenCalledWith('star-map')

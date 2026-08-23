@@ -1,0 +1,10 @@
+Use case: stylized-concept
+Asset type: full-bleed background for a premium interactive 3D constellation observatory
+Primary request: faithfully refine approved Direction B as a standalone environment plate, without constellation or interface elements.
+Scene/backdrop: beneath a contemporary new-Chinese timber pavilion, looking across a moonlit lake toward layered ink-wash mountains; low mist, pine silhouettes and restrained amber lantern reflections.
+Style/medium: cinematic photorealism blended subtly with Chinese ink-painting atmosphere and premium game-environment depth.
+Composition/framing: wide 16:9; architectural framing at extreme edges; uncluttered deep-indigo central sky reserved for live WebGL; clear lake and mountain depth below.
+Lighting/mood: serene, mysterious and warm, with luminous mist gradients, blue-black night and controlled amber light pools.
+Color palette: ink indigo, moonlit silver, antique brass and warm amber; no green cast.
+Constraints: environment only; no moon disc, people, text, UI, stars, constellation graphics, logo or watermark.
+Avoid: flat empty sky, neon blue, fantasy castles, excessive lanterns, heavy bloom and crushed blacks.

@@ -232,16 +232,14 @@ export function CalendarSpace({
 
   return (
     <main className={shared.space} data-mind-garden-space="calendar">
-      <header className={shared.header}>
+      <section className={css.atlas}>
+      <header className={css.atlasIntro}>
         <div>
-          <span className={shared.eyebrow}>{t('calendar.eyebrow')}</span>
           <h1>{t('calendar.title')}</h1>
           <p>{t('calendar.subtitle')}</p>
         </div>
         <span className={css.atlasSeal} aria-hidden="true"><CalendarIcon size={22} /></span>
       </header>
-
-      <section className={css.atlas}>
         <header className={css.toolbar}>
           <div className={css.monthControls}>
             <button

@@ -1,22 +1,16 @@
 .scene {
-  --mg-star-bg: #07130f;
-  --mg-star-center: #e2b34f;
-  --mg-star-trait: #b36a52;
-  --mg-star-question: #83a8ff;
-  --mg-star-review: #69b998;
-  --mg-star-orbit: #f5f1e8;
-  --mg-star-continuity: #8eb6ae;
-
+  --mg-star-bg: #07101a;
+  --mg-star-center: #efbd70;
+  --mg-star-trait: #d68867;
+  --mg-star-question: #a8c4e4;
+  --mg-star-review: #b4cbc5;
+  --mg-star-orbit: #f4e5cd;
+  --mg-star-continuity: #c7bcae;
   position: absolute;
+  z-index: 2;
   inset: 0;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse at 48% 52%, color-mix(in srgb, var(--mg-star-continuity) 30%, transparent), transparent 34%),
-    radial-gradient(ellipse at 72% 22%, color-mix(in srgb, var(--mg-star-question) 19%, transparent), transparent 36%),
-    radial-gradient(ellipse at 18% 78%, color-mix(in srgb, var(--mg-star-review) 17%, transparent), transparent 34%),
-    var(--mg-star-bg);
-  box-shadow:
-    inset 0 0 220px rgba(0, 0, 0, 0.78);
+  background: transparent;
 }
 
 .scene::before,
@@ -28,21 +22,20 @@
 
 .scene::before {
   z-index: 0;
-  inset: 5% 8% 4%;
+  inset: 20% 12% 14%;
+  opacity: 0.34;
   background:
-    radial-gradient(ellipse at 44% 48%, color-mix(in srgb, var(--mg-star-continuity) 13%, transparent), transparent 25%),
-    radial-gradient(ellipse at 62% 44%, color-mix(in srgb, var(--mg-star-question) 9%, transparent), transparent 31%),
-    radial-gradient(ellipse at 40% 66%, color-mix(in srgb, var(--mg-star-review) 8%, transparent), transparent 28%);
-  filter: blur(26px);
-  mix-blend-mode: screen;
+    radial-gradient(ellipse at 50% 48%, rgb(232 184 108 / 11%), transparent 18%),
+    radial-gradient(ellipse at 50% 52%, rgb(147 181 208 / 7%), transparent 36%);
+  filter: blur(30px);
 }
 
 .scene::after {
-  z-index: 2;
+  z-index: 3;
   inset: 0;
   background:
-    radial-gradient(ellipse at 51% 50%, transparent 48%, color-mix(in srgb, var(--mg-star-bg) 38%, transparent) 88%, color-mix(in srgb, var(--mg-star-bg) 72%, transparent)),
-    linear-gradient(180deg, color-mix(in srgb, var(--mg-star-bg) 24%, transparent), transparent 28% 74%, color-mix(in srgb, var(--mg-star-bg) 40%, transparent));
+    linear-gradient(180deg, rgb(4 9 14 / 14%) 0, transparent 26%, transparent 76%, rgb(4 8 11 / 18%)),
+    radial-gradient(ellipse at 52% 46%, transparent 50%, rgb(3 7 11 / 18%) 94%);
 }
 
 .host,
@@ -59,62 +52,55 @@
 
 .host canvas {
   cursor: grab;
-  filter: contrast(1.18) saturate(1.2) brightness(1.1);
+  filter: contrast(1.04) saturate(1.08) brightness(1.08);
   touch-action: none;
 }
 
-.host canvas:active {
-  cursor: grabbing;
-}
+.host canvas:active { cursor: grabbing; }
 
 .fallback {
   position: absolute;
+  z-index: 5;
   inset: 50% auto auto 50%;
-  width: min(320px, calc(100% - 40px));
-  padding: 14px 18px;
-  border: 1px solid var(--dsw-alias-border-l2);
-  border-radius: 7px;
-  color: var(--dsw-alias-label-secondary);
-  background: var(--dsw-alias-bg-layer-2);
-  font-size: 12px;
-  line-height: 1.6;
+  width: min(340px, calc(100% - 40px));
+  padding: 15px 18px;
+  border-radius: 12px;
+  color: #d9d0c2;
+  background: rgb(8 17 23 / 78%);
+  box-shadow: 0 20px 54px rgb(0 0 0 / 30%);
+  font-size: 11px;
+  line-height: 1.65;
   text-align: center;
   transform: translate(-50%, -50%);
 }
 
 .tooltip {
   position: absolute;
-  z-index: 4;
+  z-index: 6;
   top: clamp(12px, calc(var(--mg-star-y) + 14px), calc(100% - 126px));
   left: clamp(12px, calc(var(--mg-star-x) + 14px), calc(100% - 264px));
   display: grid;
   width: min(240px, calc(100% - 24px));
   gap: 4px;
-  padding: 11px 12px;
+  padding: 11px 13px;
   pointer-events: none;
-  border: 1px solid color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 16%, transparent);
-  border-radius: 7px;
-  color: var(--dsw-alias-label-primary-inverted);
-  background: color-mix(in srgb, var(--dsw-alias-bg-mask-drop) 72%, transparent);
-  box-shadow: 0 12px 34px color-mix(in srgb, var(--dsw-alias-bg-mask-drop) 32%, transparent);
+  border-radius: 11px;
+  color: #fff2df;
+  background: rgb(8 17 23 / 82%);
+  box-shadow: 0 18px 48px rgb(0 0 0 / 32%);
   backdrop-filter: blur(14px);
 }
 
-.tooltip strong {
-  font-size: 13px;
-  font-weight: 620;
-}
+.tooltip strong { font-size: 13px; font-weight: 620; }
+.tooltip p { margin: 0; color: rgb(229 219 203 / 76%); font-size: 10px; line-height: 1.5; }
 
-.tooltip p {
-  margin: 0;
-  color: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 76%, transparent);
-  font-size: 11px;
-  line-height: 1.45;
+@media (max-width: 560px) {
+  .scene::before { inset: 24% 2% 18%; }
+  .host canvas { filter: contrast(1.03) saturate(1.06) brightness(1.08); }
+  .tooltip { backdrop-filter: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .host canvas {
-    cursor: default;
-    filter: contrast(1.06) saturate(1.04);
-  }
+  .host canvas { cursor: default; filter: contrast(1.02) brightness(1.06); }
+  .tooltip { backdrop-filter: none; }
 }

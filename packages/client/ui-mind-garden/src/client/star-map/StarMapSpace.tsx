@@ -1,6 +1,7 @@
 /** Harness-native constellation space backed by an encrypted Star Map profile. */
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { CSSProperties } from 'react'
 import type { MindGardenMode } from '@deepseek-ai/dsh-mind-garden/core/client'
 import type {
   MindGardenOpenQuestion,
@@ -19,6 +20,7 @@ import type {
 } from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type { MindGardenDataResult } from '../slots.ts'
 import type { MindGardenKey } from '../locales.ts'
+import { STAR_MIST_COURTYARD_V5 } from '../generated-assets.ts'
 import { createGardenStarMap } from './model.ts'
 import { StarField } from './StarField.tsx'
 import { StarProfilePanel } from './StarProfilePanel.tsx'
@@ -250,7 +252,12 @@ function CompletedStarMap({
   }
 
   return (
-    <main className={css.space} data-mind-garden-star-map="active">
+    <main
+      className={css.space}
+      data-mind-garden-star-map="active"
+      data-profile-open={profileOpen}
+      style={{ '--mg-star-courtyard': `url("${STAR_MIST_COURTYARD_V5}")` } as CSSProperties}
+    >
       <StarField
         model={model}
         fallback={t('star.fallback')}
@@ -260,7 +267,7 @@ function CompletedStarMap({
       />
       <header className={css.header}>
         <div>
-          <h1>{t('star.title')}</h1>
+          <h1>{t('space.starMap')}</h1>
           <p>{t('star.subtitle')}</p>
         </div>
         <div className={css.headerActions}>

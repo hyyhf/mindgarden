@@ -1,0 +1,9 @@
+Use case: photorealistic-natural
+Asset type: responsive full-bleed background plate for the empty and loading state of a premium photo-story web experience
+Primary request: create a warm rainy-night memory stage in the approved cinematic Direction B.
+Scene/backdrop: a quiet contemporary New Chinese study with an amber glass lamp near a rain-streaked window, a pale ash-wood table, a closed linen photo album and one ceramic cup; soft distant city bokeh through rain; no people.
+Composition/framing: cinematic wide landscape with calm negative space across the center and upper right; important objects stay toward the lower-left and outer edges; preserve a safe center crop for mobile.
+Lighting/mood: exceptionally warm, intimate, safe and contemplative, with realistic amber falloff and reflected rain light.
+Color palette: amber, warm cream, pale wood, smoky umber, with only a trace of ink blue outdoors.
+Constraints: background plate only; no interface, text, glyphs, logos, watermark, dominant green, or strong horizontal divider.
+Avoid: generic stock photography, fantasy, cyberpunk, neon purple, heavy vignette, oversaturated orange, empty black void.

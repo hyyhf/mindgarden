@@ -1,0 +1,12 @@
+Use case: stylized-concept
+Asset type: production web UI scenic background for the Mind Garden “My Philosophy” workspace
+Primary request: Create an elegant warm contemporary New Chinese 3D “living principles” folio room, showing thought as revisable specimens rather than permanent verdicts, with no interface chrome and no text.
+Scene/backdrop: a bright warm-plaster scholar’s alcove with a long floating limestone shelf, a narrow indigo-lacquer recess, and soft rice-paper screens.
+Subject: three distinct blank thought objects arranged asymmetrically: one loose xuan-paper contemplation resting open, one translucent folded proposal sleeve held by a small brass clip, and one bound ivory folio with a muted plum cloth spine standing on a pale-ash support; include a small unmarked porcelain seal and fine brass version rings suggesting revision history.
+Style/medium: premium product-design 3D render, contemporary New Chinese exhibition design, poetic but operational, refined tactile materials, no antique pastiche.
+Composition/framing: wide landscape 3:2; reserve the left 40 percent as warm quiet negative space for semantic title and primary filters; objects rise across center-right at varied heights; strong shelf horizon and generous breathing room.
+Lighting/mood: fresh diffuse morning light with one soft angled beam, contemplative yet welcoming, visually warm without sepia.
+Color palette: warm ivory, xuan white, pale ash, limestone, muted plum, aged brass, one deep indigo recess; no dominant green.
+Materials/textures: paper fibers, translucent rice paper, matte porcelain, cloth weave, pale wood grain, honed stone, brushed brass.
+Constraints: no text, no calligraphy, no letters, no numbers, no logos, no icons, no buttons, no UI cards, no people, no handwriting, no symbols, no fabricated personal content.
+Avoid: scroll painting cliché, Buddhist altar, antique study, dark wood, green wellness palette, glossy luxury gold, crystal ball, floating fantasy objects, perfect grid, clutter, fake interface screenshot.

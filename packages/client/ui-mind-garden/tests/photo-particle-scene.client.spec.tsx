@@ -7,6 +7,7 @@ import { DEFAULT_PHOTO_PARTICLE_CONFIG } from '../src/client/photo-story/presets
 const rendererState = vi.hoisted(() => ({
   fail: false,
   renderers: [] as Array<{
+    options: { readonly alpha?: boolean }
     domElement: HTMLCanvasElement
     render: ReturnType<typeof vi.fn>
     setSize: ReturnType<typeof vi.fn>
@@ -19,6 +20,7 @@ const rendererState = vi.hoisted(() => ({
 vi.mock('three', async (importOriginal) => {
   const actual = await importOriginal<typeof import('three')>()
   class WebGLRenderer {
+    readonly options: { readonly alpha?: boolean }
     readonly domElement = document.createElement('canvas')
     readonly render = vi.fn()
     readonly setSize = vi.fn()
@@ -29,8 +31,9 @@ vi.mock('three', async (importOriginal) => {
     readonly forceContextLoss = vi.fn()
     outputColorSpace = ''
 
-    constructor() {
+    constructor(options: { readonly alpha?: boolean } = {}) {
       if (rendererState.fail) throw new Error('WebGL unavailable')
+      this.options = options
       rendererState.renderers.push(this)
     }
   }
@@ -161,6 +164,8 @@ describe('photo particle scene', () => {
     expect(controller.count).toBeGreaterThan(100)
     const renderer = rendererState.renderers[0]!
     const canvas = renderer.domElement
+    expect(renderer.options.alpha).toBe(false)
+    expect(renderer.setClearColor).toHaveBeenCalledWith(config.rendering.background, 1)
     expect(renderer.setSize).toHaveBeenCalledWith(640, 360, false)
     resizeCallback?.()
     canvas.dispatchEvent(pointer('pointermove', 1, 100, 120))
@@ -218,6 +223,7 @@ describe('photo particle scene', () => {
     )
     expect(view.getByRole('status').textContent).toBe('loading')
     await waitFor(() => { expect(view.container.querySelector('[data-render-state="ready"]')).toBeTruthy() })
+    expect(view.container.querySelector('[data-render-state="ready"] img')).toBeNull()
     expect(onCount).toHaveBeenCalledWith(expect.any(Number))
     view.rerender(
       <PhotoParticleScene

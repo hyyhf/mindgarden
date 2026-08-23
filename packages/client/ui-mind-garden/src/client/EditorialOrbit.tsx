@@ -1,63 +1,22 @@
-/** Responsive personal orrery for the Today observatory. */
+/** Responsive paper corridor for the Today workspace. */
 
 import { useEffect, useRef } from 'react'
 import type { CSSProperties, PointerEvent, ReactNode } from 'react'
 import type { MindGardenOpenQuestion, MindGardenPeriodReview } from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import type { MindGardenMode } from '@deepseek-ai/dsh-mind-garden/core/client'
 import type { MindGardenKey } from './locales.ts'
+import { GARDEN_HOME_COURTYARD_V4 } from './generated-assets.ts'
 import css from './EditorialOrbit.module.css'
 
-interface OrbitNode {
-  readonly id: string
+interface CorridorStation {
+  readonly id: 'checkin' | 'question' | 'review'
+  readonly href: string
   readonly label: string
   readonly meta: string
-  readonly kind: 'question' | 'review' | 'continuity'
+  readonly kind: 'porcelain' | 'paper' | 'stone'
 }
 
-const POSITIONS = [
-  { x: 31, y: 17, depth: 12 },
-  { x: 69, y: 17, depth: 18 },
-  { x: 84, y: 50, depth: 8 },
-  { x: 69, y: 83, depth: 16 },
-  { x: 31, y: 83, depth: 10 },
-  { x: 16, y: 50, depth: 20 },
-] as const
-
-function orbitNodes(
-  questions: readonly MindGardenOpenQuestion[],
-  reviews: readonly MindGardenPeriodReview[],
-  t: (key: MindGardenKey) => string,
-): readonly OrbitNode[] {
-  const nodes: OrbitNode[] = [
-    ...questions.filter(item => item.status === 'open').slice(0, 3).map(item => ({
-      id: String(item.id),
-      label: item.question,
-      meta: t('orbit.question.meta'),
-      kind: 'question' as const,
-    })),
-    ...reviews.filter(item => item.status === 'saved').slice(0, 3).map(item => ({
-      id: String(item.id),
-      label: item.content,
-      meta: item.endStamp.localDate,
-      kind: 'review' as const,
-    })),
-  ]
-  const fallbacks: readonly OrbitNode[] = [
-    { id: 'today', label: t('orbit.fallback.today'), meta: t('orbit.fallback.unnamed'), kind: 'continuity' },
-    { id: 'memory', label: t('orbit.fallback.memory'), meta: t('orbit.fallback.unwritten'), kind: 'review' },
-    { id: 'tomorrow', label: t('orbit.fallback.tomorrow'), meta: t('orbit.fallback.choice'), kind: 'question' },
-    { id: 'stillness', label: t('orbit.fallback.stillness'), meta: t('orbit.fallback.permission'), kind: 'continuity' },
-    { id: 'noticed', label: t('orbit.fallback.noticed'), meta: t('orbit.fallback.stay'), kind: 'review' },
-    { id: 'return', label: t('orbit.fallback.return'), meta: t('orbit.fallback.waiting'), kind: 'question' },
-  ]
-  for (const fallback of fallbacks) {
-    if (nodes.length >= POSITIONS.length) break
-    nodes.push(fallback)
-  }
-  return nodes.slice(0, POSITIONS.length)
-}
-
-/** Render real reflection records inside a responsive, non-authoritative spatial instrument. */
+/** Render truthful records as three navigable stations in the morning paper corridor. */
 export function EditorialOrbit({
   questions,
   reviews,
@@ -71,112 +30,122 @@ export function EditorialOrbit({
   readonly t: (key: MindGardenKey) => string
   readonly children?: ReactNode
 }) {
-  const nodes = orbitNodes(questions, reviews, t)
+  const modeLabel = mode === 'serenity' ? t('mode.serenity') : t('mode.clarity')
+  const currentQuestion = questions.find(item => item.status === 'open')
+  const currentReview = reviews.find(item => item.status === 'saved')
   const openCount = questions.filter(item => item.status === 'open').length
   const savedCount = reviews.filter(item => item.status === 'saved').length
-  const orbitRef = useRef<HTMLElement>(null)
+  const corridorRef = useRef<HTMLElement>(null)
   const tiltFrame = useRef<number | undefined>(undefined)
   const pointerPosition = useRef({ x: 0, y: 0 })
+  const stations: readonly CorridorStation[] = [
+    {
+      id: 'checkin',
+      href: '#mind-garden-today-title',
+      label: t('today.observatory.checkin'),
+      meta: modeLabel,
+      kind: 'porcelain',
+    },
+    {
+      id: 'question',
+      href: '#mind-garden-questions-title',
+      label: currentQuestion?.question ?? t('orbit.fallback.stillness'),
+      meta: t('today.echo.question'),
+      kind: 'paper',
+    },
+    {
+      id: 'review',
+      href: '#mind-garden-reviews-title',
+      label: currentReview?.content ?? t('orbit.fallback.memory'),
+      meta: t('today.echo.review'),
+      kind: 'stone',
+    },
+  ]
 
   useEffect(() => () => {
     if (tiltFrame.current !== undefined) window.cancelAnimationFrame(tiltFrame.current)
   }, [])
 
-  function tiltInstrument(event: PointerEvent<HTMLElement>) {
+  function tiltCorridor(event: PointerEvent<HTMLElement>) {
     if (event.pointerType === 'touch') return
     const bounds = event.currentTarget.getBoundingClientRect()
-    const x = ((event.clientX - bounds.left) / bounds.width) - 0.5
-    const y = ((event.clientY - bounds.top) / bounds.height) - 0.5
-    pointerPosition.current = { x, y }
-    event.currentTarget.dataset.interacting = 'true'
+    pointerPosition.current = {
+      x: ((event.clientX - bounds.left) / bounds.width) - 0.5,
+      y: ((event.clientY - bounds.top) / bounds.height) - 0.5,
+    }
     if (tiltFrame.current !== undefined) return
     tiltFrame.current = window.requestAnimationFrame(() => {
       tiltFrame.current = undefined
-      const target = orbitRef.current
-      /* v8 ignore next -- the scheduled frame can outlive an HMR disposal. */
+      const target = corridorRef.current
+      /* v8 ignore next -- a scheduled frame can outlive HMR disposal. */
       if (target === null) return
       const next = pointerPosition.current
-      target.style.setProperty('--orbit-tilt-x', `${(-next.y * 3).toFixed(2)}deg`)
-      target.style.setProperty('--orbit-tilt-y', `${(next.x * 4.5).toFixed(2)}deg`)
-      target.style.setProperty('--orbit-light-x', `${((next.x + 0.5) * 100).toFixed(1)}%`)
-      target.style.setProperty('--orbit-light-y', `${((next.y + 0.5) * 100).toFixed(1)}%`)
+      target.style.setProperty('--corridor-tilt-x', `${(-next.y * 1.8).toFixed(2)}deg`)
+      target.style.setProperty('--corridor-tilt-y', `${(next.x * 2.4).toFixed(2)}deg`)
+      target.style.setProperty('--corridor-light-x', `${((next.x + 0.5) * 100).toFixed(1)}%`)
     })
   }
 
-  function settleInstrument() {
+  function settleCorridor() {
     if (tiltFrame.current !== undefined) window.cancelAnimationFrame(tiltFrame.current)
     tiltFrame.current = undefined
-    const target = orbitRef.current
+    const target = corridorRef.current
     if (target === null) return
-    delete target.dataset.interacting
-    target.style.setProperty('--orbit-tilt-x', '0deg')
-    target.style.setProperty('--orbit-tilt-y', '0deg')
-    target.style.setProperty('--orbit-light-x', '32%')
-    target.style.setProperty('--orbit-light-y', '24%')
+    target.style.setProperty('--corridor-tilt-x', '0deg')
+    target.style.setProperty('--corridor-tilt-y', '0deg')
+    target.style.setProperty('--corridor-light-x', '28%')
   }
 
   return (
     <figure
-      ref={orbitRef}
-      className={css.orbit}
+      ref={corridorRef}
+      className={css.corridor}
+      style={{ '--mg-courtyard-scene': `url("${GARDEN_HOME_COURTYARD_V4}")` } as CSSProperties}
       aria-label={t('orbit.label')}
-      onPointerMove={tiltInstrument}
-      onPointerLeave={settleInstrument}
+      onPointerMove={tiltCorridor}
+      onPointerLeave={settleCorridor}
     >
-      <span className={css.starDepth} aria-hidden="true">
-        {Array.from({ length: 32 }, (_, index) => <i key={index} />)}
-      </span>
-      <div className={css.instrumentFrame} aria-hidden="true">
-        <span className={css.outerShadow} />
-        <span className={css.brassBezel} />
-        <span className={css.enamelWell} />
-        <svg className={css.instrument} viewBox="0 0 100 100">
-          <g className={css.rotorSlow}>
-            <circle className={css.calibrationOuter} cx="50" cy="50" r="45" pathLength="96" />
-          </g>
-          <g className={css.centerMark}>
-            <circle cx="50" cy="50" r="11" />
-            <circle cx="50" cy="50" r="2.4" />
-          </g>
-        </svg>
-        <span className={css.crown} />
-      </div>
-      <ol className={css.nodes}>
-        {nodes.map((node, index) => {
-          const position = POSITIONS[index] ?? POSITIONS[0]
-          return (
-            <li
-              key={node.id}
-              data-kind={node.kind}
-              style={{
-                '--orbit-x': `${position.x}%`,
-                '--orbit-y': `${position.y}%`,
-                '--orbit-depth': `${position.depth}px`,
-                '--orbit-delay': `${index * -1.7}s`,
-              } as CSSProperties}
-            >
-              <span className={css.node} aria-hidden="true" />
-              <span className={css.nodeCopy}>
-                <strong>{node.label}</strong>
-                <small>{node.meta}</small>
-              </span>
-            </li>
-          )
-        })}
-      </ol>
-      <div className={css.centerContent}>
+      <div className={css.entry}>
         {children ?? (
-          <span className={css.center}>
+          <span className={css.defaultEntry}>
             <strong>{t('orbit.center')}</strong>
-            <small>{t(`mode.${mode}`)}</small>
+            <small>{modeLabel}</small>
           </span>
         )}
       </div>
-      <figcaption>
-        {t('orbit.summary')
-          .replace('{questions}', String(openCount))
-          .replace('{reviews}', String(savedCount))}
-      </figcaption>
+
+      <div className={css.scene}>
+        <span className={css.morningLight} aria-hidden="true" />
+        <svg className={css.path} viewBox="0 0 760 330" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M38 260 C155 180 240 238 336 152 S530 148 722 56" />
+          <circle cx="62" cy="244" r="4" />
+          <circle cx="346" cy="142" r="4" />
+          <circle cx="700" cy="68" r="4" />
+        </svg>
+        <ol className={css.stations}>
+          {stations.map((station, index) => (
+            <li key={station.id} data-kind={station.kind} data-position={index + 1}>
+              <a href={station.href} className={css.station}>
+                <span className={css.material} aria-hidden="true">
+                  {station.kind === 'porcelain' && <span className={css.porcelainToken} />}
+                  {station.kind === 'paper' && <span className={css.paperFold} />}
+                  {station.kind === 'stone' && <span className={css.stoneSeal} />}
+                </span>
+                <span className={css.stationCopy}>
+                  <small>{station.meta}</small>
+                  <strong>{station.label}</strong>
+                  <em>{t('orbit.fallback.return')} →</em>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+        <aside className={css.sceneNote}>
+          <strong>{t('today.echo.title')}</strong>
+          <span>{t('orbit.summary').replace('{questions}', String(openCount)).replace('{reviews}', String(savedCount))}</span>
+        </aside>
+      </div>
+
     </figure>
   )
 }

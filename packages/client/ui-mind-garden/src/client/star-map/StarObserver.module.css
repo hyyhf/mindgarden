@@ -1,12 +1,12 @@
 .observatory {
   --dsw-alias-label-primary: #f3eddd;
-  --dsw-alias-label-secondary: #a9b7a9;
-  --dsw-alias-bg-base: #07130f;
-  --dsw-alias-bg-layer-1: #0d2019;
-  --dsw-alias-bg-layer-2: #10261e;
-  --dsw-alias-border-l2: #314a3e;
-  --dsw-alias-state-business-primary: #d5aa53;
-  --dsw-alias-state-warn-primary: #e2b34f;
+  --dsw-alias-label-secondary: #c2c0b9;
+  --dsw-alias-bg-base: #0c1420;
+  --dsw-alias-bg-layer-1: #172232;
+  --dsw-alias-bg-layer-2: #202d40;
+  --dsw-alias-border-l2: #3a4658;
+  --dsw-alias-state-business-primary: #c89b52;
+  --dsw-alias-state-warn-primary: #d0aa67;
   position: absolute;
   z-index: 5;
   bottom: 26px;
@@ -262,4 +262,82 @@ summary:focus-visible { outline: 2px solid var(--dsw-alias-state-business-primar
   .thinking i { animation: none; }
   .desk,
   .summon { backdrop-filter: none; }
+}
+
+/* Direction B: a quiet brass seal opens a professional observing desk. */
+.observatory {
+  z-index: 8;
+  bottom: 18px;
+  width: min(760px, calc(100% - 40px));
+}
+
+.summon {
+  min-width: 218px;
+  min-height: 52px;
+  padding: 8px 15px;
+  border: 0;
+  border-radius: 999px;
+  color: #20170f;
+  background: #e3b667;
+  box-shadow: 0 18px 48px rgb(0 0 0 / 34%);
+}
+
+.summon small { color: rgb(32 23 15 / 66%); }
+
+.desk {
+  bottom: 64px;
+  max-height: min(72vh, 680px);
+  border: 0;
+  border-radius: 14px;
+  color: #f6ecde;
+  background: rgb(8 17 22 / 92%);
+  box-shadow: 0 30px 90px rgb(0 0 0 / 48%);
+  backdrop-filter: blur(24px) saturate(0.86);
+}
+
+.deskHeader { align-items: center; padding: 17px 20px 10px; border-bottom: 0; }
+.deskHeader h2 { font-family: var(--mg-font-display, 'Noto Serif SC', serif); font-size: 21px; font-weight: 540; }
+.deskHeader button { width: 36px; height: 36px; border-radius: 9px; }
+
+.cardShelf { padding: 6px 16px 0; scrollbar-color: rgb(225 177 101 / 30%) transparent; }
+.cardShelf button { min-height: 34px; border: 0; border-radius: 9px; background: rgb(255 244 226 / 7%); }
+.cardShelf button[data-selected='true'] { color: #fff1db; background: rgb(228 181 102 / 16%); }
+
+.drawDesk { gap: 16px; padding: 16px 20px 20px; }
+.decks button { min-height: 62px; border: 0; border-radius: 11px; background: rgb(255 244 226 / 6%); }
+.decks button[data-selected='true'] { color: #fff1db; background: rgb(226 179 97 / 16%); }
+
+.question textarea,
+.calibration textarea,
+.composer textarea { border: 0; border-radius: 10px; outline: 1px solid rgb(246 229 205 / 14%); color: #f8eee0; background: rgb(3 9 13 / 48%); caret-color: #e3b667; }
+
+.permissionLine { padding: 11px 12px; border-left: 0; border-radius: 10px; background: rgb(227 182 103 / 8%); }
+.draw, .save { min-height: 42px; border: 0; border-radius: 10px; color: #20170f; background: #e3b667; }
+
+.card { gap: 14px; margin: 10px 16px 16px; padding: 20px; border: 0; border-radius: 13px; background: rgb(255 244 226 / 6%); }
+.cardGlow { display: none; }
+.card h3 { color: #fff2df; font-weight: 540; }
+.analysis { gap: 8px; overflow: visible; border: 0; background: transparent; }
+.analysis div { border-radius: 10px; background: rgb(3 9 13 / 40%); }
+.evidence, .imagination, .card blockquote { border-left: 0; border-radius: 10px; }
+.evidence p { border-top: 0; }
+
+.dialogue, .calibration { border-top: 0; }
+.transcript { border: 0; border-radius: 10px; background: rgb(3 9 13 / 34%); }
+.transcript article[data-role='assistant'] { border: 0; background: rgb(255 244 226 / 7%); }
+.revision { border: 0; border-radius: 10px; }
+.quickReplies button { border: 0; border-radius: 9px; background: rgb(255 244 226 / 7%); }
+.composer > button { border: 0; background: #e3b667; }
+.calibration button, .card footer button { border: 0; border-radius: 9px; background: rgb(255 244 226 / 7%); }
+.calibration button[data-selected='true'] { color: #f1c47c; background: rgb(226 179 97 / 14%); }
+.savedState { border: 0; border-radius: 10px; }
+
+@media (max-width: 560px) {
+  .observatory { bottom: 10px; width: calc(100% - 20px); }
+  .summon { min-width: 196px; min-height: 48px; }
+  .desk { bottom: 58px; max-height: 64vh; backdrop-filter: none; }
+  .deskHeader { padding: 14px 15px 8px; }
+  .drawDesk { padding: 13px 15px 16px; }
+  .decks { gap: 5px; }
+  .decks button { min-height: 56px; }
 }

@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: high-resolution background plate behind an interactive Three.js personal star-map
+Primary request: create a breathtaking but quiet contemporary New Chinese “雾岚星庭” night observatory in the approved cinematic Direction B.
+Scene/backdrop: beneath restrained dark timber eaves, looking over layers of misty water, distant low mountains and sparse pines; a few small warm lanterns sit along the far bank while the central sky remains open for a live constellation.
+Composition/framing: cinematic wide landscape; eaves frame only the top corners, the foreground terrace stays low, and the central sky preserves a safe crop for mobile.
+Lighting/mood: moonlit blue-black mist balanced by warm lantern light, welcoming rather than cold, with deep spatial layers.
+Color palette: ink blue-black, warm amber, muted rice-paper light, dark pine and clay; not green-dominant.
+Constraints: background plate only; no UI, text, stars, constellations, planets, orbit lines, people, logos, watermark, or large horizontal divider.
+Avoid: fantasy palace, game loading screen, neon galaxy, purple nebula, generic outer space, mountains filling the central sky, excessive lanterns.

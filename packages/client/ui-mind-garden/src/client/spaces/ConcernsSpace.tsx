@@ -1,7 +1,7 @@
 /** Private concern basket backed by encrypted reflection records. */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import {
   IconCheckOutline16,
   IconEditOutline16,
@@ -10,6 +10,7 @@ import {
 import type { MindGardenConcern } from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { calendarStamp } from '../calendar.ts'
 import { ConcernsIcon, JournalIcon, PrivateIcon } from '../GardenIcons.tsx'
+import { CONCERN_PAPER_LATTICE_V3 } from '../generated-assets.ts'
 import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenViewActions } from '../slots.ts'
 import shared from './GardenSpace.module.css'
@@ -158,69 +159,65 @@ export function ConcernsSpace({
 
   return (
     <main className={shared.space} data-mind-garden-space="concerns">
-      <header className={shared.header}>
-        <div>
-          <span className={shared.eyebrow}>{t('concern.eyebrow')}</span>
+      <section className={css.threshold} style={{ '--mg-concern-scene': `url("${CONCERN_PAPER_LATTICE_V3}")` } as CSSProperties}>
+        <header className={css.intro}>
+          <div>
           <h1>{t('concern.title')}</h1>
           <p>{t('concern.subtitle')}</p>
-        </div>
-        <aside className={css.privacy}>
-          <PrivateIcon size={17} />
-          <span>{t('space.private')}</span>
-        </aside>
-      </header>
+          </div>
+          <aside className={css.privacy}>
+            <PrivateIcon size={17} />
+            <span>{t('space.private')}</span>
+          </aside>
+        </header>
 
-      <form className={`${shared.panel} ${css.composer}`} onSubmit={(event) => { void submit(event) }}>
-        <div className={css.composerIntro}>
-          <span className={css.composerSeal}><ConcernsIcon size={22} /></span>
-          <div>
-            <small>{t('concern.compose.eyebrow')}</small>
+        <form className={`${shared.panel} ${css.composer}`} onSubmit={(event) => { void submit(event) }}>
+          <div className={css.composerIntro}>
+            <span className={css.composerSeal}><ConcernsIcon size={18} /></span>
             <h2>{t('concern.compose.title')}</h2>
-            <p>{t('concern.compose.body')}</p>
           </div>
-        </div>
-        <div className={css.composerFields}>
-          <label className={css.concernField}>
-            <span>{t('concern.input')}</span>
-            <textarea
-              className={shared.textarea}
-              value={content}
-              placeholder={t('concern.placeholder')}
-              onChange={(event) => { setContent(event.target.value) }}
-            />
-          </label>
-          <div className={css.composerFooter}>
-            <label className={css.reminderField}>
-              <span>{t('concern.reminder')}</span>
-              <input
-                className={shared.input}
-                type="date"
-                min={today}
-                value={reminder}
-                onChange={(event) => { setReminder(event.target.value) }}
+          <div className={css.composerFields}>
+            <label className={css.concernField}>
+              <span>{t('concern.input')}</span>
+              <textarea
+                className={shared.textarea}
+                value={content}
+                placeholder={t('concern.placeholder')}
+                onChange={(event) => { setContent(event.target.value) }}
               />
             </label>
-            <label className={css.retrieval}>
-              <input
-                type="checkbox"
-                checked={allowRetrieval}
-                onChange={(event) => { setAllowRetrieval(event.target.checked) }}
-              />
-              <span>{t('concern.retrieval')}</span>
-            </label>
-            <button className={shared.button} type="submit" disabled={pending || content.trim() === ''}>
-              {t('concern.add')}
-            </button>
+            <div className={css.composerFooter}>
+              <label className={css.reminderField}>
+                <span>{t('concern.reminder')}</span>
+                <input
+                  className={shared.input}
+                  type="date"
+                  min={today}
+                  value={reminder}
+                  onChange={(event) => { setReminder(event.target.value) }}
+                />
+              </label>
+              <label className={css.retrieval}>
+                <input
+                  type="checkbox"
+                  checked={allowRetrieval}
+                  onChange={(event) => { setAllowRetrieval(event.target.checked) }}
+                />
+                <span>{t('concern.retrieval')}</span>
+              </label>
+              <button className={shared.button} type="submit" disabled={pending || content.trim() === ''}>
+                {t('concern.add')}
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </section>
 
       {notice !== null && <p className={shared.notice} role="status">{t(notice)}</p>}
       {error && <p className={shared.error} role="alert">{t('concern.error')}</p>}
       <section className={css.collection} aria-labelledby="mind-garden-concern-collection">
         <header className={css.collectionHeader}>
           <div>
-            <span>{t('concern.compose.eyebrow')}</span>
             <h2 id="mind-garden-concern-collection">{t('concern.collection.title')}</h2>
           </div>
           <strong>{concerns.length === 0

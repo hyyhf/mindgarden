@@ -1,0 +1,7 @@
+{
+  "promptFile": "porcelain-thought-token-v2.prompt.txt",
+  "source": "imagegen",
+  "reference": "mindgarden/.impeccable/mocks/today-b-paper-corridor.png",
+  "postprocess": "Chroma #00FF00 removed with imagegen remove_chroma_key.py; soft matte, spill cleanup, one-pixel edge contract.",
+  "createdAt": "2026-08-23T00:00:00+08:00"
+}

@@ -1,0 +1,10 @@
+Use case: stylized-concept
+Asset type: full-bleed background for a premium interactive photo-memory theatre
+Primary request: faithfully refine approved Direction B as a standalone environment plate, without interface elements.
+Scene/backdrop: rain-streaked night window above a dark walnut desk; sculptural amber glass lamp on the left; open cream-paper memory album, handcrafted dark ceramic tea cup and fountain pen; subtle golden dust close to the lamp and page edge.
+Style/medium: cinematic photorealism with refined contemporary new-Chinese interior styling and tactile wood, paper and glass.
+Composition/framing: wide 16:9; foreground lamp and album anchor; calm dark negative space across the upper-right and right third for live UI.
+Lighting/mood: intimate and warm, with smooth amber gradients, detailed cocoa-black shadows, soft steam and wet-window reflections.
+Color palette: warm ivory, amber gold, tea brown and restrained charcoal; no green cast.
+Constraints: no people, readable writing, text, UI, logo or watermark.
+Avoid: orange clipping, fake HDR, excessive blur, flat black voids and clutter.

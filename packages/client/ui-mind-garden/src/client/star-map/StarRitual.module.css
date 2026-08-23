@@ -1,12 +1,12 @@
 .ritual {
   --dsw-alias-label-primary: #f3eddd;
-  --dsw-alias-label-secondary: #a9b7a9;
-  --dsw-alias-label-inverse: #07130f;
-  --dsw-alias-bg-base: #07130f;
-  --dsw-alias-bg-layer-1: #0d2019;
-  --dsw-alias-bg-layer-2: #10261e;
-  --dsw-alias-border-l2: #314a3e;
-  --dsw-alias-state-business-primary: #d5aa53;
+  --dsw-alias-label-secondary: #c2c0b9;
+  --dsw-alias-label-inverse: #0c1420;
+  --dsw-alias-bg-base: #0c1420;
+  --dsw-alias-bg-layer-1: #172232;
+  --dsw-alias-bg-layer-2: #202d40;
+  --dsw-alias-border-l2: #3a4658;
+  --dsw-alias-state-business-primary: #c89b52;
   position: relative;
   min-height: 100%;
   box-sizing: border-box;
@@ -190,5 +190,35 @@
   .sky::before,
   .sky::after,
   .sky i { animation: none; }
+  .card { backdrop-filter: none; }
+}
+
+/* The onboarding ritual lives inside the same warm mist courtyard. */
+.ritual {
+  min-height: max(720px, calc(100dvh - 126px));
+  background-color: #07101a;
+  background-image: linear-gradient(180deg, rgb(3 8 13 / 42%), rgb(3 8 13 / 68%)), var(--mg-star-courtyard);
+  background-position: center;
+  background-size: cover;
+}
+
+.sky::before,
+.sky::after { opacity: 0.1; }
+
+.header h1 { color: #fff3e2; font-weight: 520; letter-spacing: -0.03em; text-shadow: 0 12px 42px rgb(0 0 0 / 72%); }
+.header p { color: rgb(233 223 208 / 76%); text-shadow: 0 5px 18px #000; }
+.header button, .actions button { min-height: 42px; border: 0; border-radius: 10px; color: #e1d6c7; background: rgb(8 17 22 / 72%); }
+
+.card { border: 0; border-radius: 14px; background: rgb(8 17 22 / 88%); box-shadow: 0 28px 84px rgb(0 0 0 / 40%); }
+.progress { border-bottom: 0; }
+.progress i { border: 0; background: rgb(255 244 226 / 8%); }
+.progress li[data-active='true'] i, .progress li[data-complete='true'] i { border-color: transparent; background: rgb(226 179 97 / 20%); }
+.stage input:not([type='checkbox'], [type='radio']), .stage textarea { border: 0; border-radius: 10px; outline: 1px solid rgb(245 228 203 / 14%); background: rgb(3 9 13 / 48%); caret-color: #e3b667; }
+.choiceGrid label, .scenes label { border: 0; border-radius: 10px; background: rgb(255 244 226 / 6%); }
+.choiceGrid label[data-selected='true'], .scenes label[data-selected='true'] { border-color: transparent; color: #fff0d8; background: rgb(226 179 97 / 17%); }
+.actions { border-top: 0; }
+
+@media (max-width: 720px) {
+  .ritual { min-height: max(760px, calc(100dvh - 116px)); padding: 24px 14px 40px; }
   .card { backdrop-filter: none; }
 }

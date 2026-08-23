@@ -1,0 +1,12 @@
+Use case: stylized-concept
+Asset type: production web UI empty-state scenic background for the Mind Garden “Photo Story” workspace
+Primary request: Create a warm contemporary New Chinese 3D photo-story threshold where a person feels invited to place a real photograph and begin, with no interface chrome, no text, and no fake photos.
+Scene/backdrop: an airy warm-ivory alcove with pale-ash display rails, a low limestone plinth and softly layered xuan-paper screens.
+Subject: three empty photo objects at different depths—one blank translucent rice-paper sleeve suspended from a fine brass rail, one empty pale-wood frame leaning on the plinth, and one closed ivory album with a muted plum cloth tie; a small matte porcelain lens-like ring suggests looking without pretending to be a camera.
+Style/medium: premium product-design 3D render, contemporary New Chinese gallery installation, tactile, fresh, intimate, suitable behind a real upload control.
+Composition/framing: wide landscape 3:2; place the visual objects primarily on the left and center; leave the right 36 percent calm, warm, and low-detail for semantic upload disclosure and action; preserve clear foreground-to-background depth.
+Lighting/mood: soft clear morning light through rice-paper screens, warm and welcoming, slightly cinematic but not dark.
+Color palette: warm ivory, rice paper, pale ash, limestone, restrained brass, muted plum, one tiny indigo detail; no dominant green and no black darkroom.
+Materials/textures: visible xuan fibers, translucent paper, matte album cloth, fine pale wood grain, honed stone, subtle brass highlights.
+Constraints: no text, no letters, no numbers, no logos, no icons, no buttons, no people, no faces, no photographs or painted scenes inside frames, no personal data; every frame and sleeve remains visibly empty.
+Avoid: generic photo gallery wall, polaroid cliché, camera equipment, darkroom red light, green plants as focal point, glossy luxury gold, clutter, fake interface screenshot.

@@ -25,12 +25,13 @@ function review(id: string, status: 'saved' | 'proposed'): MindGardenPeriodRevie
 }
 
 describe('EditorialOrbit', () => {
-  it('keeps a complete six-point instrument before any records exist', () => {
+  it('keeps all three corridor stations available before any records exist', () => {
     const view = render(<EditorialOrbit questions={[]} reviews={[]} mode="serenity" t={t} />)
 
-    expect(view.getAllByRole('listitem')).toHaveLength(6)
-    expect(view.getByText(zh['orbit.fallback.today'])).toBeTruthy()
-    expect(view.getByText(zh['orbit.fallback.return'])).toBeTruthy()
+    expect(view.getAllByRole('listitem')).toHaveLength(3)
+    expect(view.getByText(zh['orbit.fallback.stillness'])).toBeTruthy()
+    expect(view.getByText(zh['orbit.fallback.memory'])).toBeTruthy()
+    expect(view.getAllByText((_content, element) => element?.tagName === 'EM')).toHaveLength(3)
     expect(view.getByText('0 个开放问题 · 0 段已保存回望')).toBeTruthy()
   })
 
@@ -49,7 +50,7 @@ describe('EditorialOrbit', () => {
     expect(view.getByText('回望 saved')).toBeTruthy()
     expect(view.queryByText('回望 draft')).toBeNull()
     expect(view.getByText('1 个开放问题 · 1 段已保存回望')).toBeTruthy()
-    expect(view.getByText(zh['mode.clarity'])).toBeTruthy()
+    expect(view.getAllByText(zh['mode.clarity'])).toHaveLength(2)
   })
 
   it('keeps the garden mark usable at its default icon size', () => {

@@ -1,27 +1,29 @@
 <p align="center">
-  <img src="assets/mind-garden-header.png" alt="A warm illustrated garden path beneath a gentle constellation" width="100%">
+  <img src="assets/mind-garden-real-today.png" alt="Mind Garden Today after a real user saved an open question" width="100%">
 </p>
 
 <h1 align="center">Mind Garden</h1>
 
 <p align="center">
-  <strong>A private place to reflect inside DeepSeek Harness.</strong><br>
-  Companion dialogue, user-governed memory, and nine contemplative spaces—without giving the model ownership of your story.
+  <strong>A warm, private place to reflect inside DeepSeek Harness.</strong><br>
+  Real companion dialogue, user-governed memory, cinematic photo particles, and a living 3D constellation—without giving the model ownership of your story.
 </p>
 
 <p align="center">
   <a href="https://github.com/hyyhf/mindgarden/actions/workflows/verify.yml"><img alt="Verification status" src="https://github.com/hyyhf/mindgarden/actions/workflows/verify.yml/badge.svg"></a>
   <img alt="Release v0.1.0-rc.7" src="https://img.shields.io/badge/release-v0.1.0--rc.7-7C3AED?style=flat-square">
   <img alt="Requires DeepSeek Harness 0.1.1-rc.1 or newer" src="https://img.shields.io/badge/Harness-%E2%89%A50.1.1--rc.1-0369A1?style=flat-square">
+  <img alt="DeepSeek V4 Flash verified" src="https://img.shields.io/badge/DeepSeek-V4--Flash-315D8A?style=flat-square">
+  <img alt="DeepSeek V4 Flash Vision Exp verified" src="https://img.shields.io/badge/Vision-V4--Flash--Vision--Exp-BB7A35?style=flat-square">
 </p>
 
 <p align="center">English · <a href="README.zh.md">简体中文</a></p>
 
-Mind Garden is an installable companion and private-reflection workspace for the DeepSeek Harness Web profile. Ordinary conversation stays in Harness Sessions while Mind Garden adds a calm dialogue posture, encrypted personal records, governed memory, original Fun Garden migration, and expressive 3D and particle scenes.
+Mind Garden is an installable companion and private-reflection workspace for the DeepSeek Harness Web profile. Ordinary conversation remains a Harness Session while the garden adds encrypted personal records, governed memory, original Fun Garden migration, nine connected reflection spaces, and expressive 3D and photo-particle scenes.
 
 It reuses Harness providers, credentials, storage, attachments, Remotes, and plugin lifecycle. It does not fork or copy the DeepSeek Harness application.
 
-### Install in three commands
+### Enter the garden in three commands
 
 ```sh
 dsh plugin --profile web add git+https://github.com/hyyhf/mindgarden.git
@@ -31,13 +33,25 @@ dsh web
 
 Requires DeepSeek Harness `0.1.1-rc.1` or newer, `pnpm` on `PATH`, and a configured model provider. Photo observation uses the official DeepSeek route and requires a Harness-managed `DEEPSEEK_API_KEY`. See [Install](#install) for profile requirements, updates, and local development.
 
-![A real DeepSeek-V4-Flash companion turn rendered inside Mind Garden](assets/mind-garden-real-companion.png)
+## A real journey, not a mockup
 
-This capture comes from the opt-in real-provider path: `deepseek-v4-flash` answers through the shipped DeepSeek adapter, the reply passes the Mind Garden safety plugin, and the real Harness Web composition renders the result.
+The sequence below comes from one fresh Harness Web session. A user enters Mind Garden, sends a reflective message to `deepseek-v4-flash`, saves an open question, completes the constellation ritual, switches to the compact layout, admits a photograph, and asks `deepseek-v4-flash-vision-exp` to observe it. The tests assert the provider and model recorded in the durable events before saving these screenshots.
 
-![A real DeepSeek-V4-Flash-Vision-Exp observation grounded in the attached photograph](assets/mind-garden-real-photo-story.png)
+<table>
+  <tr>
+    <td width="50%"><img src="assets/mind-garden-real-companion.png" alt="A real DeepSeek V4 Flash companion reply"><br><strong>1 · A real companion turn</strong><br>The response passes through the shipped dialogue and safety plugins, then appears in the ordinary Harness conversation.</td>
+    <td width="50%"><img src="assets/mind-garden-real-today.png" alt="The real saved question shown on Today"><br><strong>2 · The result becomes useful</strong><br>The user saves a question through the UI and sees it become a truthful station in the morning courtyard.</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="assets/mind-garden-real-constellation.png" alt="The completed constellation ritual"><br><strong>3 · A constellation with provenance</strong><br>Self-authored traits and the open question become distinguishable nodes around the current self.</td>
+    <td width="50%"><img src="assets/mind-garden-real-photo-story.png" alt="A real DeepSeek V4 Flash Vision Exp observation"><br><strong>4 · A grounded photo observation</strong><br>The vision model describes visible details and returns an explicitly unconfirmed observation beside the live particle scene.</td>
+  </tr>
+</table>
 
-This is a second real-provider run, not seeded gallery copy. `deepseek-v4-flash-vision-exp` receives the admitted photograph through Harness, identifies only visible details, and returns a provisional observation that remains unconfirmed until the user accepts it.
+<p align="center">
+  <img src="assets/mind-garden-real-mobile.png" width="390" alt="The same real user question in the compact Harness shell"><br>
+  <sub>The same session in a 390 px viewport; the main actions and the Harness composer remain reachable.</sub>
+</p>
 
 ## A garden that leaves conclusions with you
 
@@ -66,8 +80,7 @@ The persistent garden rail exposes nine spaces:
 | **Life Review** | Week, month, and year material snapshots plus saved reviews whose original sources remain inspectable even after later changes. |
 | **My Philosophy** | Contemplation notes, accepted notes, versioned principles, and open questions that can remain unresolved. |
 
-<details>
-<summary><strong>Open the complete live gallery</strong></summary>
+## The complete live gallery
 
 Every desktop image below comes from the real DeepSeek Harness Web composition. The deterministic gallery scenario writes fictional, repository-owned records through the installed Host services, admits the generated demo photograph through Harness attachments, opens the working Client space, and captures the rendered result. No personal material or static UI mockup is used.
 
@@ -83,9 +96,13 @@ The entry keeps model disclosure, profile storage, emergency limits, and the use
 
 Today combines the tactile orrery, current question, saved review, daily check-in, and journal path without turning the opening into a generic dashboard.
 
+![The real Today workbench after a mood and energy check-in](assets/mind-garden-demo-today-practice.png)
+
+The second frame shows the result of opening the daily workbench: a complete check-in, journal editor, retrieval consent, and the records already created for the day.
+
 ### Concerns
 
-![Mind Garden Concerns space with a scheduled private concern](assets/mind-garden-demo-concerns.png)
+![Mind Garden Concerns space after a private concern was scheduled](assets/mind-garden-demo-concerns-detail.png)
 
 Concerns keeps each item private and inert until the user edits it, completes it, converts it into a journal, or deliberately places it in the Harness composer.
 
@@ -97,19 +114,23 @@ Calendar projects the verified check-in, journal, concern, principle, experiment
 
 ### Photo Stories
 
+![Mind Garden Photo Story library after a photograph was admitted](assets/mind-garden-demo-photo-library.png)
+
+The light archive preserves the verified original, title, story note, and collection state before the scene opens.
+
 ![Mind Garden Photo Story running the warm generated photograph through the particle editor](assets/mind-garden-demo-photo-story.png)
 
 The fictional rain-night still life is a repository-owned ImageGen fixture with committed prompt provenance. Harness attachment admission, verified image reads, bounded WebGL particles, presets, re-composition, original-image viewing, story editing, and observation disclosure remain live product controls.
 
 ### Memory
 
-![Mind Garden Memory showing one user-confirmed support preference](assets/mind-garden-demo-memory.png)
+![Mind Garden Memory showing one user-confirmed support preference](assets/mind-garden-demo-memory-detail.png)
 
 The record shows its confirmed state, source count, scope, sensitivity, recall policy, history, edit path, composer handoff, and deletion control instead of presenting model familiarity as an irreversible profile.
 
 ### Growth
 
-![Mind Garden Growth showing a reality experiment and its append-only observation](assets/mind-garden-demo-growth.png)
+![Mind Garden Growth showing a reality experiment and its append-only observation](assets/mind-garden-demo-growth-detail.png)
 
 Growth records a hypothesis, one concrete action, and what happened. It preserves the observation without a score, streak, or model-assigned success verdict.
 
@@ -127,7 +148,7 @@ Life Review places the verified period, source count, lifecycle state, and user-
 
 ### My Philosophy
 
-![Mind Garden Philosophy showing a confirmed contemplation and adopted principle](assets/mind-garden-demo-philosophy.png)
+![Mind Garden Philosophy showing a confirmed contemplation and adopted principle](assets/mind-garden-demo-philosophy-detail.png)
 
 Philosophy keeps confirmed contemplation, inert proposal, and adopted principle states structurally separate. Formation context, direct quote, counterexample, scope, status, and complete versions stay user-governed.
 
@@ -140,12 +161,12 @@ Settings calibrate the current Session posture and support intent while keeping 
 ### Mobile composition
 
 <p align="center">
-  <img src="assets/mind-garden-real-mobile.png" width="390" alt="Mind Garden Today space in the compact DeepSeek Harness shell">
+  <img src="assets/mind-garden-demo-mobile-today.png" width="31%" alt="Mind Garden Today in the compact Harness shell">
+  <img src="assets/mind-garden-demo-mobile-photo-story.png" width="31%" alt="Mind Garden photo particles in the compact Harness shell">
+  <img src="assets/mind-garden-demo-mobile-star-map.png" width="31%" alt="Mind Garden constellation in the compact Harness shell">
 </p>
 
-The same plugin participates in the compact Harness shell. Navigation collapses, dense controls simplify, canvas work is bounded, and the fixed Harness composer remains available. Reduced-motion and non-WebGL paths keep records usable without the visual scene.
-
-</details>
+The same plugin participates in the compact Harness shell. Navigation collapses, dense controls simplify, canvas work is bounded, and the fixed Harness composer remains available. Reduced-motion and non-WebGL paths keep records usable without the visual scene. The integration gallery also captures compact entry, check-in, concerns, calendar, memory, growth, review, philosophy, and settings states under `assets/mind-garden-demo-mobile-*.png`.
 
 ## Install
 

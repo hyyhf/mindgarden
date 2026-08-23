@@ -1,7 +1,7 @@
 /** User-authoritative review and lifecycle controls for governed memory. */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import {
   IconDataOutline16,
   IconPlusOutline16,
@@ -25,6 +25,7 @@ import type { MindGardenViewActions } from '../slots.ts'
 import shared from './GardenSpace.module.css'
 import css from './MemoryGovernance.module.css'
 import { MemoryIcon } from '../GardenIcons.tsx'
+import { MEMORY_ARCHIVE_ALCOVE_V3 } from '../generated-assets.ts'
 
 const KINDS: readonly MindGardenMemoryKind[] = [
   'fact', 'preference', 'value', 'support-preference', 'decision', 'emotion', 'episode',
@@ -328,10 +329,9 @@ export function MemoryGovernance({
 
   return (
     <section className={css.governance} data-mind-garden-memory-governance="active" aria-labelledby="mind-garden-governance-title">
-      <header className={css.header}>
+      <header className={css.header} style={{ '--mg-memory-scene': `url("${MEMORY_ARCHIVE_ALCOVE_V3}")` } as CSSProperties}>
         <div>
-          <span>{t('governance.eyebrow')}</span>
-          <h2 id="mind-garden-governance-title">{t('governance.title')}</h2>
+          <h1 id="mind-garden-governance-title">{t('governance.title')}</h1>
           <p>{t('governance.subtitle')}</p>
         </div>
         <div className={css.counters} aria-label={t('governance.summary')}>

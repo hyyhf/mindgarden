@@ -1,0 +1,12 @@
+Use case: stylized-concept
+Asset type: immersive desktop homepage hero background for a reflective journaling product
+Primary request: a world-class contemporary new-Chinese courtyard at early morning, fresh, warm and emotionally restorative, designed as the spatial heart of a "mind garden".
+Scene/backdrop: a quiet pavilion threshold opening into a cream limestone courtyard with a shallow still-water mirror, one sculptural pale-ash wood screen, a slender warm brass path inlaid into stone, soft bamboo and one small plum branch, misty layered garden depth beyond.
+Subject: the courtyard architecture and its single inviting path; no people.
+Style/medium: premium cinematic 3D architectural visualization with restrained editorial art direction, physically plausible materials, elegant asymmetry, subtle handcrafted imperfections, high-end hospitality design rather than fantasy concept art.
+Composition/framing: wide 16:9 establishing view from just inside the pavilion, pronounced depth and leading line, an uncluttered softly lit plaster-and-paper area on the left for UI copy, the path and water guide the eye toward the brighter center-right garden, meaningful negative space, usable as a full-bleed responsive hero.
+Lighting/mood: low warm morning sunlight, gentle volumetric haze, soft gradients, luminous rice-paper warmth, intimate and hopeful, refined contrast without gloom.
+Color palette: warm ivory, oat beige, pale ash wood, honey brass, quiet deep indigo water reflections, tiny muted plum accent; absolutely not green-dominant.
+Materials/textures: honed limestone, handmade xuan paper, matte porcelain, pale wood grain, brushed brass, quiet water reflections, fine soft shadows.
+Constraints: no text, no letters, no UI, no logo, no watermark, no people, no giant decorative rings, no generic zen garden clichés, keep open left-side copy space and preserve strong architectural depth.
+Avoid: green color cast, oversaturation, sterile all-white room, kitschy traditional ornament, busy foliage, flat lighting, exaggerated bloom, floating cards.

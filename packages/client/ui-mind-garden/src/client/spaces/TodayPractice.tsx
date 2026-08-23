@@ -183,9 +183,7 @@ export function TodayPractice({
     <section className={css.practice} data-mind-garden-today-practice="active" aria-labelledby="mind-garden-today-title">
       <header className={css.header}>
         <div>
-          <span>{t('today.eyebrow')}</span>
           <h2 id="mind-garden-today-title">{t('today.practice.title')}</h2>
-          <p>{t('today.subtitle')}</p>
         </div>
         <time dateTime={today}>{today}</time>
       </header>

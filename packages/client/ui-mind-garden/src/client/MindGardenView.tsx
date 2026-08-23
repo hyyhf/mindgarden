@@ -1,7 +1,7 @@
 /** Full-session Mind Garden review center. */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import {
   IconCloseOutline16,
   IconDataOutline16,
@@ -29,7 +29,7 @@ import type { MindGardenKey } from './locales.ts'
 import { MindGardenPanel } from './MindGardenDock.tsx'
 import { GardenSidebar } from './GardenSidebar.tsx'
 import { EditorialOrbit } from './EditorialOrbit.tsx'
-import { GARDEN_ORRERY_WARM, GARDEN_THRESHOLD_WARM } from './generated-assets.ts'
+import { GARDEN_THRESHOLD_WARM, LIFE_TIME_CORRIDOR_V3 } from './generated-assets.ts'
 import { GardenMarkIcon, LifeReviewIcon, PrivateIcon } from './GardenIcons.tsx'
 import type { MindGardenSpace } from './garden-store.ts'
 import type { createMindGardenViewStore } from './garden-store.ts'
@@ -46,12 +46,12 @@ import css from './MindGardenView.module.css'
 
 const CATEGORIES = ['events', 'ongoing', 'changes', 'experiments', 'focus'] as const satisfies readonly MindGardenPeriodReviewMaterialCategory[]
 const PERIOD_TYPES = ['week', 'month', 'year'] as const satisfies readonly MindGardenPeriodReviewType[]
-const DIRECTION_CONTRACT = `<!-- IMPECCABLE 29aa8ae3
-THESIS: A living private observatory makes reflection spatial and intimate, refusing both the generic wellness dashboard and the flat editorial workspace.
-OWN-WORLD: Warm garden plaster, graphite, oxidized-teal enamel, smoked glass, aged brass, oxblood actions, star dust, precision seams, and one Harness-outline icon family.
-STORY: The visitor crosses from the host into a protected garden instrument, finds the present moment at its center, records only what they choose, and follows truthful records into nine connected spaces.
-FIRST VIEWPORT: A 216px instrument rail frames a warm full-height brass orrery and an integrated glass ledger; the grounding actions stay inside the aperture while ordinary records return to a quiet writing plane below.
-FORM: Warm Garden Orrery, with Personal Orrery as its approved composition root, seed 29aa8ae3.
+const DIRECTION_CONTRACT = `<!-- IMPECCABLE 9e22e091
+THESIS: A lived-in morning courtyard turns private reflection into a tactile passage; it refuses the repeated heading, explanation, container, list template.
+OWN-WORLD: Luminous xuan paper, pale-ash joinery, honed limestone, matte porcelain, physical brass paths, deep indigo actions, muted plum bindings, grounded shadows, and Noto Sans SC operational type.
+STORY: Five clear garden regions lead to nine fully preserved tools, while each destination becomes its own recognizable room with truthful records and explicit control.
+FIRST VIEWPORT: A slim five-region header opens directly onto a 38/62 practical entry and full-depth B+C courtyard corridor; three semantic stations sit over a generated physical scene and lead into complete tools below.
+FORM: B paper-corridor spatial depth fused with C morning architecture, top navigation, and quick-action hierarchy, approved by the user, seed 9e22e091.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
 -->`
 
@@ -313,17 +313,9 @@ export function MindGardenReviewCenter({
     )
   }
 
-  const openCount = questions.filter(item => item.status === 'open').length
   const savedCount = reviews.filter(item => item.status === 'saved').length
-  const currentQuestion = questions.find(item => item.status === 'open')
-  const currentReview = reviews.find(item => item.status === 'saved')
-  const showQuestions = activeSpace !== 'life'
-  const showReviews = activeSpace !== 'memory'
-  const overviewCopy = activeSpace === 'memory'
-    ? { eyebrow: 'memory.eyebrow', title: 'memory.title', subtitle: 'memory.subtitle' } as const
-    : activeSpace === 'life'
-      ? { eyebrow: 'life.eyebrow', title: 'life.title', subtitle: 'life.subtitle' } as const
-      : { eyebrow: 'review.eyebrow', title: 'review.title', subtitle: 'review.subtitle' } as const
+  const showQuestions = activeSpace === 'today' || activeSpace === 'memory'
+  const showReviews = activeSpace === 'today' || activeSpace === 'life'
   const materialGroups = CATEGORIES.map(category => ({
     category,
     items: material?.items.filter(item => item.category === category) ?? [],
@@ -509,20 +501,6 @@ export function MindGardenReviewCenter({
           <main className={css.view}>
             {activeSpace === 'today' ? (
               <section className={css.todayOpening} data-mind-garden-space="today">
-                <img className={css.observatoryMaterial} src={GARDEN_ORRERY_WARM} alt="" />
-                <header className={css.observatoryMasthead}>
-                  <span className={css.observatoryIdentity}>
-                    <GardenMarkIcon size={18} />
-                    <span><strong>{t('space.title')}</strong><small>{t('space.private')}</small></span>
-                  </span>
-                  <span className={css.observatoryMeta}>
-                    <time dateTime={today}>{today}</time>
-                    <span><PrivateIcon size={13} />{t('review.private')}</span>
-                  </span>
-                </header>
-                <span className={css.ambientDust} aria-hidden="true">
-                  {Array.from({ length: 18 }, (_, index) => <i key={index} />)}
-                </span>
                 <div className={css.orreryStage}>
                   <EditorialOrbit
                     questions={questions}
@@ -539,65 +517,27 @@ export function MindGardenReviewCenter({
                       </div>
                       <div className={css.instrumentStatus}>
                         <span className={css.posture}>{t(`mode.${projection.state.mode}`)}</span>
-                        <span className={css.privacy}>{t('review.private')}</span>
+                        <span className={css.privacy}><PrivateIcon size={13} />{t('review.private')}</span>
                       </div>
                     </header>
                   </EditorialOrbit>
                 </div>
-                <aside className={css.echoLedger} aria-label={t('today.echo.title')}>
-                  <span className={css.ledgerScrew} data-position="top" aria-hidden="true" />
-                  <header>
-                    <span className={css.ledgerMark} aria-hidden="true" />
-                    <h2>{t('today.echo.title')}</h2>
-                  </header>
-                  <article>
-                    <time dateTime={today}>{today}</time>
-                    <strong>{t('today.echo.question')}</strong>
-                    <p>{currentQuestion?.question ?? t('orbit.fallback.stillness')}</p>
-                    <small>{currentQuestion === undefined ? t('orbit.fallback.permission') : t('orbit.question.meta')}</small>
-                  </article>
-                  <article>
-                    <strong>{t('today.echo.review')}</strong>
-                    <p>{currentReview?.content ?? t('orbit.fallback.memory')}</p>
-                    <small>{currentReview?.endStamp.localDate ?? t('orbit.fallback.unwritten')}</small>
-                  </article>
-                  <footer>
-                    <span>{t('today.echo.tomorrow')}</span>
-                    <a href="#mind-garden-questions-title">{t('orbit.fallback.tomorrow')}<i aria-hidden="true" /></a>
-                    <small>{t('today.echo.ledger')}</small>
-                  </footer>
-                  <span className={css.ledgerScrew} data-position="bottom" aria-hidden="true" />
-                </aside>
               </section>
-            ) : (
-              <>
-                <header className={css.hero} data-space={activeSpace}>
-                  <div>
-                    <span className={css.eyebrow}>{t(overviewCopy.eyebrow)}</span>
-                    <h1>{t(overviewCopy.title)}</h1>
-                    <p>{t(overviewCopy.subtitle)}</p>
-                  </div>
-                  {activeSpace === 'life' ? (
-                    <figure className={css.lifeHorizon} aria-label={t('life.instrument.label')}>
-                      <span className={css.lifeRings} aria-hidden="true"><i /><i /><i /><i /></span>
-                      <LifeReviewIcon size={28} />
-                      <figcaption><strong>{reviews.length}</strong><span>{t('life.instrument.reviews')}</span></figcaption>
-                    </figure>
-                  ) : <span className={css.privacy}>{t('review.private')}</span>}
-                </header>
-                <section className={css.metrics} data-space={activeSpace} aria-label={t('review.overview')}>
-                  {activeSpace === 'life' ? <>
-                    <div><strong>{reviews.length}</strong><span>{t('life.metric.reviews')}</span></div>
-                    <div><strong>{savedCount}</strong><span>{t('life.metric.saved')}</span></div>
-                    <div><strong>{t(`review.period.${periodType}`)}</strong><span>{t('life.metric.range')}</span></div>
-                  </> : <>
-                    <div><strong>{openCount}</strong><span>{t('review.metric.openQuestions')}</span></div>
-                    <div><strong>{savedCount}</strong><span>{t('review.metric.savedReviews')}</span></div>
-                    <div><strong>{projection.state.mode === 'serenity' ? t('mode.serenity') : t('mode.clarity')}</strong><span>{t('review.metric.posture')}</span></div>
-                  </>}
-                </section>
-              </>
-            )}
+            ) : activeSpace === 'life' ? (
+              <section className={css.lifeOpening} style={{ '--mg-life-scene': `url("${LIFE_TIME_CORRIDOR_V3}")` } as CSSProperties} data-mind-garden-space="life">
+                <div className={css.lifeCopy}>
+                  <LifeReviewIcon size={24} />
+                  <h1>{t('life.title')}</h1>
+                  <p>{t('life.subtitle')}</p>
+                  <span className={css.privacy}><PrivateIcon size={13} />{t('review.private')}</span>
+                </div>
+                <div className={css.lifeMetrics} aria-label={t('review.overview')}>
+                  <span><strong>{reviews.length}</strong>{t('life.metric.reviews')}</span>
+                  <span><strong>{savedCount}</strong>{t('life.metric.saved')}</span>
+                  <span><strong>{t(`review.period.${periodType}`)}</strong>{t('life.metric.range')}</span>
+                </div>
+              </section>
+            ) : null}
 
             {activeSpace === 'today' && (
               <TodayPractice
@@ -640,7 +580,7 @@ export function MindGardenReviewCenter({
             )}
             {notice !== null && <p className={css.feedbackNotice} role="status">{t(notice)}</p>}
 
-            {!loading && (
+            {!loading && (showQuestions || showReviews) && (
               <div className={css.columns} data-scope={activeSpace}>
                 {showQuestions && <section className={css.section} aria-labelledby="mind-garden-questions-title">
                   <div className={css.sectionHeader}>

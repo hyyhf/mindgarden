@@ -1,7 +1,7 @@
 /** Resumable, encrypted first-observation ritual for the Star Map. */
 
 import { useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import type {
   MindGardenStarMapOverview,
   MindGardenStarProfile,
@@ -10,6 +10,7 @@ import type {
 } from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type { MindGardenDataResult } from '../slots.ts'
 import type { MindGardenKey } from '../locales.ts'
+import { STAR_MIST_COURTYARD_V5 } from '../generated-assets.ts'
 import css from './StarRitual.module.css'
 
 const SCENES = [1, 2, 3, 4, 5, 6] as const
@@ -106,7 +107,11 @@ export function StarRitual({ profile, t, onSave, onComplete, onCommit, onExit }:
   }
 
   return (
-    <main className={css.ritual} data-mind-garden-star-ritual={`stage-${step}`}>
+    <main
+      className={css.ritual}
+      data-mind-garden-star-ritual={`stage-${step}`}
+      style={{ '--mg-star-courtyard': `url("${STAR_MIST_COURTYARD_V5}")` } as CSSProperties}
+    >
       <div className={css.sky} aria-hidden="true">
         <i /><i /><i /><i /><i />
       </div>

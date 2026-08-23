@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-23T17:15:00+08:00",
+  "title": "Design System: 心智庭院 / Mind Garden",
+  "extensions": {
+    "colorMeta": {
+      "morning-paper": { "role": "neutral", "displayName": "晨光宣纸", "canonical": "#F8EEE1", "tonalRamp": ["#2D2720", "#4C4134", "#6D5E4B", "#8F7D66", "#B4A18A", "#D7C7B2", "#F0E3D2", "#FFF9F0"] },
+      "porcelain-paper": { "role": "neutral", "displayName": "白瓷纸面", "canonical": "#FFFAF2", "tonalRamp": ["#2E2923", "#4E463C", "#70665A", "#93877A", "#B7AC9E", "#D9D0C5", "#F1EAE1", "#FFFDF9"] },
+      "limestone": { "role": "neutral", "displayName": "暖石灰岩", "canonical": "#EAD8C0", "tonalRamp": ["#33291F", "#554535", "#78634C", "#9B8265", "#BEA487", "#DDC7AA", "#F0E0CA", "#FFF5E8"] },
+      "deep-ink": { "role": "neutral", "displayName": "深墨", "canonical": "#342D27", "tonalRamp": ["#1E1915", "#342D27", "#514840", "#70655B", "#90857A", "#B2A79E", "#D5CCC5", "#F6F1ED"] },
+      "secondary-ink": { "role": "neutral", "displayName": "次墨", "canonical": "#76695E", "tonalRamp": ["#251F1B", "#403730", "#5D5147", "#76695E", "#998C80", "#BBAFA5", "#DDD4CD", "#F8F3EF"] },
+      "indigo-action": { "role": "primary", "displayName": "庭院靛蓝", "canonical": "#405F87", "tonalRamp": ["#101B29", "#1D3048", "#2C4868", "#405F87", "#607FA5", "#87A2C1", "#B7C8DA", "#EDF3F8"] },
+      "indigo-deep": { "role": "primary", "displayName": "深庭院靛蓝", "canonical": "#304C70", "tonalRamp": ["#0D1724", "#18283D", "#243B57", "#304C70", "#526F91", "#7B95B2", "#AEC1D3", "#EAF1F7"] },
+      "plum-record": { "role": "secondary", "displayName": "梅枝记录色", "canonical": "#8D5A5E", "tonalRamp": ["#281718", "#47282B", "#683D41", "#8D5A5E", "#AD7A7D", "#C99FA1", "#E2C8C9", "#FAF0F0"] },
+      "restrained-brass": { "role": "secondary", "displayName": "旧金黄铜", "canonical": "#A77D43", "tonalRamp": ["#2A1E0E", "#4B3619", "#6E5027", "#92703A", "#B69158", "#D0B47F", "#E7D6AF", "#FBF3DF"] },
+      "semantic-sage": { "role": "tertiary", "displayName": "节制鼠尾草", "canonical": "#71806E", "tonalRamp": ["#1D241C", "#344032", "#4E5D4C", "#71806E", "#909E8D", "#B1BCAF", "#D4DCD2", "#F2F5F1"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "庭院标题", "purpose": "每个空间唯一的主标题。" },
+      "title": { "displayName": "功能标题", "purpose": "关键任务和内容分区。" },
+      "body": { "displayName": "中文正文", "purpose": "记录、说明和表单阅读。" },
+      "label": { "displayName": "状态标签", "purpose": "元数据、状态与紧凑控件。" }
+    },
+    "shadows": [
+      { "name": "paper-lift", "value": "8px 14px 28px rgb(65 45 30 / 17%)", "purpose": "走廊纸片和小型实体站点。" },
+      { "name": "focal-scene", "value": "0 28px 72px rgb(71 50 32 / 14%)", "purpose": "空间级材质场景。" },
+      { "name": "indigo-action", "value": "6px 12px 24px rgb(48 76 112 / 20%)", "purpose": "主要动作和选中状态。" },
+      { "name": "drawer-edge", "value": "-24px 0 64px rgb(53 40 29 / 19%)", "purpose": "桌面设置抽屉。" }
+    ],
+    "motion": [
+      { "name": "state-quick", "value": "160ms ease-out", "purpose": "颜色、描边和简单状态变化。" },
+      { "name": "material-lift", "value": "180ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "按钮与纸片的轻微抬起。" },
+      { "name": "corridor-settle", "value": "520ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Today 场景的空间倾斜回落。" }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "620px" },
+      { "name": "spatial-stack", "value": "680px" },
+      { "name": "content-stack", "value": "920px" },
+      { "name": "corridor-stack", "value": "1080px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "每个焦点上下文唯一的靛蓝主动作。",
+      "html": "<button class=\"ds-btn-primary\">记录此刻</button>",
+      "css": ".ds-btn-primary { min-height: 46px; padding: 0 20px; border: 1px solid #405F87; border-radius: 10px; color: #FFFAF2; background: #405F87; box-shadow: 6px 12px 24px rgb(48 76 112 / 20%); font: 650 14px/1.5 'Noto Sans SC', sans-serif; transition: transform 180ms cubic-bezier(0.16,1,0.3,1), background 160ms ease-out; } .ds-btn-primary:hover { background: #304C70; transform: translateY(-2px); } .ds-btn-primary:focus-visible { outline: 3px solid #405F87; outline-offset: 3px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "与主动作并列但保持更轻的纸面动作。",
+      "html": "<button class=\"ds-btn-secondary\">留一个问题</button>",
+      "css": ".ds-btn-secondary { min-height: 46px; padding: 0 20px; border: 1px solid rgb(64 95 135 / 34%); border-radius: 10px; color: #405F87; background: rgb(255 250 242 / 62%); font: 650 14px/1.5 'Noto Sans SC', sans-serif; transition: transform 180ms cubic-bezier(0.16,1,0.3,1), background 160ms ease-out; } .ds-btn-secondary:hover { background: #FFFAF2; transform: translateY(-2px); } .ds-btn-secondary:focus-visible { outline: 3px solid #405F87; outline-offset: 3px; }"
+    },
+    {
+      "name": "Garden Text Field",
+      "kind": "input",
+      "refersTo": "text-field",
+      "description": "承载私人记录的暖白纸面输入。",
+      "html": "<label class=\"ds-field\"><span>写下此刻</span><textarea placeholder=\"此刻的念头、感受或片段……\"></textarea></label>",
+      "css": ".ds-field { display: grid; gap: 8px; color: #76695E; font: 620 11px/1.5 'Noto Sans SC', sans-serif; } .ds-field textarea { min-height: 110px; padding: 12px 14px; border: 1px solid rgb(83 62 45 / 17%); border-radius: 10px; color: #342D27; background: rgb(255 250 242 / 72%); caret-color: #405F87; font: 400 14px/1.75 'Noto Sans SC', sans-serif; resize: vertical; } .ds-field textarea:focus-visible { outline: 3px solid rgb(64 95 135 / 28%); border-color: #405F87; }"
+    },
+    {
+      "name": "Region Navigation",
+      "kind": "nav",
+      "description": "五个始终可见的一级区域，选中态由文字和下划线共同表达。",
+      "html": "<nav class=\"ds-region-nav\"><button data-active=\"true\">此刻</button><button>心绪</button><button>时光</button><button>珍藏</button><button>星庭</button></nav>",
+      "css": ".ds-region-nav { display: grid; grid-template-columns: repeat(5, minmax(72px, 1fr)); gap: 5px; background: #F8EEE1; } .ds-region-nav button { position: relative; min-height: 44px; border: 0; border-radius: 9px; color: #76695E; background: transparent; font: 400 13px/1.5 'Noto Sans SC', sans-serif; } .ds-region-nav button:hover { color: #342D27; background: rgb(255 255 255 / 36%); } .ds-region-nav button[data-active='true'] { color: #405F87; font-weight: 650; } .ds-region-nav button[data-active='true']::after { position: absolute; inset: auto 18px -4px; height: 2px; border-radius: 2px; background: #405F87; content: ''; } .ds-region-nav button:focus-visible { outline: 2px solid #405F87; outline-offset: 2px; }"
+    },
+    {
+      "name": "Paper Station",
+      "kind": "custom",
+      "refersTo": "station-sheet",
+      "description": "Today 走廊中的可访问记录站点。",
+      "html": "<a class=\"ds-paper-station\" href=\"#\"><small>仍在轨道上的问题</small><strong>完成一件重要的事之后，我真正想为自己留下什么？</strong><span>下一次回望 →</span></a>",
+      "css": ".ds-paper-station { display: grid; gap: 4px; padding: 14px 16px 13px; border: 1px solid rgb(73 54 39 / 16%); border-radius: 12px; color: #342D27; background: linear-gradient(125deg, rgb(255 253 247 / 96%), rgb(248 239 225 / 90%)); box-shadow: 8px 14px 28px rgb(65 45 30 / 17%); text-decoration: none; transition: transform 180ms cubic-bezier(0.16,1,0.3,1); } .ds-paper-station small { color: #76695E; font: 400 11px/1.5 'Noto Sans SC', sans-serif; } .ds-paper-station strong { font: 650 14px/1.55 'Noto Sans SC', sans-serif; } .ds-paper-station span { color: #405F87; font: 620 11px/1.5 'Noto Sans SC', sans-serif; } .ds-paper-station:hover { transform: translateY(-4px); } .ds-paper-station:focus-visible { outline: 3px solid #405F87; outline-offset: 4px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "晨光造物室",
+    "overview": "心智庭院是一间被晨光照亮的当代新中式造物室：温暖但不甜腻，克制但不冷淡，空间感来自真实的宣纸、浅木、石灰岩、白瓷与黄铜，而不是层层圆角卡片。界面先让用户看见一处有记忆点的场景，再让操作、状态和记录沿着场景的秩序自然展开。它是一款严肃的私人反思工具。每个视觉选择都要让由你决定、加密保存、候选待确认、可返回对话更容易理解；新中式只提供材质和节奏，不替代语义、功能或证据。",
+    "keyCharacteristics": ["温暖米色建筑场与低对比宣纸底纹。", "深墨正文、靛蓝行动、梅色记录、黄铜连接，绿色只表示少量成功状态。", "一页一个空间焦点，不把每段内容塞进同尺寸卡片。", "桌面保持建筑式横向构图，移动端重排为清晰的纵向路径。", "真实栅格材质与语义 HTML 并存；图像永不烘焙用户内容或控件。"],
+    "rules": [
+      { "name": "The Warm Field Rule", "body": "浅色界面始终由暖宣纸或石灰岩统领，禁止漂成纯白后台或绿色健康仪表盘。", "section": "colors" },
+      { "name": "The One Action Color Rule", "body": "靛蓝是唯一通用行动色；梅色、黄铜与绿色必须保持语义稀缺性。", "section": "colors" },
+      { "name": "The One Display Voice Rule", "body": "同一视口只让一个标题承担最大视觉重量，其余层级通过间距、位置和较小字号建立。", "section": "typography" },
+      { "name": "The Chinese Reading Rule", "body": "中文正文首先使用 Noto Sans SC；系统字体只作加载失败回退，不作为品牌显示字体。", "section": "typography" },
+      { "name": "The One Focal Surface Rule", "body": "每个路由首屏只有一个主场景；表单、治理、历史和记录紧随其后，不能再包进第二层总览卡。", "section": "layout" },
+      { "name": "The Open Plane Rule", "body": "记录列表优先使用分隔线、纸条、书页或时间路径；只有需要浮起、选择或保护焦点的对象才成为卡片。", "section": "layout" },
+      { "name": "The Material Before Shadow Rule", "body": "阴影只确认已有的纸、木、石或抽屉层级，不能把空白圆角矩形伪装成内容。", "section": "elevation" }
+    ],
+    "dos": ["Do 使用真实宣纸、石灰岩、浅木、白瓷与晨光图像建立新中式材质感。", "Do 为九个现有空间保留各自的任务结构、状态、错误恢复和显式对话交接。", "Do 让动作名称、加密状态、候选/确认状态在不依赖颜色的情况下可读。", "Do 在移动端把空间关系重排为纵向路径，同时保持五个一级区域直接可达。"],
+    "donts": ["Don't 用绿色大面积铺底，也不要回到图标、大标题、长解释、同尺寸卡片列表的通用后台模板。", "Don't 在标题上方添加 kicker、eyebrow 或无信息价值的栏目口号。", "Don't 把导航、日期、控件、用户记录或模型结论烘焙进图片。", "Don't 用黑檀、红金奢华、满屏格栅、竹莲梅灯笼堆砌中式。", "Don't 让 3D、粒子、阴影或纹理替代语义控件、键盘操作、回退状态与减少动态模式。"]
+  }
+}

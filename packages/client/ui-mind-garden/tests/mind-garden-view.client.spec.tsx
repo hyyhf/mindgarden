@@ -344,7 +344,7 @@ describe('Mind Garden full view', () => {
     expect(view.getByText(zh['question.status.resolved'])).toBeTruthy()
     expect(view.getAllByText(zh['question.status.dismissed'])).toHaveLength(2)
     expect(view.getByText(zh['review.stale'])).toBeTruthy()
-    expect(view.getByText(zh['mode.clarity'])).toBeTruthy()
+    expect(view.getAllByText(zh['mode.clarity'])).toHaveLength(2)
 
     fireEvent.change(view.getByLabelText(zh['question.input.label']), { target: { value: '  A new question?  ' } })
     fireEvent.change(view.getByLabelText(new RegExp(zh['question.date'])), { target: { value: '2026-08-20' } })
@@ -385,14 +385,12 @@ describe('Mind Garden full view', () => {
     })
     const view = render(<MindGardenReviewCenter projection={active()} {...props} t={t} />)
     await view.findByText(zh['question.empty.title'])
-    fireEvent.click(view.getByRole('button', { name: zh['space.memory'] }))
     fireEvent.click(view.getByRole('button', { name: zh['space.collapse'] }))
     const questionForm = view.getByLabelText(zh['question.input.label']).closest('form')
     if (questionForm === null) throw new Error('question form missing')
     fireEvent.submit(questionForm)
     expect(props.onCreateOpenQuestion).not.toHaveBeenCalled()
 
-    fireEvent.click(view.getByRole('button', { name: zh['space.life'] }))
     expect(view.getByText(zh['review.empty.title'])).toBeTruthy()
     const start = view.getByLabelText(zh['review.period.start'])
     const end = view.getByLabelText(zh['review.period.end'])
@@ -541,7 +539,7 @@ describe('Mind Garden full view', () => {
     view.rerender(
       <MindGardenReviewCenter projection={active()} activeSpace="memory" {...viewActions} t={t} />,
     )
-    await view.findByText(zh['memory.title'])
+    await view.findByRole('heading', { name: zh['governance.title'] })
     expect(view.getByText(zh['question.empty.title'])).toBeTruthy()
     expect(view.queryByText(zh['review.empty.title'])).toBeNull()
     view.rerender(

@@ -1,7 +1,7 @@
 /** Reality-experiment workspace for life themes that need observation. */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import {
   IconCheckOutline16,
   IconPlusOutline16,
@@ -11,6 +11,7 @@ import {
 import type { MindGardenExperiment } from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { calendarStamp } from '../calendar.ts'
 import { GrowthIcon, PrivateIcon } from '../GardenIcons.tsx'
+import { GROWTH_OBSERVATION_BENCH_V3 } from '../generated-assets.ts'
 import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenDataResult, MindGardenViewActions } from '../slots.ts'
 import shared from './GardenSpace.module.css'
@@ -139,29 +140,28 @@ export function GrowthSpace({
 
   return (
     <main className={`${shared.space} ${css.growth}`} data-mind-garden-space="growth">
-      <header className={css.hero}>
-        <div className={css.heroCopy}>
-          <span className={css.heroMark}><GrowthIcon size={19} />{t('growth.eyebrow')}</span>
-          <h1>{t('growth.title')}</h1>
-          <p>{t('growth.subtitle')}</p>
-          <span className={css.privateLine}><PrivateIcon size={15} />{t('growth.private')}</span>
-        </div>
-        <figure className={css.fieldInstrument} aria-label={t('growth.instrument.label')}>
-          <span className={css.instrumentRings} aria-hidden="true"><i /><i /><i /></span>
-          <GrowthIcon size={34} />
-          <figcaption>
-            <span><strong>{activeCount}</strong>{t('growth.instrument.active')}</span>
-            <span><strong>{observedCount}</strong>{t('growth.instrument.observed')}</span>
-          </figcaption>
-        </figure>
-      </header>
-
-      <section className={css.composerDeck} aria-labelledby="mind-garden-growth-composer-title">
-        <header>
-          <span><IconPlusOutline16 />{t('growth.composer.label')}</span>
-          <div><h2 id="mind-garden-growth-composer-title">{t('growth.composer.title')}</h2><p>{t('growth.composer.subtitle')}</p></div>
+      <section className={css.workshop} style={{ '--mg-growth-scene': `url("${GROWTH_OBSERVATION_BENCH_V3}")` } as CSSProperties}>
+        <header className={css.hero}>
+          <div className={css.heroCopy}>
+            <GrowthIcon size={22} />
+            <h1>{t('growth.title')}</h1>
+            <p>{t('growth.subtitle')}</p>
+            <span className={css.privateLine}><PrivateIcon size={15} />{t('growth.private')}</span>
+          </div>
+          <figure className={css.fieldInstrument} aria-label={t('growth.instrument.label')}>
+            <figcaption>
+              <span><strong>{activeCount}</strong>{t('growth.instrument.active')}</span>
+              <span><strong>{observedCount}</strong>{t('growth.instrument.observed')}</span>
+            </figcaption>
+          </figure>
         </header>
-        <form className={css.composer} onSubmit={(event) => { void submit(event) }}>
+
+        <section className={css.composerDeck} aria-labelledby="mind-garden-growth-composer-title">
+          <header>
+            <IconPlusOutline16 />
+            <h2 id="mind-garden-growth-composer-title">{t('growth.composer.title')}</h2>
+          </header>
+          <form className={css.composer} onSubmit={(event) => { void submit(event) }}>
           <label>
             <span>{t('growth.input.title')}</span>
             <input className={shared.input} value={title} onChange={(event) => { setTitle(event.target.value) }} />
@@ -200,7 +200,8 @@ export function GrowthSpace({
               <GrowthIcon size={16} />{t('growth.create')}
             </button>
           </div>
-        </form>
+          </form>
+        </section>
       </section>
 
       {notice !== null && <p className={shared.notice} role="status">{t(notice)}</p>}

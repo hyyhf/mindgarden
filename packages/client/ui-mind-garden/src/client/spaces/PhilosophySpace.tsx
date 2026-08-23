@@ -1,6 +1,7 @@
 /** Confirmation-gated contemplations and life principles. */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
 import {
   IconCheckOutline16,
   IconCloseOutline16,
@@ -15,6 +16,7 @@ import type {
 } from '@deepseek-ai/dsh-mind-garden/reflection/types'
 import { calendarStamp } from '../calendar.ts'
 import { PhilosophyIcon, PrivateIcon } from '../GardenIcons.tsx'
+import { PHILOSOPHY_FOLIO_ROOM_V3 } from '../generated-assets.ts'
 import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenDataResult, MindGardenViewActions } from '../slots.ts'
 import shared from './GardenSpace.module.css'
@@ -127,16 +129,14 @@ export function PhilosophySpace({
 
   return (
     <main className={`${shared.space} ${css.philosophy}`} data-mind-garden-space="philosophy">
-      <header className={css.hero}>
+      <header className={css.hero} style={{ '--mg-philosophy-scene': `url("${PHILOSOPHY_FOLIO_ROOM_V3}")` } as CSSProperties}>
         <div className={css.heroCopy}>
-          <span className={css.heroMark}><PhilosophyIcon size={19} />{t('philosophy.eyebrow')}</span>
+          <PhilosophyIcon size={22} />
           <h1>{t('philosophy.title')}</h1>
           <p>{t('philosophy.subtitle')}</p>
           <span className={css.privateLine}><PrivateIcon size={15} />{t('philosophy.private')}</span>
         </div>
         <figure className={css.specimen} aria-label={t('philosophy.instrument.label')}>
-          <span className={css.specimenRings} aria-hidden="true"><i /><i /><i /></span>
-          <PhilosophyIcon size={34} />
           <figcaption>
             <span><strong>{confirmedContemplations}</strong>{t('philosophy.instrument.notes')}</span>
             <span><strong>{pendingProposals}</strong>{t('philosophy.instrument.proposals')}</span>
