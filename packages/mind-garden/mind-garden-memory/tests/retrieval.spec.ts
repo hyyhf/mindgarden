@@ -74,6 +74,29 @@ describe('Mind Garden deterministic retrieval', () => {
     expect(recall?.text).not.toContain('private')
   })
 
+  it('keeps a confirmed support preference ahead of other equally authorized memories', () => {
+    const preference = memory({
+      kind: 'support-preference',
+      content: 'When I am overwhelmed, listen before offering advice.',
+      updatedAt: 1,
+    })
+    const recentFact = memory({
+      kind: 'fact',
+      content: 'Work feels overwhelming this week.',
+      updatedAt: 20,
+    })
+    const recall = retrieveMemories({
+      memories: [recentFact, preference],
+      query: 'work feels overwhelming',
+      now: 30,
+      maxMemories: 2,
+      maxBytes: 4096,
+    })
+    expect(recall?.matches.map(match => match.memory.id)).toEqual([preference.id, recentFact.id])
+    expect(recall?.text).toContain('current user message and any explicit correction outrank')
+    expect(recall?.text).toContain('[support-preference]')
+  })
+
   it('keeps complete entries inside count and UTF-8 byte bounds', () => {
     const short = memory({ content: 'Short.', recallPolicy: 'always' })
     const long = memory({ content: '很长'.repeat(200), recallPolicy: 'always' })

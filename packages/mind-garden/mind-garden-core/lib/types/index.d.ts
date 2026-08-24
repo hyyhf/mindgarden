@@ -6,7 +6,7 @@ import { Context } from '@deepseek-ai/cordis';
 import type { Agent } from '@deepseek-ai/dsh-agent';
 import type { Session } from '@deepseek-ai/dsh-session';
 import { TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol';
-import type { ActivateMindGardenRequest } from './domain.ts';
+import type { ActivateMindGardenRequest, MindGardenDisclosureLocale } from './domain.ts';
 import type { MindGardenMode, MindGardenSessionState, MindGardenSupportIntent } from './types.ts';
 export type * from './types.ts';
 export type * from './domain.ts';
@@ -62,7 +62,7 @@ export declare class MindGardenService extends TypertRemoteService {
      * @param expectedRevision - caller's current revision.
      * @returns current state when already accepted, otherwise the next revision.
      */
-    acceptModelDisclosure(session: Session, expectedRevision: number): MindGardenSessionState;
+    acceptModelDisclosure(session: Session, expectedRevision: number, locale?: MindGardenDisclosureLocale): MindGardenSessionState;
     /**
      * Activate Mind Garden through the generated Remote boundary.
      * @param agent - exact live Agent resolved from the wire session identity.
@@ -92,7 +92,7 @@ export declare class MindGardenService extends TypertRemoteService {
      * @param expectedRevision - caller's current projected revision.
      * @returns the resulting state.
      */
-    remoteExportAcceptModelDisclosure(agent: Agent, expectedRevision: number): MindGardenSessionState;
+    remoteExportAcceptModelDisclosure(agent: Agent, expectedRevision: number, locale?: MindGardenDisclosureLocale): MindGardenSessionState;
     /** Enforce exact live-Agent identity before accepting a Remote mutation. */
     private assertLive;
     /** Bring a cache cell up to the session's current sequence. */

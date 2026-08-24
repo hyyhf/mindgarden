@@ -30,6 +30,8 @@ export interface Config {
     maxObserverInputBytes?: number;
     /** Maximum provider output tokens accepted by one photo auxiliary request. */
     maxObserverOutputTokens?: number;
+    /** Global bound for simultaneous photo-model calls; each story still admits only one. */
+    maxConcurrentObserverRequests?: number;
     /** Optional default photo observer provider; configure with `observerModel`. */
     observerProvider?: string;
     /** Optional default photo observer model; configure with `observerProvider`. */
@@ -53,7 +55,7 @@ export declare class MindGardenMediaService extends TypertRemoteService {
     static Config: s<Config>;
     private readonly options;
     private operationTail;
-    private modelOperation;
+    private readonly modelOperations;
     private readonly modelControllers;
     private admissionOpen;
     /** Install the media Remote and drain admitted operations during disposal. */

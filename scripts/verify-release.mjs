@@ -36,9 +36,21 @@ for (const required of [
   'cordis.patch.yml',
   'lib/index.js',
   'lib/invariant.js',
+  'lib/typert.host.js',
+  'lib/typert.host.d.ts',
   'packages/client/ui-mind-garden/lib/client.js',
 ]) {
   if (!existsSync(resolve(root, required))) failures.push(`missing release file: ${required}`)
+}
+
+for (const [source, artifact] of [
+  ['src/index.js', 'lib/index.js'],
+  ['src/typert.host.js', 'lib/typert.host.js'],
+  ['src/typert.host.d.ts', 'lib/typert.host.d.ts'],
+]) {
+  if (readFileSync(resolve(root, source), 'utf8') !== readFileSync(resolve(root, artifact), 'utf8')) {
+    failures.push(`${artifact} differs from ${source}; run npm run build`)
+  }
 }
 
 for (const [subpath, target] of Object.entries(manifest.exports ?? {})) {
@@ -54,8 +66,8 @@ for (const [subpath, target] of Object.entries(manifest.exports ?? {})) {
 }
 
 const clientBundle = readFileSync(resolve(root, 'packages/client/ui-mind-garden/lib/client.js'), 'utf8')
-if (!clientBundle.includes('id: "@deepseek-ai/dsh-mind-garden/ui"')) {
-  failures.push('the browser bundle does not register the Loader row id @deepseek-ai/dsh-mind-garden/ui')
+if (!clientBundle.includes('id: "@deepseek-ai/dsh-mind-garden"')) {
+  failures.push('the browser bundle does not register the standalone Loader row id @deepseek-ai/dsh-mind-garden')
 }
 
 const manifests = [

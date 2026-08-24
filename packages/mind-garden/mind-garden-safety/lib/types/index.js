@@ -7,8 +7,8 @@ import z from '@deepseek-ai/schemastery';
 import { isAgentLoopRequest, } from '@deepseek-ai/dsh-llm';
 import { assessMindGardenInput, recoverMindGardenSafetyState } from "./classifier.js";
 import { assessMindGardenOutput, renderMindGardenGuardReplacement, renderMindGardenSupportResponse, } from "./output-guard.js";
-export { mindGardenSafetyResources, MIND_GARDEN_RESOURCE_FALLBACK } from "./resources.js";
-export { assessMindGardenInput, normalizeMindGardenSafetyText, recoverMindGardenSafetyState, } from "./classifier.js";
+export { mindGardenSafetyResources, MIND_GARDEN_RESOURCE_FALLBACK, MIND_GARDEN_RESOURCE_FALLBACK_EN, } from "./resources.js";
+export { assessMindGardenInput, detectMindGardenSafetyLocale, normalizeMindGardenSafetyText, recoverMindGardenSafetyState, } from "./classifier.js";
 export { assessMindGardenOutput, renderMindGardenGuardReplacement, renderMindGardenSupportResponse, } from "./output-guard.js";
 /** Cordis plugin name used by Loader diagnostics. */
 export const name = 'mind-garden-safety';
@@ -155,7 +155,7 @@ function guardedModelStream(ctx, agent, step, assessment, next, config, signal) 
             const reason = limitExceeded ? 'buffer-limit' : 'policy-violation';
             await recordOutputGuard(ctx, agent, step, reason, violations);
             signal?.throwIfAborted();
-            yield* textStream(renderMindGardenGuardReplacement(reason, violations), buffered.usage);
+            yield* textStream(renderMindGardenGuardReplacement(reason, violations, assessment?.locale), buffered.usage);
             return;
         }
         yield* chunks;

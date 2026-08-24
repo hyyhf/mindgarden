@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, render, waitFor } from '@testing-library/react'
+import { act, cleanup, render, waitFor } from '@testing-library/react'
 import type { GardenStarMapModel } from '../src/client/star-map/model.ts'
 
 const rendererState = vi.hoisted(() => ({
@@ -147,5 +147,23 @@ describe('mountGardenStarField', () => {
     const renderer = rendererState.renderers[0]!
     view.unmount()
     expect(renderer.dispose).toHaveBeenCalledOnce()
+  })
+
+  it('reacts to a runtime operating-system reduced-motion change', async () => {
+    let changed: (() => void) | undefined
+    const media = {
+      matches: false,
+      addEventListener: vi.fn((_type: string, listener: () => void) => { changed = listener }),
+      removeEventListener: vi.fn(),
+    }
+    vi.stubGlobal('matchMedia', vi.fn(() => media))
+    const view = render(<StarField model={model} fallback="fallback" />)
+    await waitFor(() => { expect(rendererState.renderers).toHaveLength(1) })
+    media.matches = true
+    act(() => { changed?.() })
+    await waitFor(() => { expect(rendererState.renderers).toHaveLength(2) })
+    expect(rendererState.renderers[0]!.dispose).toHaveBeenCalledOnce()
+    view.unmount()
+    expect(media.removeEventListener).toHaveBeenCalledWith('change', changed)
   })
 })

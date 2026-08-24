@@ -8,7 +8,7 @@ import type { Agent } from '@deepseek-ai/dsh-agent';
 import { TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol';
 import type { MindGardenMemoryAutomationPolicyResult, MindGardenMemoryConfirmRequest, MindGardenMemoryConfirmResult, MindGardenMemoryDeleteRequest, MindGardenMemoryDeleteResult, MindGardenMemoryExtractRequest, MindGardenMemoryExtractResult, MindGardenMemoryLatestAuditResult, MindGardenMemoryLatestExtractionResult, MindGardenMemoryListRevisionsRequest, MindGardenMemoryListRevisionsResult, MindGardenMemoryListResult, MindGardenMemoryProposeRequest, MindGardenMemoryProposeResult, MindGardenMemoryRejectRequest, MindGardenMemoryRejectResult, MindGardenMemoryResolveRelationshipRequest, MindGardenMemoryResolveRelationshipResult, MindGardenMemorySetAutomationPolicyRequest, MindGardenMemorySetAutomationPolicyResult, MindGardenMemoryUpdateRequest, MindGardenMemoryUpdateResult } from './types.ts';
 export type * from './types.ts';
-export { decodeStoredRecord, storedAuditSchema, storedAutomationPolicySchema, storedAutomationStateSchema, storedExtractionRunSchema, storedMemorySchema, } from './records.ts';
+export { decodeStoredRecord, storedAuditSchema, storedAutomationPolicySchema, storedAutomationStateSchema, storedExtractionRunSchema, storedMemoryTombstoneSchema, storedMemorySchema, } from './records.ts';
 export { buildExtractionEnvelope, decodeExtractionOutput, EXTRACTION_SYSTEM_PROMPT, type ExtractionComparableMemory, type ExtractionEnvelope, type ExtractionProposal, type ExtractionTranscriptRow, } from './extraction.ts';
 export { relevanceScore, retrievalTerms, retrieveMemories, userQuery, type MemoryRecall, type RetrievedMemory, } from './retrieval.ts';
 /** Cordis plugin name and durable model-message source. */
@@ -29,6 +29,8 @@ export interface Config {
     readonly maxInjectedBytes?: number;
     /** Maximum encrypted retrieval audits retained profile-wide. */
     readonly maxAuditEntries?: number;
+    /** Maximum settled encrypted extraction-run audits retained profile-wide. */
+    readonly maxExtractionRunEntries?: number;
     /** Maximum whole-day lifetime accepted for a temporary memory. */
     readonly maxTemporaryDays?: number;
     /** Maximum encrypted before-images retained for one memory. */
@@ -235,6 +237,8 @@ export declare class MindGardenMemoryService extends TypertRemoteService {
     private prepareRecall;
     /** Keep the newest configured number of audits without counting memory records. */
     private pruneAudits;
+    /** Keep the newest settled extraction audits without deleting live recovery state. */
+    private pruneExtractionRuns;
     /** Convert only known validation and encrypted-boundary failures; preserve programming errors. */
     private convertFailure;
     /** Serialize every complete read/compare/write and retrieval-audit transaction. */

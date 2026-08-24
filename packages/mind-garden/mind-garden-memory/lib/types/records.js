@@ -187,6 +187,13 @@ export const storedAutomationStateSchema = z.object({
         context.addIssue({ code: 'custom', message: 'automation updatedAt precedes lastAttemptAt' });
     }
 });
+/** Content-free deletion marker kept under the removed memory's original id. */
+export const storedMemoryTombstoneSchema = z.object({
+    recordType: z.literal('memory-tombstone'),
+    formatVersion: z.literal(1),
+    id: z.uuid(),
+    deletedAt: z.number().int().nonnegative(),
+}).strict();
 /**
  * Decode one authenticated plaintext record without trusting its producer.
  * @param value - Plaintext returned after vault authentication.
@@ -204,6 +211,8 @@ export function decodeStoredRecord(value) {
         return storedAutomationPolicySchema.parse(value);
     if (discriminator === 'automation-state')
         return storedAutomationStateSchema.parse(value);
+    if (discriminator === 'memory-tombstone')
+        return storedMemoryTombstoneSchema.parse(value);
     throw new TypeError(`unknown Mind Garden memory record type '${discriminator}'`);
 }
 //# sourceMappingURL=records.js.map

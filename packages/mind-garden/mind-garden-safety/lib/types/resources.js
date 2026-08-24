@@ -33,9 +33,13 @@ const EMERGENCY_RESOURCES = Object.freeze([
  * @param urgent - whether immediate emergency contacts are required.
  * @returns the support line plus emergency contacts when requested.
  */
-export function mindGardenSafetyResources(urgent) {
+export function mindGardenSafetyResources(urgent, locale = 'zh-CN') {
+    if (locale !== 'zh-CN')
+        return [];
     return structuredClone(urgent ? [SUPPORT_RESOURCE, ...EMERGENCY_RESOURCES] : [SUPPORT_RESOURCE]);
 }
 /** Fallback used when a listed contact cannot be reached. */
 export const MIND_GARDEN_RESOURCE_FALLBACK = '若号码暂时无法接通，请立即联系身边可信任的人，并在紧急危险时联系当地公安或医疗急救服务。';
+/** Region-neutral fallback for locales without a verified resource registry. */
+export const MIND_GARDEN_RESOURCE_FALLBACK_EN = 'If a local support line is unavailable, contact someone you trust and use your local emergency services when danger is immediate.';
 //# sourceMappingURL=resources.js.map

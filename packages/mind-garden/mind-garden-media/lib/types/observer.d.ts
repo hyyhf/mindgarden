@@ -38,7 +38,7 @@ export interface PhotoModelEnvelope {
  * @param maxBytes - maximum UTF-8 bytes admitted for the complete text payload.
  * @returns exact provider text, or null instead of silently truncating.
  */
-export declare function buildPhotoObservationEnvelope(maxBytes: number): PhotoModelEnvelope | null;
+export declare function buildPhotoObservationEnvelope(maxBytes: number, locale?: 'zh-CN' | 'en'): PhotoModelEnvelope | null;
 /**
  * Decode one complete visual response with strict grounding and first-person continuations.
  * @param raw - complete terminal provider text.
@@ -53,7 +53,7 @@ export declare function decodePhotoObservationOutput(raw: string): PhotoObservat
  * @param maxBytes - maximum UTF-8 bytes for the complete text payload.
  * @returns exact provider envelope, or null instead of truncation.
  */
-export declare function buildPhotoDialogueEnvelope(story: MindGardenPhotoStory, content: string, quickReplyKind: '' | 'remember' | 'detail' | 'correct', maxBytes: number): PhotoModelEnvelope | null;
+export declare function buildPhotoDialogueEnvelope(story: MindGardenPhotoStory, content: string, quickReplyKind: '' | 'remember' | 'detail' | 'correct', maxBytes: number, locale?: 'zh-CN' | 'en'): PhotoModelEnvelope | null;
 /**
  * Decode one complete photo-story dialogue response.
  * @param raw - complete terminal provider text.

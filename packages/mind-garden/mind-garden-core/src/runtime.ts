@@ -7,7 +7,7 @@ import type { MindGardenErrorCode } from './domain.ts'
 export const MIND_GARDEN_CONTRACT_VERSION = 1
 
 /** Durable session-state event version. */
-export const MIND_GARDEN_STATE_VERSION = 1
+export const MIND_GARDEN_STATE_VERSION = 2
 
 /** Error returned by the Mind Garden domain boundary. */
 export class MindGardenError extends HarnessError {

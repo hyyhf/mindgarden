@@ -1,7 +1,13 @@
 /** Harness-native photo archive with a real 3D particle story surface. */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { ChangeEvent, CSSProperties, FormEvent, PointerEvent as ReactPointerEvent } from 'react'
+import type {
+  ChangeEvent,
+  CSSProperties,
+  FormEvent,
+  KeyboardEvent as ReactKeyboardEvent,
+  PointerEvent as ReactPointerEvent,
+} from 'react'
 import {
   IconChevronLeftOutline14,
   IconChevronRightOutline14,
@@ -29,7 +35,9 @@ import css from './PhotoStorySpace.module.css'
 
 const PAGE_SIZE = 9
 const DYNAMIC_LIMIT = 10
+const MAX_IMAGE_CACHE_ENTRIES = 14
 const PRESETS = ['soft', 'dust', 'fluid', 'nebula'] as const satisfies readonly MindGardenPhotoParticlePreset[]
+const ALBUM_VIEWS = ['classic', 'dynamic'] as const
 
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(
@@ -82,6 +90,16 @@ function replaceCount(copy: string, count: number): string {
   return copy.replace('{count}', new Intl.NumberFormat().format(count))
 }
 
+function observationErrorKey(code: string): MindGardenKey {
+  if (code === 'photo-model-failed') return 'photo.error.observe.model'
+  if (code === 'photo-output-invalid') return 'photo.error.observe.output'
+  if (code === 'photo-image-unsupported' || code === 'photo-model-unavailable') {
+    return 'photo.error.observe.route'
+  }
+  if (code === 'attachment-unavailable') return 'photo.error.load'
+  return 'photo.error.observe'
+}
+
 /** Render the encrypted photo-story album and its parameterized particle editor. */
 export function PhotoStorySpace({
   today,
@@ -109,7 +127,7 @@ export function PhotoStorySpace({
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
   const [pending, setPending] = useState(false)
-  const [error, setError] = useState(false)
+  const [errorKey, setErrorKey] = useState<MindGardenKey | null>(null)
   const [saved, setSaved] = useState(false)
   const [deleteArmed, setDeleteArmed] = useState(false)
   const [preview, setPreview] = useState(false)
@@ -122,6 +140,10 @@ export function PhotoStorySpace({
   const [dialoguePending, setDialoguePending] = useState(false)
   const [dialogueDraft, setDialogueDraft] = useState('')
   const inputRef = useRef<HTMLInputElement | null>(null)
+  const viewTabRefs = useRef<Record<(typeof ALBUM_VIEWS)[number], HTMLButtonElement | null>>({
+    classic: null,
+    dynamic: null,
+  })
   const dynamicCardRefs = useRef<Array<HTMLButtonElement | null>>([])
   const dynamicFocusTargetRef = useRef<number | null>(null)
   const dynamicGestureRef = useRef({ pointerId: -1, lastX: 0, angle: 0, velocity: 0 })
@@ -138,9 +160,9 @@ export function PhotoStorySpace({
     if (result.ok) {
       setStories(result.value)
       setPage(current => Math.min(current, Math.max(1, Math.ceil(result.value.length / PAGE_SIZE))))
-      setError(false)
+      setErrorKey(null)
     } else {
-      setError(true)
+      setErrorKey('photo.error.load')
     }
     setLoading(false)
   }, [onListPhotoStories])
@@ -199,13 +221,30 @@ export function PhotoStorySpace({
     const request = ++imageRequestRef.current
     void Promise.all(missing.map(async story => ({ story, result: await onReadPhotoStory(story) }))).then((entries) => {
       if (request !== imageRequestRef.current) return
-      if (entries.some(entry => !entry.result.ok)) setError(true)
+      if (entries.some(entry => !entry.result.ok)) setErrorKey('photo.error.load')
+      entries.forEach(({ story, result }) => {
+        if (!result.ok) requestedImagesRef.current.delete(storyKey(story))
+      })
       setImages((current) => {
         const next = new Map(current)
+        let changed = false
         entries.forEach(({ story, result }) => {
-          if (result.ok) next.set(storyKey(story), result.value)
+          if (result.ok) {
+            const key = storyKey(story)
+            next.delete(key)
+            next.set(key, result.value)
+            changed = true
+          }
         })
-        return next
+        const protectedKeys = new Set(candidates.map(storyKey))
+        for (const [key] of next) {
+          if (next.size <= MAX_IMAGE_CACHE_ENTRIES) break
+          if (protectedKeys.has(key)) continue
+          next.delete(key)
+          requestedImagesRef.current.delete(key)
+          changed = true
+        }
+        return changed ? next : current
       })
     })
     return () => { imageRequestRef.current++ }
@@ -225,7 +264,7 @@ export function PhotoStorySpace({
     event.target.value = ''
     if (files.length === 0 || uploading) return
     setUploading(true)
-    setError(false)
+    setErrorKey(null)
     try {
       let rejected = false
       for (const file of files) {
@@ -233,9 +272,9 @@ export function PhotoStorySpace({
         if (!result.ok) rejected = true
       }
       await refresh()
-      if (rejected) setError(true)
+      if (rejected) setErrorKey('photo.error.upload')
     } catch {
-      setError(true)
+      setErrorKey('photo.error.upload')
     } finally {
       setUploading(false)
     }
@@ -252,6 +291,30 @@ export function PhotoStorySpace({
     const nextIndex = (dynamicIndex + delta + dynamicStories.length) % dynamicStories.length
     dynamicFocusTargetRef.current = moveFocus ? nextIndex : null
     setDynamicIndex(nextIndex)
+  }
+
+  function selectAlbumView(next: (typeof ALBUM_VIEWS)[number], moveFocus = false) {
+    setView(next)
+    if (moveFocus) queueMicrotask(() => { viewTabRefs.current[next]?.focus() })
+  }
+
+  function moveAlbumView(
+    event: ReactKeyboardEvent<HTMLButtonElement>,
+    current: (typeof ALBUM_VIEWS)[number],
+  ) {
+    const currentIndex = ALBUM_VIEWS.indexOf(current)
+    const next = event.key === 'ArrowRight'
+      ? ALBUM_VIEWS[(currentIndex + 1) % ALBUM_VIEWS.length]
+      : event.key === 'ArrowLeft'
+        ? ALBUM_VIEWS[(currentIndex - 1 + ALBUM_VIEWS.length) % ALBUM_VIEWS.length]
+        : event.key === 'Home'
+          ? ALBUM_VIEWS[0]
+          : event.key === 'End'
+            ? ALBUM_VIEWS.at(-1)
+            : undefined
+    if (next === undefined) return
+    event.preventDefault()
+    selectAlbumView(next, true)
   }
 
   function startDynamicGesture(event: ReactPointerEvent<HTMLElement>) {
@@ -296,7 +359,7 @@ export function PhotoStorySpace({
 
   async function saveStory(story: MindGardenPhotoStory, particleConfig: MindGardenPhotoParticleConfig) {
     setPending(true)
-    setError(false)
+    setErrorKey(null)
     setSaved(false)
     try {
       const result = await onUpdatePhotoStory(story, title.trim(), note.trim(), particleConfig)
@@ -305,11 +368,11 @@ export function PhotoStorySpace({
         setStories(current => current.map(item => storyKey(item) === storyKey(result.value) ? result.value : item))
         setSaved(true)
       } else {
-        setError(true)
+        setErrorKey('photo.error.save')
         await refresh()
       }
     } catch {
-      setError(true)
+      setErrorKey('photo.error.save')
     } finally {
       setPending(false)
     }
@@ -322,13 +385,13 @@ export function PhotoStorySpace({
 
   async function observeStory(story: MindGardenPhotoStory) {
     setDialoguePending(true)
-    setError(false)
+    setErrorKey(null)
     try {
       const result = await onObservePhotoStory(story)
       if (result.ok) adoptStory(result.value)
-      else setError(true)
+      else setErrorKey(observationErrorKey(result.code))
     } catch {
-      setError(true)
+      setErrorKey('photo.error.observe')
     } finally {
       setDialoguePending(false)
     }
@@ -342,17 +405,17 @@ export function PhotoStorySpace({
     const message = content.trim()
     if (message === '' || dialoguePending) return
     setDialoguePending(true)
-    setError(false)
+    setErrorKey(null)
     try {
       const result = await onContinuePhotoStory(story, message, quickReplyKind)
       if (result.ok) {
         adoptStory(result.value)
         setDialogueDraft('')
       } else {
-        setError(true)
+        setErrorKey('photo.error.dialogue')
       }
     } catch {
-      setError(true)
+      setErrorKey('photo.error.dialogue')
     } finally {
       setDialoguePending(false)
     }
@@ -369,7 +432,7 @@ export function PhotoStorySpace({
       return
     }
     setPending(true)
-    setError(false)
+    setErrorKey(null)
     try {
       const result = await onDeletePhotoStory(story)
       if (result.ok) {
@@ -382,10 +445,10 @@ export function PhotoStorySpace({
         })
         await refresh()
       } else {
-        setError(true)
+        setErrorKey('photo.error.delete')
       }
     } catch {
-      setError(true)
+      setErrorKey('photo.error.delete')
     } finally {
       setPending(false)
       setDeleteArmed(false)
@@ -412,7 +475,7 @@ export function PhotoStorySpace({
           </div>
         </header>
 
-        {error && <div className={css.error} role="alert"><span>{t('photo.error')}</span><button type="button" onClick={retryPhotoStories}>{t('photo.retry')}</button></div>}
+        {errorKey !== null && <div className={css.error} role="alert"><span>{t(errorKey)}</span>{errorKey === 'photo.error.load' && <button type="button" onClick={retryPhotoStories}>{t('photo.retry')}</button>}</div>}
         <div className={css.storyGrid}>
           <section className={css.sceneColumn}>
             {activeImage === undefined ? (
@@ -627,10 +690,24 @@ export function PhotoStorySpace({
           {stories.length > 0 && <strong>{t('photo.count').replace('{count}', String(stories.length))}</strong>}
         </div>
         <div className={css.headerActions}>
-          <div className={css.viewSwitch} role="tablist" aria-label={t('photo.albumView')}>
-            <button type="button" role="tab" aria-selected={view === 'classic'} onClick={() => { setView('classic') }}>{t('photo.classic')}</button>
-            <button type="button" role="tab" aria-selected={view === 'dynamic'} onClick={() => { setView('dynamic') }}>{t('photo.dynamic')}</button>
-          </div>
+          {stories.length > 0 && <div className={css.viewSwitch} role="tablist" aria-label={t('photo.albumView')}>
+            {ALBUM_VIEWS.map(option => (
+              <button
+                type="button"
+                role="tab"
+                id={`mind-garden-photo-${option}-tab`}
+                aria-controls={`mind-garden-photo-${option}-panel`}
+                aria-selected={view === option}
+                tabIndex={view === option ? 0 : -1}
+                key={option}
+                ref={(node) => { viewTabRefs.current[option] = node }}
+                onClick={() => { selectAlbumView(option) }}
+                onKeyDown={(event) => { moveAlbumView(event, option) }}
+              >
+                {t(`photo.${option}`)}
+              </button>
+            ))}
+          </div>}
           <button
             type="button"
             className={css.upload}
@@ -647,7 +724,7 @@ export function PhotoStorySpace({
       </header>
 
       <p className={css.uploadHint}>{t('photo.uploadHint')}</p>
-      {error && <div className={css.error} role="alert"><span>{t('photo.error')}</span><button type="button" onClick={retryPhotoStories}>{t('photo.retry')}</button></div>}
+      {errorKey !== null && <div className={css.error} role="alert"><span>{t(errorKey)}</span>{errorKey === 'photo.error.load' && <button type="button" onClick={retryPhotoStories}>{t('photo.retry')}</button>}</div>}
       {loading ? (
         <div className={css.empty} role="status">{t('photo.loading')}</div>
       ) : stories.length === 0 ? (
@@ -668,7 +745,11 @@ export function PhotoStorySpace({
           </div>
         </div>
       ) : view === 'classic' ? (
-        <>
+        <div
+          id="mind-garden-photo-classic-panel"
+          role="tabpanel"
+          aria-labelledby="mind-garden-photo-classic-tab"
+        >
           <section className={css.grid} aria-label={t('photo.albumView')}>
             {pageStories.map((story, index) => (
               <PhotoCard
@@ -686,9 +767,12 @@ export function PhotoStorySpace({
             <span>{t('photo.page').replace('{current}', String(page)).replace('{total}', String(pageCount))}</span>
             <button type="button" disabled={page >= pageCount} onClick={() => { setPage(current => current + 1) }}>{t('photo.pageNext')}</button>
           </nav>
-        </>
+        </div>
       ) : (
         <section
+          id="mind-garden-photo-dynamic-panel"
+          role="tabpanel"
+          aria-labelledby="mind-garden-photo-dynamic-tab"
           className={css.dynamic}
           aria-label={t('photo.albumView')}
           onPointerEnter={() => { setDynamicPointerActive(true) }}

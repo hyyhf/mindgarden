@@ -243,4 +243,72 @@ describe('Mind Garden portability real Loader composition', () => {
       },
     })
   })
+
+  it('keeps a deletion tombstone authoritative over an older backup', async () => {
+    root = await mkdtemp(join(tmpdir(), 'dsh-mind-garden-portability-tombstone-'))
+    const sourceHome = join(root, 'source')
+    await mkdir(sourceHome)
+    const source = await loadComposition(sourceHome)
+    const sourceAgent = source.makeAgent('portable-deletion')
+    await source.ctx.mindGardenVault.put('memories', PRIVATE_MEMORY_ID, {
+      recordType: 'memory',
+      formatVersion: 1,
+      id: PRIVATE_MEMORY_ID,
+      version: '20000000-0000-4000-8000-000000000002',
+      status: 'candidate',
+      kind: 'fact',
+      sensitivity: 'normal',
+      content: PRIVATE_MEMORY,
+      reason: 'Backup predates an explicit deletion.',
+      recallPolicy: 'never',
+      sources: [{ sessionId: sourceAgent.id }],
+      proposalOrigin: 'human',
+      createdAt: 1,
+      updatedAt: 1,
+    })
+    const exported = await source.ctx.mindGardenPortability.exportBackup(sourceAgent, {
+      passphrase: PASSPHRASE,
+    })
+    if (!exported.ok) throw new Error(`backup failed: ${exported.error.code}`)
+    await source.ctx.fiber.dispose()
+    context = undefined
+
+    const targetHome = join(root, 'target')
+    await mkdir(targetHome)
+    const target = await loadComposition(targetHome)
+    const targetAgent = target.makeAgent('portable-deletion')
+    await target.ctx.mindGardenVault.put('memories', PRIVATE_MEMORY_ID, {
+      recordType: 'memory-tombstone',
+      formatVersion: 1,
+      id: PRIVATE_MEMORY_ID,
+      deletedAt: 2,
+    })
+    await expect(target.ctx.mindGardenPortability.inspectBackup(targetAgent, {
+      data: exported.value.data,
+      passphrase: PASSPHRASE,
+    })).resolves.toMatchObject({
+      ok: true,
+      value: {
+        willAdd: { memories: 0 },
+        willKeep: { memories: 1 },
+      },
+    })
+    await expect(target.ctx.mindGardenPortability.restoreBackup(targetAgent, {
+      data: exported.value.data,
+      passphrase: PASSPHRASE,
+      confirm: true,
+    })).resolves.toMatchObject({
+      ok: true,
+      value: {
+        added: { memories: 0 },
+        kept: { memories: 1 },
+      },
+    })
+    await expect(target.ctx.mindGardenVault.get('memories', PRIVATE_MEMORY_ID)).resolves.toEqual({
+      recordType: 'memory-tombstone',
+      formatVersion: 1,
+      id: PRIVATE_MEMORY_ID,
+      deletedAt: 2,
+    })
+  })
 })

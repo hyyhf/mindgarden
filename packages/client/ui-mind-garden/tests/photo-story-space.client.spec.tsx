@@ -146,7 +146,10 @@ describe('PhotoStorySpace', () => {
     await waitFor(() => { expect(view.getByText('Frame 10')).toBeTruthy() })
     fireEvent.click(view.getByRole('button', { name: zh['photo.pagePrevious'] }))
     expect(view.getByText('Frame 1')).toBeTruthy()
-    fireEvent.click(view.getByRole('tab', { name: zh['photo.dynamic'] }))
+    fireEvent.keyDown(view.getByRole('tab', { name: zh['photo.classic'] }), { key: 'ArrowRight' })
+    await waitFor(() => {
+      expect(document.activeElement).toBe(view.getByRole('tab', { name: zh['photo.dynamic'] }))
+    })
     expect(view.getByText(zh['photo.dynamicHint'])).toBeTruthy()
     expect(view.container.querySelectorAll('button[class*="dynamicCard"]')).toHaveLength(10)
     const firstFrame = view.getByRole('button', { name: `${zh['photo.open']} · Frame 1` })
@@ -241,7 +244,6 @@ describe('PhotoStorySpace', () => {
 
     fireEvent.click(view.getByRole('button', { name: `${zh['photo.open']} · ${original.title}` }))
     expect(view.getByText(zh['photo.sceneLoading'])).toBeTruthy()
-    fireEvent.click(view.getByRole('button', { name: zh['photo.retry'] }))
     await waitFor(() => { expect(view.getByTestId('particle-scene')).toBeTruthy() })
     fireEvent.click(view.getByRole('button', { name: zh['photo.panel.edit'] }))
     fireEvent.click(view.getByRole('button', { name: zh['photo.save'] }))
@@ -256,6 +258,28 @@ describe('PhotoStorySpace', () => {
     await waitFor(() => { expect(api.onDeletePhotoStory).toHaveBeenCalledTimes(2) })
     expect(view.getByRole('alert')).toBeTruthy()
     fireEvent.click(view.getByRole('button', { name: zh['photo.back'] }))
+  })
+
+  it('explains observation failures without pretending the original photo failed to load', async () => {
+    const original = story()
+    const api = actions({
+      onListPhotoStories: vi.fn(() => Promise.resolve({ ok: true as const, value: [original] })),
+      onObservePhotoStory: vi.fn()
+        .mockResolvedValueOnce({ ok: false as const, code: 'photo-output-invalid' })
+        .mockResolvedValueOnce({ ok: false as const, code: 'photo-model-failed' }),
+    })
+    const view = render(<PhotoStorySpace today="2026-08-19" {...api} t={t} />)
+    await view.findByText(original.title)
+    fireEvent.click(view.getByRole('button', { name: `${zh['photo.open']} · ${original.title}` }))
+    await view.findByTestId('particle-scene')
+
+    fireEvent.click(view.getByRole('button', { name: zh['photo.observe.action'] }))
+    await view.findByText(zh['photo.error.observe.output'])
+    expect(view.queryByText(zh['photo.error.load'])).toBeNull()
+
+    fireEvent.click(view.getByRole('button', { name: zh['photo.observe.action'] }))
+    await view.findByText(zh['photo.error.observe.model'])
+    expect(api.onObservePhotoStory).toHaveBeenCalledTimes(2)
   })
 
   it('opens both file pickers, ignores an empty selection, and completes an accepted upload', async () => {

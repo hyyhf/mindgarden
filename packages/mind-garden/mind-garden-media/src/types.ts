@@ -174,6 +174,8 @@ export interface MindGardenObservePhotoStoryRequest {
   readonly ifVersion: MindGardenMediaVersion
   readonly provider?: string
   readonly model?: string
+  /** Language requested by the active Harness UI locale. */
+  readonly locale?: 'zh-CN' | 'en'
 }
 
 /** Continue from frozen visual grounding without sending the image again. */
@@ -184,6 +186,8 @@ export interface MindGardenContinuePhotoStoryRequest {
   readonly quickReplyKind?: '' | 'remember' | 'detail' | 'correct'
   readonly provider?: string
   readonly model?: string
+  /** Language requested by the active Harness UI locale. */
+  readonly locale?: 'zh-CN' | 'en'
 }
 
 /** Stable absent postcondition for safe delete retries. */

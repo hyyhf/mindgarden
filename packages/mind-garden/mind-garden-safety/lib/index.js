@@ -33,21 +33,25 @@ const EMERGENCY_RESOURCES = Object.freeze([Object.freeze({
 * @param urgent - whether immediate emergency contacts are required.
 * @returns the support line plus emergency contacts when requested.
 */
-function mindGardenSafetyResources(urgent) {
+function mindGardenSafetyResources(urgent, locale = "zh-CN") {
+	if (locale !== "zh-CN") return [];
 	return structuredClone(urgent ? [SUPPORT_RESOURCE, ...EMERGENCY_RESOURCES] : [SUPPORT_RESOURCE]);
 }
 /** Fallback used when a listed contact cannot be reached. */
 const MIND_GARDEN_RESOURCE_FALLBACK = "若号码暂时无法接通，请立即联系身边可信任的人，并在紧急危险时联系当地公安或医疗急救服务。";
+/** Region-neutral fallback for locales without a verified resource registry. */
+const MIND_GARDEN_RESOURCE_FALLBACK_EN = "If a local support line is unavailable, contact someone you trust and use your local emergency services when danger is immediate.";
 //#endregion
 //#region lib/types/classifier.js
 /** Pure deterministic input classifier and follow-up state transition. */
 const URGENT_PATTERNS = [
 	/(?:我)?(?:现在|马上|今晚|已经).{0,10}(?:想|要|准备|打算)(?:自杀|轻生|跳楼|割腕|上吊|伤害自己|紫砂)/iu,
+	/(?:现在|马上|今晚|已经).{0,12}(?:拿着|握着).{0,6}(?:刀|药|绳).{0,12}(?:准备|要|打算).{0,6}(?:伤害自己|自杀|轻生)/iu,
 	/(?:我)?(?:已经|刚刚)(?:割腕|吞药|跳下|伤害自己|伤害他人|捅了|砍了)/iu,
 	/(?:药|刀|绳|煤气|楼顶).{0,12}(?:就在身边|已经准备好|已经拿到|伸手就能拿到)/iu,
 	/(?:我)?(?:现在|马上|今晚).{0,8}(?:要|准备|打算)(?:杀了|伤害)(?:他|她|他们|别人)/iu,
 	/(?:我)?(?:已经|刚刚).{0,8}(?:吞了|吃了|注射了).{0,8}(?:一把|一瓶|一整瓶|很多|过量|全部)(?:药|毒品|酒)/iu,
-	/(?:我)?(?:正站在|已经到了|就在).{0,8}(?:楼顶|桥边|铁轨|悬崖)/iu,
+	/(?:我)?(?:(?:正|已经)?站在|已经到了|就在).{0,8}(?:楼顶|桥边|铁轨|悬崖)/iu,
 	/\b(?:i am|i'm|im)\s+(?:going to|about to|ready to)\s+(?:kill myself|end my life|hurt myself)\b/iu,
 	/\b(?:i|we)\s+(?:just|already)\s+(?:took|swallowed|injected).{0,18}(?:overdose|all the pills|a bottle of pills)\b/iu,
 	/\b(?:tonight|right now|now).{0,18}(?:kill myself|end my life|kill (?:him|her|them))\b/iu
@@ -119,14 +123,34 @@ const SAFETY_CONFIRMED_TERMS = [
 function matches(patterns, text) {
 	return patterns.some((pattern) => pattern.test(text));
 }
-function result(level, state, categories, normalTurns = 0) {
+function result(level, state, categories, normalTurns = 0, locale = "zh-CN") {
 	return {
+		locale,
 		level,
 		state,
 		categories,
-		resources: level === 0 ? [] : mindGardenSafetyResources(level >= 3),
+		resources: level === 0 ? [] : mindGardenSafetyResources(level >= 3, locale),
 		normalTurns
 	};
+}
+function splitSafetyClauses(text) {
+	return text.split(/(?:[。！？!?；;\n]+|(?<!不)(?:但是|不过|然而|可是|但|却)|\b(?:but|however|although|though|yet)\b)/iu).map((clause) => clause.trim()).filter(Boolean);
+}
+function assessClause(clause, locale) {
+	if (clause.includes("不想活在") || matches(NEGATED_RISK_PATTERNS, clause) || matches(BENIGN_CONTEXT_PATTERNS, clause)) return result(0, "ordinary", [], 0, locale);
+	if (matches(URGENT_PATTERNS, clause)) return result(3, "urgent", ["immediate-danger"], 0, locale);
+	if (matches(SUBSTANCE_DANGER_PATTERNS, clause)) return result(3, "substance-emergency", ["overdose-or-withdrawal"], 0, locale);
+	if (matches(ABUSE_DANGER_PATTERNS, clause)) return result(2, "abuse-danger", ["abuse-or-child-safety"], 0, locale);
+	if (matches(REALITY_OR_SLEEP_PATTERNS, clause)) return result(2, "reality-or-sleep-danger", ["mania-or-psychosis-danger"], 0, locale);
+	if (matches(HIGH_RISK_PATTERNS, clause)) return result(2, "high-risk", ["self-or-other-harm"], 0, locale);
+	if (matches(VULNERABLE_PATTERNS, clause)) return result(1, "vulnerable", ["severe-distress"], 0, locale);
+	return result(0, "ordinary", [], 0, locale);
+}
+/** Infer the deterministic safety-copy locale from the entered text. */
+function detectMindGardenSafetyLocale(text) {
+	const hanCount = text.match(/\p{Script=Han}/gu)?.length ?? 0;
+	const latinWordCount = text.match(/\b[A-Za-z]+\b/gu)?.length ?? 0;
+	return latinWordCount > 0 && latinWordCount * 2 > hanCount ? "en" : "zh-CN";
 }
 /**
 * Normalize common spacing, traditional characters, and obfuscations.
@@ -141,16 +165,11 @@ function normalizeMindGardenSafetyText(text) {
 * @param text - complete entered human text.
 * @returns a detached deterministic assessment.
 */
-function assessMindGardenInput(text) {
-	const normalized = normalizeMindGardenSafetyText(text);
-	if (normalized.includes("不想活在") || matches(NEGATED_RISK_PATTERNS, normalized) || matches(BENIGN_CONTEXT_PATTERNS, normalized)) return result(0, "ordinary", []);
-	if (matches(URGENT_PATTERNS, normalized)) return result(3, "urgent", ["immediate-danger"]);
-	if (matches(ABUSE_DANGER_PATTERNS, normalized)) return result(2, "abuse-danger", ["abuse-or-child-safety"]);
-	if (matches(REALITY_OR_SLEEP_PATTERNS, normalized)) return result(2, "reality-or-sleep-danger", ["mania-or-psychosis-danger"]);
-	if (matches(SUBSTANCE_DANGER_PATTERNS, normalized)) return result(3, "substance-emergency", ["overdose-or-withdrawal"]);
-	if (matches(HIGH_RISK_PATTERNS, normalized)) return result(2, "high-risk", ["self-or-other-harm"]);
-	if (matches(VULNERABLE_PATTERNS, normalized)) return result(1, "vulnerable", ["severe-distress"]);
-	return result(0, "ordinary", []);
+function assessMindGardenInput(text, locale = detectMindGardenSafetyLocale(text)) {
+	return splitSafetyClauses(normalizeMindGardenSafetyText(text)).flatMap((clause) => {
+		const commaClauses = clause.split(/[，,、]+/u).map((part) => part.trim()).filter(Boolean);
+		return commaClauses.length > 1 ? [clause, ...commaClauses] : [clause];
+	}).map((clause) => assessClause(clause, locale)).reduce((highest, assessment) => assessment.level > highest.level ? assessment : highest, result(0, "ordinary", [], 0, locale));
 }
 /**
 * Carry a previous intervention forward until concrete safety information or
@@ -164,10 +183,10 @@ function recoverMindGardenSafetyState(current, previous, text) {
 	if (current.level > 0 || previous === void 0 || previous.level === 0) return current;
 	const normalized = normalizeMindGardenSafetyText(text);
 	const safetyConfirmed = SAFETY_CONFIRMED_TERMS.some((term) => normalized.includes(term));
-	if (previous.level === 3) return safetyConfirmed ? result(2, "support-follow-up", ["immediate-danger-reduced"]) : result(3, "support-follow-up", ["urgent-follow-up"], previous.normalTurns);
-	if (previous.level === 2) return safetyConfirmed ? result(1, "support-follow-up", ["safety-confirmed"]) : result(2, "support-follow-up", ["safety-follow-up"], previous.normalTurns);
+	if (previous.level === 3) return safetyConfirmed ? result(2, "support-follow-up", ["immediate-danger-reduced"], 0, current.locale) : result(3, "support-follow-up", ["urgent-follow-up"], previous.normalTurns, current.locale);
+	if (previous.level === 2) return safetyConfirmed ? result(1, "support-follow-up", ["safety-confirmed"], 0, current.locale) : result(2, "support-follow-up", ["safety-follow-up"], previous.normalTurns, current.locale);
 	const normalTurns = previous.normalTurns + 1;
-	return normalTurns >= 2 ? result(0, "ordinary", []) : result(1, "support-follow-up", ["safety-follow-up"], normalTurns);
+	return normalTurns >= 2 ? result(0, "ordinary", [], 0, current.locale) : result(1, "support-follow-up", ["safety-follow-up"], normalTurns, current.locale);
 }
 //#endregion
 //#region lib/types/output-guard.js
@@ -198,6 +217,12 @@ function assessMindGardenOutput(text, assessment) {
 * @returns a calm mainland-China support response containing verified contacts.
 */
 function renderMindGardenSupportResponse(assessment) {
+	if (assessment.locale === "en") {
+		const safetyCheck = "Are you safe right now, have you already hurt yourself or someone else, and can you reach anything that could cause harm?";
+		if (assessment.level >= 3) return `I am concerned about the immediate danger you described. Pause everything else, move away from anything or anywhere that could cause harm, and ask someone you trust to stay with you. ${safetyCheck} If danger is happening now, contact your local emergency services immediately. ${MIND_GARDEN_RESOURCE_FALLBACK_EN} I cannot provide real-time rescue, so bringing in people and emergency help nearby matters most right now.`;
+		if (assessment.level === 2) return `Thank you for telling me. I will pause the rest of the conversation and focus on safety. ${safetyCheck} Please ask someone you trust to stay with you and contact a qualified local crisis or health service. If the danger becomes immediate, contact your local emergency services. I cannot replace emergency or professional help, but I can help you work out the next step for reaching support.`;
+		return "It sounds like you are carrying a great deal right now. I will not rush to analyse it. Please consider letting someone you trust know what is happening and contacting a qualified local support service. I cannot replace professional help. Would it help more if I listened quietly, or if we worked out a safer plan for today?";
+	}
 	const support = assessment.resources.find((resource) => resource.kind === "support");
 	const emergency = assessment.resources.filter((resource) => resource.kind === "emergency");
 	const supportClause = support === void 0 ? MIND_GARDEN_RESOURCE_FALLBACK : `你也可以联系${support.label} ${support.value}。`;
@@ -213,7 +238,14 @@ function renderMindGardenSupportResponse(assessment) {
 * @param violations - matched rules when content policy caused replacement.
 * @returns user-visible replacement text with no unsafe output quotation.
 */
-function renderMindGardenGuardReplacement(reason, violations) {
+function renderMindGardenGuardReplacement(reason, violations, locale = "zh-CN") {
+	if (locale === "en") {
+		if (reason === "buffer-limit") return "This response exceeded the amount Mind Garden can check safely, so it was not shown. We can break the topic into a smaller part and continue carefully.";
+		if (violations.includes("medication-direction")) return "I cannot advise you to stop, switch, or change the dose of medication. Please contact the prescribing clinician or a local health service; I can help you organise what you want to tell them.";
+		if (violations.includes("delusion-confirmation")) return "I cannot confirm that a threat or hidden message is definitely real. We can focus on what you can verify around you and on your immediate safety. If anyone may be in danger, contact someone you trust and your local emergency services.";
+		if (violations.includes("diagnosis")) return "I cannot diagnose you or assign a personality label from this conversation. I can listen to the specific experience and help you prepare questions for a qualified professional.";
+		return "I want to put that more safely: I can help you think this through, but I cannot replace relationships, professional care, or emergency support in your life. Let us return to the part you most wanted understood.";
+	}
 	if (reason === "buffer-limit") return "这次回复超出了心智庭院能够安全检查的范围，因此没有继续显示。我们可以把刚才的话题拆小一些，再稳妥地继续。";
 	if (violations.includes("medication-direction")) return "我不能建议你停药、换药或调整剂量。涉及处方和用药安全，请联系开具处方的医生或当地医疗服务；我可以帮你整理想向医生说明的感受和问题。";
 	if (violations.includes("delusion-confirmation")) return "我不能确认某种威胁或暗示一定真实存在。我们可以先关注你此刻能确认的环境与安全；如果你感到自己或他人可能有危险，请尽快联系可信任的人和当地紧急服务。";
@@ -388,7 +420,7 @@ function guardedModelStream(ctx, agent, step, assessment, next, config, signal) 
 			const reason = limitExceeded ? "buffer-limit" : "policy-violation";
 			await recordOutputGuard(ctx, agent, step, reason, violations);
 			signal?.throwIfAborted();
-			yield* textStream(renderMindGardenGuardReplacement(reason, violations), buffered.usage);
+			yield* textStream(renderMindGardenGuardReplacement(reason, violations, assessment?.locale), buffered.usage);
 			return;
 		}
 		yield* chunks;
@@ -432,4 +464,4 @@ function apply(ctx, config) {
 	});
 }
 //#endregion
-export { Config, MIND_GARDEN_RESOURCE_FALLBACK, apply, assessMindGardenInput, assessMindGardenOutput, inject, mindGardenSafetyResources, name, normalizeMindGardenSafetyText, recoverMindGardenSafetyState, renderMindGardenGuardReplacement, renderMindGardenSupportResponse };
+export { Config, MIND_GARDEN_RESOURCE_FALLBACK, MIND_GARDEN_RESOURCE_FALLBACK_EN, apply, assessMindGardenInput, assessMindGardenOutput, detectMindGardenSafetyLocale, inject, mindGardenSafetyResources, name, normalizeMindGardenSafetyText, recoverMindGardenSafetyState, renderMindGardenGuardReplacement, renderMindGardenSupportResponse };

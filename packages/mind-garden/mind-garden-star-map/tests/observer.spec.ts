@@ -40,6 +40,7 @@ describe('Star Observer prompt and output boundary', () => {
     expect(envelope?.prompt).toContain('tests assumptions')
     expect(envelope?.prompt).not.toContain('must not enter prompt')
     expect(envelope?.prompt).not.toContain(evidence[0]!.sourceId)
+    expect(JSON.parse(envelope!.prompt)).toMatchObject({ responseLanguage: 'en' })
     expect(buildStarObserverEnvelope(profile, traits, 'current-self', '', 'gentle', evidence, 8)).toBeNull()
   })
 
@@ -73,6 +74,7 @@ describe('Star Observer prompt and output boundary', () => {
     expect(envelope?.prompt).not.toContain('turn 0')
     expect(envelope?.prompt).toContain('turn 9')
     expect(envelope?.prompt).not.toContain(evidence[0]!.sourceId)
+    expect(JSON.parse(envelope!.prompt)).toMatchObject({ responseLanguage: 'en' })
     expect(buildStarObserverDialogueEnvelope(card, 'I have a counterexample.', 'correct', 8)).toBeNull()
 
     const valid = JSON.stringify({

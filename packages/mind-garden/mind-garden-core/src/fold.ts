@@ -2,7 +2,11 @@
 
 import type { SessionEvent } from '@deepseek-ai/dsh-session'
 import { MIND_GARDEN_STATE_VERSION } from './runtime.ts'
-import type { MindGardenOperation, MindGardenSessionStateEvent } from './domain.ts'
+import type {
+  MindGardenDisclosureAcceptance,
+  MindGardenOperation,
+  MindGardenSessionStateEvent,
+} from './domain.ts'
 import type {
   MindGardenMode,
   MindGardenPrivacy,
@@ -40,6 +44,22 @@ function positiveInteger(value: unknown, field: string): number {
   const parsed = nonNegativeInteger(value, field)
   if (parsed < 1) throw new Error(`Mind Garden state ${field} must be positive`)
   return parsed
+}
+
+function decodeDisclosureAcceptance(value: unknown): MindGardenDisclosureAcceptance | null {
+  if (value === null) return null
+  if (!isRecord(value)
+    || Object.keys(value).sort().join(',') !== 'acceptedAt,contractVersion,locale') {
+    throw new Error('Mind Garden disclosure acceptance must be null or an exact receipt')
+  }
+  if (value['locale'] !== 'zh-CN' && value['locale'] !== 'en') {
+    throw new Error('Mind Garden disclosure acceptance locale is invalid')
+  }
+  return {
+    acceptedAt: nonNegativeInteger(value['acceptedAt'], 'disclosure acceptedAt'),
+    locale: value['locale'],
+    contractVersion: positiveInteger(value['contractVersion'], 'disclosure contractVersion'),
+  }
 }
 
 /** Decode one exact whole state. */
@@ -88,20 +108,42 @@ function decodeState(value: unknown): MindGardenSessionState {
  */
 export function decodeMindGardenStateEvent(value: unknown): MindGardenSessionStateEvent {
   if (!isRecord(value)) throw new Error('Mind Garden session-state event must be a record')
-  if (Object.keys(value).sort().join(',') !== 'operation,state,version') {
-    throw new Error('Mind Garden session-state event must have exactly operation,state,version fields')
-  }
-  if (value['version'] !== MIND_GARDEN_STATE_VERSION) {
+  if (value['version'] !== 1 && value['version'] !== MIND_GARDEN_STATE_VERSION) {
     throw new Error(`unsupported Mind Garden session-state version ${String(value['version'])}`)
+  }
+  const version = value['version']
+  const expectedKeys = version === 1
+    ? 'operation,state,version'
+    : 'disclosureAcceptance,operation,state,version'
+  if (Object.keys(value).sort().join(',') !== expectedKeys) {
+    throw new Error(`Mind Garden session-state event version ${String(version)} has invalid fields`)
   }
   if (typeof value['operation'] !== 'string'
     || !OPERATIONS.has(value['operation'] as MindGardenOperation)) {
     throw new Error('Mind Garden session-state operation is invalid')
   }
-  return {
-    version: MIND_GARDEN_STATE_VERSION,
+  const event: MindGardenSessionStateEvent = {
+    version,
     operation: value['operation'] as MindGardenOperation,
     state: decodeState(value['state']),
+  }
+  return version === 1
+    ? event
+    : { ...event, disclosureAcceptance: decodeDisclosureAcceptance(value['disclosureAcceptance']) }
+}
+
+function requireDisclosureReceipt(change: MindGardenSessionStateEvent): void {
+  if (change.version === 1) return
+  const receipt = change.disclosureAcceptance ?? null
+  const recordsAcceptance = change.operation === 'accept-disclosure'
+    || (change.operation === 'activate' && change.state.modelDisclosureAccepted)
+  if (recordsAcceptance !== (receipt !== null)) {
+    throw new Error('Mind Garden disclosure acceptance receipt does not match the state transition')
+  }
+  if (receipt !== null
+    && (receipt.acceptedAt !== change.state.updatedAt
+      || receipt.contractVersion !== change.state.contractVersion)) {
+    throw new Error('Mind Garden disclosure acceptance receipt does not match the accepted contract')
   }
 }
 
@@ -130,6 +172,7 @@ export function applyMindGardenChange(
   current: MindGardenSessionState | null,
   change: MindGardenSessionStateEvent,
 ): MindGardenSessionState {
+  requireDisclosureReceipt(change)
   const next = change.state
   if (change.operation === 'activate') {
     if (current !== null) throw new Error('Mind Garden activate requires an inactive session')

@@ -32,7 +32,8 @@ const EMERGENCY_RESOURCES = Object.freeze([Object.freeze({
 * @param urgent - whether immediate emergency contacts are required.
 * @returns the support line plus emergency contacts when requested.
 */
-function mindGardenSafetyResources(urgent) {
+function mindGardenSafetyResources(urgent, locale = "zh-CN") {
+	if (locale !== "zh-CN") return [];
 	return structuredClone(urgent ? [SUPPORT_RESOURCE, ...EMERGENCY_RESOURCES] : [SUPPORT_RESOURCE]);
 }
 //#endregion
@@ -40,11 +41,12 @@ function mindGardenSafetyResources(urgent) {
 /** Pure deterministic input classifier and follow-up state transition. */
 const URGENT_PATTERNS = [
 	/(?:我)?(?:现在|马上|今晚|已经).{0,10}(?:想|要|准备|打算)(?:自杀|轻生|跳楼|割腕|上吊|伤害自己|紫砂)/iu,
+	/(?:现在|马上|今晚|已经).{0,12}(?:拿着|握着).{0,6}(?:刀|药|绳).{0,12}(?:准备|要|打算).{0,6}(?:伤害自己|自杀|轻生)/iu,
 	/(?:我)?(?:已经|刚刚)(?:割腕|吞药|跳下|伤害自己|伤害他人|捅了|砍了)/iu,
 	/(?:药|刀|绳|煤气|楼顶).{0,12}(?:就在身边|已经准备好|已经拿到|伸手就能拿到)/iu,
 	/(?:我)?(?:现在|马上|今晚).{0,8}(?:要|准备|打算)(?:杀了|伤害)(?:他|她|他们|别人)/iu,
 	/(?:我)?(?:已经|刚刚).{0,8}(?:吞了|吃了|注射了).{0,8}(?:一把|一瓶|一整瓶|很多|过量|全部)(?:药|毒品|酒)/iu,
-	/(?:我)?(?:正站在|已经到了|就在).{0,8}(?:楼顶|桥边|铁轨|悬崖)/iu,
+	/(?:我)?(?:(?:正|已经)?站在|已经到了|就在).{0,8}(?:楼顶|桥边|铁轨|悬崖)/iu,
 	/\b(?:i am|i'm|im)\s+(?:going to|about to|ready to)\s+(?:kill myself|end my life|hurt myself)\b/iu,
 	/\b(?:i|we)\s+(?:just|already)\s+(?:took|swallowed|injected).{0,18}(?:overdose|all the pills|a bottle of pills)\b/iu,
 	/\b(?:tonight|right now|now).{0,18}(?:kill myself|end my life|kill (?:him|her|them))\b/iu
@@ -116,14 +118,34 @@ const SAFETY_CONFIRMED_TERMS = [
 function matches(patterns, text) {
 	return patterns.some((pattern) => pattern.test(text));
 }
-function result(level, state, categories, normalTurns = 0) {
+function result(level, state, categories, normalTurns = 0, locale = "zh-CN") {
 	return {
+		locale,
 		level,
 		state,
 		categories,
-		resources: level === 0 ? [] : mindGardenSafetyResources(level >= 3),
+		resources: level === 0 ? [] : mindGardenSafetyResources(level >= 3, locale),
 		normalTurns
 	};
+}
+function splitSafetyClauses(text) {
+	return text.split(/(?:[。！？!?；;\n]+|(?<!不)(?:但是|不过|然而|可是|但|却)|\b(?:but|however|although|though|yet)\b)/iu).map((clause) => clause.trim()).filter(Boolean);
+}
+function assessClause(clause, locale) {
+	if (clause.includes("不想活在") || matches(NEGATED_RISK_PATTERNS, clause) || matches(BENIGN_CONTEXT_PATTERNS, clause)) return result(0, "ordinary", [], 0, locale);
+	if (matches(URGENT_PATTERNS, clause)) return result(3, "urgent", ["immediate-danger"], 0, locale);
+	if (matches(SUBSTANCE_DANGER_PATTERNS, clause)) return result(3, "substance-emergency", ["overdose-or-withdrawal"], 0, locale);
+	if (matches(ABUSE_DANGER_PATTERNS, clause)) return result(2, "abuse-danger", ["abuse-or-child-safety"], 0, locale);
+	if (matches(REALITY_OR_SLEEP_PATTERNS, clause)) return result(2, "reality-or-sleep-danger", ["mania-or-psychosis-danger"], 0, locale);
+	if (matches(HIGH_RISK_PATTERNS, clause)) return result(2, "high-risk", ["self-or-other-harm"], 0, locale);
+	if (matches(VULNERABLE_PATTERNS, clause)) return result(1, "vulnerable", ["severe-distress"], 0, locale);
+	return result(0, "ordinary", [], 0, locale);
+}
+/** Infer the deterministic safety-copy locale from the entered text. */
+function detectMindGardenSafetyLocale(text) {
+	const hanCount = text.match(/\p{Script=Han}/gu)?.length ?? 0;
+	const latinWordCount = text.match(/\b[A-Za-z]+\b/gu)?.length ?? 0;
+	return latinWordCount > 0 && latinWordCount * 2 > hanCount ? "en" : "zh-CN";
 }
 /**
 * Normalize common spacing, traditional characters, and obfuscations.
@@ -138,16 +160,11 @@ function normalizeMindGardenSafetyText(text) {
 * @param text - complete entered human text.
 * @returns a detached deterministic assessment.
 */
-function assessMindGardenInput(text) {
-	const normalized = normalizeMindGardenSafetyText(text);
-	if (normalized.includes("不想活在") || matches(NEGATED_RISK_PATTERNS, normalized) || matches(BENIGN_CONTEXT_PATTERNS, normalized)) return result(0, "ordinary", []);
-	if (matches(URGENT_PATTERNS, normalized)) return result(3, "urgent", ["immediate-danger"]);
-	if (matches(ABUSE_DANGER_PATTERNS, normalized)) return result(2, "abuse-danger", ["abuse-or-child-safety"]);
-	if (matches(REALITY_OR_SLEEP_PATTERNS, normalized)) return result(2, "reality-or-sleep-danger", ["mania-or-psychosis-danger"]);
-	if (matches(SUBSTANCE_DANGER_PATTERNS, normalized)) return result(3, "substance-emergency", ["overdose-or-withdrawal"]);
-	if (matches(HIGH_RISK_PATTERNS, normalized)) return result(2, "high-risk", ["self-or-other-harm"]);
-	if (matches(VULNERABLE_PATTERNS, normalized)) return result(1, "vulnerable", ["severe-distress"]);
-	return result(0, "ordinary", []);
+function assessMindGardenInput(text, locale = detectMindGardenSafetyLocale(text)) {
+	return splitSafetyClauses(normalizeMindGardenSafetyText(text)).flatMap((clause) => {
+		const commaClauses = clause.split(/[，,、]+/u).map((part) => part.trim()).filter(Boolean);
+		return commaClauses.length > 1 ? [clause, ...commaClauses] : [clause];
+	}).map((clause) => assessClause(clause, locale)).reduce((highest, assessment) => assessment.level > highest.level ? assessment : highest, result(0, "ordinary", [], 0, locale));
 }
 /**
 * Carry a previous intervention forward until concrete safety information or
@@ -161,10 +178,10 @@ function recoverMindGardenSafetyState(current, previous, text) {
 	if (current.level > 0 || previous === void 0 || previous.level === 0) return current;
 	const normalized = normalizeMindGardenSafetyText(text);
 	const safetyConfirmed = SAFETY_CONFIRMED_TERMS.some((term) => normalized.includes(term));
-	if (previous.level === 3) return safetyConfirmed ? result(2, "support-follow-up", ["immediate-danger-reduced"]) : result(3, "support-follow-up", ["urgent-follow-up"], previous.normalTurns);
-	if (previous.level === 2) return safetyConfirmed ? result(1, "support-follow-up", ["safety-confirmed"]) : result(2, "support-follow-up", ["safety-follow-up"], previous.normalTurns);
+	if (previous.level === 3) return safetyConfirmed ? result(2, "support-follow-up", ["immediate-danger-reduced"], 0, current.locale) : result(3, "support-follow-up", ["urgent-follow-up"], previous.normalTurns, current.locale);
+	if (previous.level === 2) return safetyConfirmed ? result(1, "support-follow-up", ["safety-confirmed"], 0, current.locale) : result(2, "support-follow-up", ["safety-follow-up"], previous.normalTurns, current.locale);
 	const normalTurns = previous.normalTurns + 1;
-	return normalTurns >= 2 ? result(0, "ordinary", []) : result(1, "support-follow-up", ["safety-follow-up"], normalTurns);
+	return normalTurns >= 2 ? result(0, "ordinary", [], 0, current.locale) : result(1, "support-follow-up", ["safety-follow-up"], normalTurns, current.locale);
 }
 //#endregion
 //#region lib/types/invariant.js

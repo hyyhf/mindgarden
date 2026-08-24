@@ -196,6 +196,14 @@ export const storedAutomationStateSchema = z.object({
   }
 })
 
+/** Content-free deletion marker kept under the removed memory's original id. */
+export const storedMemoryTombstoneSchema = z.object({
+  recordType: z.literal('memory-tombstone'),
+  formatVersion: z.literal(1),
+  id: z.uuid(),
+  deletedAt: z.number().int().nonnegative(),
+}).strict()
+
 /** Authenticated plaintext for one encrypted memory record. */
 export type StoredMemory = z.infer<typeof storedMemorySchema>
 /** Authenticated plaintext for one encrypted retrieval audit. */
@@ -206,6 +214,8 @@ export type StoredExtractionRun = z.infer<typeof storedExtractionRunSchema>
 export type StoredAutomationPolicy = z.infer<typeof storedAutomationPolicySchema>
 /** Authenticated plaintext for one automatic-extraction progress cursor. */
 export type StoredAutomationState = z.infer<typeof storedAutomationStateSchema>
+/** Authenticated marker that prevents an older backup from reviving a deleted memory. */
+export type StoredMemoryTombstone = z.infer<typeof storedMemoryTombstoneSchema>
 /** Complete version-one plaintext vocabulary accepted from the vault. */
 export type StoredMindGardenMemoryRecord =
   | StoredMemory
@@ -213,6 +223,7 @@ export type StoredMindGardenMemoryRecord =
   | StoredExtractionRun
   | StoredAutomationPolicy
   | StoredAutomationState
+  | StoredMemoryTombstone
 
 /**
  * Decode one authenticated plaintext record without trusting its producer.
@@ -226,5 +237,6 @@ export function decodeStoredRecord(value: unknown): StoredMindGardenMemoryRecord
   if (discriminator === 'extraction-run') return storedExtractionRunSchema.parse(value)
   if (discriminator === 'automation-policy') return storedAutomationPolicySchema.parse(value)
   if (discriminator === 'automation-state') return storedAutomationStateSchema.parse(value)
+  if (discriminator === 'memory-tombstone') return storedMemoryTombstoneSchema.parse(value)
   throw new TypeError(`unknown Mind Garden memory record type '${discriminator}'`)
 }

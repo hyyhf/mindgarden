@@ -14,6 +14,8 @@ import { mindGardenProjectionDefinition } from './projection.ts'
 import { MIND_GARDEN_CONTRACT_VERSION, MIND_GARDEN_STATE_VERSION, MindGardenError } from './runtime.ts'
 import type {
   ActivateMindGardenRequest,
+  MindGardenDisclosureAcceptance,
+  MindGardenDisclosureLocale,
   MindGardenOperation,
   MindGardenSessionStateEvent,
 } from './domain.ts'
@@ -86,6 +88,7 @@ export class MindGardenService extends TypertRemoteService {
       throw new MindGardenError('Mind Garden activation requires a blank session', 'MIND_GARDEN_SESSION_NOT_BLANK')
     }
     const now = Date.now()
+    const accepted = request.modelDisclosureAccepted ?? false
     return this.commit(session, cell, 'activate', {
       revision: 1,
       activatedAt: now,
@@ -94,8 +97,12 @@ export class MindGardenService extends TypertRemoteService {
       supportIntent: request.supportIntent ?? 'auto',
       privacy: request.privacy,
       contractVersion: MIND_GARDEN_CONTRACT_VERSION,
-      modelDisclosureAccepted: request.modelDisclosureAccepted ?? false,
-    })
+      modelDisclosureAccepted: accepted,
+    }, accepted ? {
+      acceptedAt: now,
+      locale: request.disclosureLocale ?? 'zh-CN',
+      contractVersion: MIND_GARDEN_CONTRACT_VERSION,
+    } : null)
   }
 
   /**
@@ -138,12 +145,21 @@ export class MindGardenService extends TypertRemoteService {
    * @param expectedRevision - caller's current revision.
    * @returns current state when already accepted, otherwise the next revision.
    */
-  acceptModelDisclosure(session: Session, expectedRevision: number): MindGardenSessionState {
+  acceptModelDisclosure(
+    session: Session,
+    expectedRevision: number,
+    locale: MindGardenDisclosureLocale = 'zh-CN',
+  ): MindGardenSessionState {
     const cell = this.sync(session)
     const current = this.requireCurrent(cell)
     if (current.modelDisclosureAccepted) return { ...current }
     this.assertRevision(current, expectedRevision)
-    return this.commit(session, cell, 'accept-disclosure', this.next(current, { modelDisclosureAccepted: true }))
+    const next = this.next(current, { modelDisclosureAccepted: true })
+    return this.commit(session, cell, 'accept-disclosure', next, {
+      acceptedAt: next.updatedAt,
+      locale,
+      contractVersion: next.contractVersion,
+    })
   }
 
   /**
@@ -199,9 +215,13 @@ export class MindGardenService extends TypertRemoteService {
    * @returns the resulting state.
    */
   @Remote('acceptModelDisclosure')
-  remoteExportAcceptModelDisclosure(agent: Agent, expectedRevision: number): MindGardenSessionState {
+  remoteExportAcceptModelDisclosure(
+    agent: Agent,
+    expectedRevision: number,
+    locale: MindGardenDisclosureLocale = 'zh-CN',
+  ): MindGardenSessionState {
     this.assertLive(agent)
-    return this.acceptModelDisclosure(agent.session, expectedRevision)
+    return this.acceptModelDisclosure(agent.session, expectedRevision, locale)
   }
 
   /** Enforce exact live-Agent identity before accepting a Remote mutation. */
@@ -265,11 +285,13 @@ export class MindGardenService extends TypertRemoteService {
     cell: MindGardenCell,
     operation: MindGardenOperation,
     state: MindGardenSessionState,
+    disclosureAcceptance: MindGardenDisclosureAcceptance | null = null,
   ): MindGardenSessionState {
     const data: MindGardenSessionStateEvent = {
       version: MIND_GARDEN_STATE_VERSION,
       operation,
       state,
+      disclosureAcceptance,
     }
     const event = session.append('mind-garden/session-state', data)
     cell.state = applyMindGardenEvent(cell.state, event)

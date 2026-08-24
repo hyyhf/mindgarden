@@ -1,6 +1,6 @@
 /** Versioned mainland-China support resources used by deterministic responses. */
 
-import type { MindGardenSafetyResource } from './types.ts'
+import type { MindGardenSafetyLocale, MindGardenSafetyResource } from './types.ts'
 
 const SUPPORT_RESOURCE: MindGardenSafetyResource = Object.freeze({
   id: 'cn-12356',
@@ -38,10 +38,18 @@ const EMERGENCY_RESOURCES: readonly MindGardenSafetyResource[] = Object.freeze([
  * @param urgent - whether immediate emergency contacts are required.
  * @returns the support line plus emergency contacts when requested.
  */
-export function mindGardenSafetyResources(urgent: boolean): MindGardenSafetyResource[] {
+export function mindGardenSafetyResources(
+  urgent: boolean,
+  locale: MindGardenSafetyLocale = 'zh-CN',
+): MindGardenSafetyResource[] {
+  if (locale !== 'zh-CN') return []
   return structuredClone(urgent ? [SUPPORT_RESOURCE, ...EMERGENCY_RESOURCES] : [SUPPORT_RESOURCE])
 }
 
 /** Fallback used when a listed contact cannot be reached. */
 export const MIND_GARDEN_RESOURCE_FALLBACK =
   '若号码暂时无法接通，请立即联系身边可信任的人，并在紧急危险时联系当地公安或医疗急救服务。'
+
+/** Region-neutral fallback for locales without a verified resource registry. */
+export const MIND_GARDEN_RESOURCE_FALLBACK_EN =
+  'If a local support line is unavailable, contact someone you trust and use your local emergency services when danger is immediate.'

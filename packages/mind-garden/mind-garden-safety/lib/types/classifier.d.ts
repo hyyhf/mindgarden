@@ -1,5 +1,7 @@
 /** Pure deterministic input classifier and follow-up state transition. */
-import type { MindGardenSafetyAssessment } from './types.ts';
+import type { MindGardenSafetyAssessment, MindGardenSafetyLocale } from './types.ts';
+/** Infer the deterministic safety-copy locale from the entered text. */
+export declare function detectMindGardenSafetyLocale(text: string): MindGardenSafetyLocale;
 /**
  * Normalize common spacing, traditional characters, and obfuscations.
  * @param text - entered user text.
@@ -11,7 +13,7 @@ export declare function normalizeMindGardenSafetyText(text: string): string;
  * @param text - complete entered human text.
  * @returns a detached deterministic assessment.
  */
-export declare function assessMindGardenInput(text: string): MindGardenSafetyAssessment;
+export declare function assessMindGardenInput(text: string, locale?: MindGardenSafetyLocale): MindGardenSafetyAssessment;
 /**
  * Carry a previous intervention forward until concrete safety information or
  * two ordinary level-one turns allow a step down.

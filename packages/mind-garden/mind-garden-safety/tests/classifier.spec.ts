@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   assessMindGardenInput,
+  detectMindGardenSafetyLocale,
   normalizeMindGardenSafetyText,
   recoverMindGardenSafetyState,
 } from '@deepseek-ai/dsh-mind-garden/safety'
@@ -58,15 +59,32 @@ const cases: ReadonlyArray<readonly [string, number]> = [
   ['课程标题是自杀风险识别。', 0],
   ["I am not suicidal and I don't plan to hurt myself.", 0],
   ['This research paper discusses suicide prevention.', 0],
+  ['我不想自杀，但是现在我已经拿着刀，马上准备伤害自己。', 3],
+  ['新闻报道提到自杀，但我现在已经站在楼顶准备跳下去。', 3],
+  ['I am not suicidal, but right now I am ready to kill myself.', 3],
+  ['新闻在讨论自杀，我现在已经站在楼顶。', 3],
+  ['我没有想自杀，我现在拿着刀准备伤害自己。', 3],
+  ['This is a news article about suicide, I am going to kill myself right now.', 3],
 ]
 
 describe('Mind Garden deterministic input classifier', () => {
   it.each(cases)('classifies %s at level %i', (input, level) => {
     const assessment = assessMindGardenInput(input)
     expect(assessment.level).toBe(level)
+    const chineseResources = level === 0 ? [] : level === 3 ? ['12356', '110', '120'] : ['12356']
     expect(assessment.resources.map(resource => resource.value)).toEqual(
-      level === 0 ? [] : level === 3 ? ['12356', '110', '120'] : ['12356'],
+      assessment.locale === 'zh-CN' ? chineseResources : [],
     )
+  })
+
+  it('infers Chinese and English safety-copy locales without attaching China-only resources', () => {
+    expect(detectMindGardenSafetyLocale('我现在需要帮助')).toBe('zh-CN')
+    expect(detectMindGardenSafetyLocale('I need help right now')).toBe('en')
+    expect(assessMindGardenInput('I am ready to kill myself.')).toMatchObject({
+      locale: 'en',
+      level: 3,
+      resources: [],
+    })
   })
 
   it('normalizes deliberate spacing and traditional characters', () => {

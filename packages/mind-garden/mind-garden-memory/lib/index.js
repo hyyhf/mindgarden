@@ -253,6 +253,13 @@ const storedAutomationStateSchema = z.object({
 		message: "automation updatedAt precedes lastAttemptAt"
 	});
 });
+/** Content-free deletion marker kept under the removed memory's original id. */
+const storedMemoryTombstoneSchema = z.object({
+	recordType: z.literal("memory-tombstone"),
+	formatVersion: z.literal(1),
+	id: z.uuid(),
+	deletedAt: z.number().int().nonnegative()
+}).strict();
 /**
 * Decode one authenticated plaintext record without trusting its producer.
 * @param value - Plaintext returned after vault authentication.
@@ -265,6 +272,7 @@ function decodeStoredRecord(value) {
 	if (discriminator === "extraction-run") return storedExtractionRunSchema.parse(value);
 	if (discriminator === "automation-policy") return storedAutomationPolicySchema.parse(value);
 	if (discriminator === "automation-state") return storedAutomationStateSchema.parse(value);
+	if (discriminator === "memory-tombstone") return storedMemoryTombstoneSchema.parse(value);
 	throw new TypeError(`unknown Mind Garden memory record type '${discriminator}'`);
 }
 //#endregion
@@ -381,7 +389,11 @@ function decodeExtractionOutput(raw) {
 //#endregion
 //#region lib/types/retrieval.js
 /** Deterministic bounded retrieval for confirmed Mind Garden memories. */
-const HEADER = ["Mind Garden recalled memories (explicitly confirmed by the user).", "Treat every memory as scoped, potentially outdated, and easy for the user to correct. Do not present it as a diagnosis or fixed personality trait."].join("\n");
+const HEADER = [
+	"Mind Garden recalled memories (explicitly confirmed by the user).",
+	"Treat every memory as scoped, potentially outdated, and easy for the user to correct. The current user message and any explicit correction outrank these memories.",
+	"A [support-preference] entry guides response style only. Follow a more recent turn-local request instead, and do not present any memory as a diagnosis or fixed personality trait."
+].join("\n");
 /**
 * Extract only human-authored text from the entering batch.
 * @param messages - Proposed user-role messages entering the Agent step.
@@ -452,6 +464,8 @@ function retrieveMemories(options) {
 	}).sort((left, right) => {
 		const policy = Number(right.reason === "always") - Number(left.reason === "always");
 		if (policy !== 0) return policy;
+		const supportPreference = Number(right.memory.kind === "support-preference") - Number(left.memory.kind === "support-preference");
+		if (supportPreference !== 0) return supportPreference;
 		if (right.score !== left.score) return right.score - left.score;
 		if (right.memory.updatedAt !== left.memory.updatedAt) return right.memory.updatedAt - left.memory.updatedAt;
 		return left.memory.id.localeCompare(right.memory.id);
@@ -523,6 +537,7 @@ const DEFAULT_MAX_EVIDENCE_BYTES = 1024;
 const DEFAULT_MAX_INJECTED_MEMORIES = 6;
 const DEFAULT_MAX_INJECTED_BYTES = 4096;
 const DEFAULT_MAX_AUDIT_ENTRIES = 200;
+const DEFAULT_MAX_EXTRACTION_RUN_ENTRIES = 50;
 const DEFAULT_MAX_TEMPORARY_DAYS = 365;
 const DEFAULT_MAX_REVISIONS_PER_MEMORY = 50;
 const DEFAULT_MAX_EXTRACTION_CANDIDATES = 3;
@@ -561,6 +576,7 @@ function resolveConfig(config) {
 		maxInjectedMemories: positiveSafeInteger(config.maxInjectedMemories ?? DEFAULT_MAX_INJECTED_MEMORIES, "maxInjectedMemories"),
 		maxInjectedBytes: positiveSafeInteger(config.maxInjectedBytes ?? DEFAULT_MAX_INJECTED_BYTES, "maxInjectedBytes"),
 		maxAuditEntries: positiveSafeInteger(config.maxAuditEntries ?? DEFAULT_MAX_AUDIT_ENTRIES, "maxAuditEntries"),
+		maxExtractionRunEntries: positiveSafeInteger(config.maxExtractionRunEntries ?? DEFAULT_MAX_EXTRACTION_RUN_ENTRIES, "maxExtractionRunEntries"),
 		maxTemporaryDays: positiveSafeInteger(config.maxTemporaryDays ?? DEFAULT_MAX_TEMPORARY_DAYS, "maxTemporaryDays"),
 		maxRevisionsPerMemory: positiveSafeInteger(config.maxRevisionsPerMemory ?? DEFAULT_MAX_REVISIONS_PER_MEMORY, "maxRevisionsPerMemory"),
 		maxExtractionCandidates,
@@ -884,6 +900,7 @@ let MindGardenMemoryService = (() => {
 			maxInjectedMemories: s.number().default(DEFAULT_MAX_INJECTED_MEMORIES),
 			maxInjectedBytes: s.number().default(DEFAULT_MAX_INJECTED_BYTES),
 			maxAuditEntries: s.number().default(DEFAULT_MAX_AUDIT_ENTRIES),
+			maxExtractionRunEntries: s.number().default(DEFAULT_MAX_EXTRACTION_RUN_ENTRIES),
 			maxTemporaryDays: s.number().default(DEFAULT_MAX_TEMPORARY_DAYS),
 			maxRevisionsPerMemory: s.number().default(DEFAULT_MAX_REVISIONS_PER_MEMORY),
 			maxExtractionCandidates: s.number().default(DEFAULT_MAX_EXTRACTION_CANDIDATES),
@@ -1408,11 +1425,49 @@ let MindGardenMemoryService = (() => {
 				const access = this.accessFailure(agent);
 				if (access !== null) return rejected(access);
 				try {
-					const current = (await this.readRecords()).find((record) => record.recordType === "memory" && record.id === request.id);
-					if (current === void 0) return success(Object.freeze({ absent: true }));
+					const records = await this.readRecords();
+					const current = records.find((record) => record.recordType === "memory" && record.id === request.id);
+					if (current === void 0) {
+						const tombstoneRecorded = records.some((record) => record.recordType === "memory-tombstone" && record.id === request.id);
+						return success(Object.freeze({
+							absent: true,
+							memoryRecordRemoved: false,
+							deletionTombstoneRecorded: tombstoneRecorded,
+							extractionRunsRedacted: 0,
+							sessionHistory: "retained-by-host",
+							providerCopies: "provider-controlled"
+						}));
+					}
 					this.assertVersion(current, request.ifVersion);
-					await this.ctx.mindGardenVault.delete("memories", MindGardenVaultRecordId(current.id));
-					return success(Object.freeze({ absent: true }));
+					const associatedRuns = records.flatMap((record) => record.recordType === "extraction-run" && (record.candidates.some((candidate) => candidate.id === current.id) || record.comparedMemoryIds.includes(current.id)) ? [record] : []);
+					for (const run of associatedRuns) await this.writeRecord(storedExtractionRunSchema.parse({
+						...run,
+						prompt: JSON.stringify({
+							redacted: true,
+							reason: "memory-deleted"
+						}),
+						...run.rawOutput === void 0 ? {} : { rawOutput: JSON.stringify({
+							redacted: true,
+							reason: "memory-deleted"
+						}) },
+						comparedMemoryIds: run.comparedMemoryIds.filter((id) => id !== current.id),
+						candidates: run.candidates.filter((candidate) => candidate.id !== current.id),
+						updatedAt: Math.max(Date.now(), run.updatedAt)
+					}));
+					await this.writeRecord(storedMemoryTombstoneSchema.parse({
+						recordType: "memory-tombstone",
+						formatVersion: 1,
+						id: current.id,
+						deletedAt: Date.now()
+					}));
+					return success(Object.freeze({
+						absent: true,
+						memoryRecordRemoved: true,
+						deletionTombstoneRecorded: true,
+						extractionRunsRedacted: associatedRuns.length,
+						sessionHistory: "retained-by-host",
+						providerCopies: "provider-controlled"
+					}));
 				} catch (error) {
 					return this.convertFailure(error);
 				}
@@ -1811,6 +1866,7 @@ let MindGardenMemoryService = (() => {
 				updatedAt: now
 			});
 			await this.writeRecord(run);
+			await this.pruneExtractionRuns([...records, run]);
 			return {
 				run,
 				envelope
@@ -1968,6 +2024,7 @@ let MindGardenMemoryService = (() => {
 				updatedAt: Math.max(Date.now(), run.updatedAt)
 			});
 			await this.writeRecord(completed);
+			await this.pruneExtractionRuns([...records, completed]);
 			return Object.freeze({
 				run: snapshotExtractionRun(completed),
 				candidates: Object.freeze(run.candidates.map((candidate) => snapshotMemory(candidate, completed.updatedAt)))
@@ -1984,6 +2041,7 @@ let MindGardenMemoryService = (() => {
 				...rawOutput === void 0 ? {} : { rawOutput },
 				updatedAt: Math.max(Date.now(), run.updatedAt)
 			}));
+			await this.pruneExtractionRuns(await this.readRecords());
 		}
 		/** Normalize model-authored candidate text only for exact duplicate suppression. */
 		normalizedCandidateContent(value) {
@@ -2027,6 +2085,17 @@ let MindGardenMemoryService = (() => {
 			const audits = records.flatMap((record) => record.recordType === "retrieval-audit" ? [record] : []).sort((left, right) => right.createdAt - left.createdAt || right.id.localeCompare(left.id));
 			for (const audit of audits.slice(this.options.maxAuditEntries)) await this.ctx.mindGardenVault.delete("memories", MindGardenVaultRecordId(audit.id));
 		}
+		/** Keep the newest settled extraction audits without deleting live recovery state. */
+		async pruneExtractionRuns(records) {
+			const settledById = /* @__PURE__ */ new Map();
+			for (const record of records) {
+				if (record.recordType !== "extraction-run" || record.status !== "completed" && record.status !== "failed") continue;
+				const previous = settledById.get(record.id);
+				if (previous === void 0 || record.updatedAt >= previous.updatedAt) settledById.set(record.id, record);
+			}
+			const runs = [...settledById.values()].sort((left, right) => right.updatedAt - left.updatedAt || right.id.localeCompare(left.id));
+			for (const run of runs.slice(this.options.maxExtractionRunEntries)) await this.ctx.mindGardenVault.delete("memories", MindGardenVaultRecordId(run.id));
+		}
 		/** Convert only known validation and encrypted-boundary failures; preserve programming errors. */
 		convertFailure(error) {
 			if (error instanceof MemoryBusinessError) return rejected(error.failure);
@@ -2056,4 +2125,4 @@ let MindGardenMemoryService = (() => {
 	};
 })();
 //#endregion
-export { EXTRACTION_SYSTEM_PROMPT, MindGardenMemoryService, MindGardenMemoryService as default, buildExtractionEnvelope, decodeExtractionOutput, decodeStoredRecord, name, relevanceScore, retrievalTerms, retrieveMemories, storedAuditSchema, storedAutomationPolicySchema, storedAutomationStateSchema, storedExtractionRunSchema, storedMemorySchema, userQuery };
+export { EXTRACTION_SYSTEM_PROMPT, MindGardenMemoryService, MindGardenMemoryService as default, buildExtractionEnvelope, decodeExtractionOutput, decodeStoredRecord, name, relevanceScore, retrievalTerms, retrieveMemories, storedAuditSchema, storedAutomationPolicySchema, storedAutomationStateSchema, storedExtractionRunSchema, storedMemorySchema, storedMemoryTombstoneSchema, userQuery };

@@ -187,7 +187,7 @@ export function StarObserver({
               </label>
               <div className={css.permissionLine}>
                 <span><PrivateIcon size={15} />{authorizedSourceCount}/4</span>
-                <p><strong>{t('star.observer.permission.title')}</strong>{t('star.observer.permission.body')}</p>
+                <p><strong>{t('star.observer.permission.title')}</strong>{t('star.observer.permission.body').replace('{count}', String(authorizedSourceCount))}</p>
               </div>
               {error && <p className={css.error} role="alert">{t('star.observer.error')}</p>}
               <button type="button" className={css.draw} disabled={pending !== null} onClick={() => { void draw() }}>

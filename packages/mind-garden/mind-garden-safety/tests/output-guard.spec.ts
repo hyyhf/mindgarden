@@ -36,6 +36,15 @@ describe('Mind Garden deterministic response policy', () => {
     expect(response.match(/[?？]/gu)).toHaveLength(1)
   })
 
+  it('renders a region-neutral English response with one safety question', () => {
+    const assessment = assessMindGardenInput('I am ready to kill myself right now.')
+    const response = renderMindGardenSupportResponse(assessment)
+    expect(assessment).toMatchObject({ locale: 'en', level: 3, resources: [] })
+    expect(response).toContain('local emergency services')
+    expect(response).not.toContain('12356')
+    expect(response.match(/[?？]/gu)).toHaveLength(1)
+  })
+
   it('renders every intervention tier and fails closed when resource metadata is absent', () => {
     const urgent = { ...assessMindGardenInput('我已经割腕。'), resources: [] }
     expect(renderMindGardenSupportResponse(urgent)).toContain('请立即联系当地公安或医疗急救服务')
@@ -59,5 +68,7 @@ describe('Mind Garden deterministic response policy', () => {
       .toContain('不能替代现实中的关系')
     expect(renderMindGardenGuardReplacement('buffer-limit', []))
       .toContain('超出了心智庭院能够安全检查的范围')
+    expect(renderMindGardenGuardReplacement('policy-violation', ['diagnosis'], 'en'))
+      .toContain('cannot diagnose you')
   })
 })

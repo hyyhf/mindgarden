@@ -94,6 +94,7 @@ describe('Mind Garden service and projection', () => {
       mode: 'serenity', privacy: 'durable', supportIntent: 'listen',
     })
     expect(first).toEqual(activated)
+    expect(session.events[0]?.data).toMatchObject({ version: 2, disclosureAcceptance: null })
     const detached = service.current(session)
     expect(detached).toEqual(first)
     expect(detached).not.toBe(first)
@@ -107,6 +108,14 @@ describe('Mind Garden service and projection', () => {
     vi.setSystemTime(activated.updatedAt + 30)
     const disclosed = service.acceptModelDisclosure(session, 3)
     expect(disclosed).toMatchObject({ revision: 4, modelDisclosureAccepted: true, updatedAt: activated.updatedAt + 30 })
+    expect(session.events[3]?.data).toMatchObject({
+      version: 2,
+      disclosureAcceptance: {
+        acceptedAt: activated.updatedAt + 30,
+        locale: 'zh-CN',
+        contractVersion: 1,
+      },
+    })
     expect(ctx.sessionProjections.snapshot(session).values['mind-garden']).toEqual({ state: disclosed })
     expect(session.events).toHaveLength(4)
     await ctx.fiber.dispose()
@@ -266,8 +275,12 @@ describe('Mind Garden strict replay', () => {
     const agent = { id: session.id, session } as unknown as import('@deepseek-ai/dsh-agent').Agent
     setLive(agent)
     expect(service.remoteExportActivate(agent, {
-      mode: 'serenity', privacy: 'durable', modelDisclosureAccepted: true,
+      mode: 'serenity', privacy: 'durable', modelDisclosureAccepted: true, disclosureLocale: 'en',
     })).toMatchObject({ revision: 1, mode: 'serenity', modelDisclosureAccepted: true })
+    expect(session.events[0]?.data).toMatchObject({
+      version: 2,
+      disclosureAcceptance: { locale: 'en', contractVersion: 1 },
+    })
     expect(service.remoteExportSelectMode(agent, 1, 'clarity')).toMatchObject({ revision: 2, mode: 'clarity' })
     expect(service.remoteExportSelectSupportIntent(agent, 2, 'listen'))
       .toMatchObject({ revision: 3, supportIntent: 'listen' })

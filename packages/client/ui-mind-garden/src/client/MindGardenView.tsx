@@ -186,6 +186,7 @@ export function MindGardenReviewCenter({
   const [settingsOpen, setSettingsOpen] = useState(false)
   const requestRef = useRef(0)
   const pendingRef = useRef(false)
+  const starSidebarLoadedRef = useRef(false)
   const settingsSheetRef = useRef<HTMLDivElement>(null)
   const settingsTriggerRef = useRef<HTMLButtonElement | null>(null)
 
@@ -222,9 +223,13 @@ export function MindGardenReviewCenter({
   }, [closeSettings, settingsOpen])
 
   useEffect(() => {
+    if (activeSpace !== 'star-map' && starSidebarLoadedRef.current) return
     let disposed = false
     void onStarMapOverview().then((result) => {
-      if (!disposed && result.ok) setStarSidebar(result.value)
+      if (!disposed && result.ok) {
+        starSidebarLoadedRef.current = true
+        setStarSidebar(result.value)
+      }
     })
     return () => { disposed = true }
   }, [activeSpace, onStarMapOverview])

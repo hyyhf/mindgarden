@@ -5,6 +5,9 @@ import type { MessageId } from '@deepseek-ai/dsh-llm'
 /** Ordered response intervention level. */
 export type MindGardenSafetyLevel = 0 | 1 | 2 | 3
 
+/** Language used by deterministic local safety copy. */
+export type MindGardenSafetyLocale = 'zh-CN' | 'en'
+
 /** Deterministic assessment state shown in audit and projection consumers. */
 export type MindGardenSafetyState =
   | 'ordinary'
@@ -49,6 +52,8 @@ export interface MindGardenSafetyResource {
 
 /** Complete deterministic result for one entered human message batch. */
 export interface MindGardenSafetyAssessment {
+  /** Locale inferred from the entered human message. */
+  readonly locale: MindGardenSafetyLocale
   /** Ordered intervention level. */
   readonly level: MindGardenSafetyLevel
   /** Stable state used by response policy. */

@@ -13,9 +13,9 @@ export declare const storedStarProfileSchema: z.ZodObject<{
     birthCity: z.ZodString;
     birthCityKnown: z.ZodBoolean;
     mbtiMode: z.ZodEnum<{
-        observe: "observe";
         known: "known";
         scenes: "scenes";
+        observe: "observe";
     }>;
     mbtiType: z.ZodString;
     mbtiAnswers: z.ZodArray<z.ZodEnum<{
@@ -60,10 +60,10 @@ export declare const storedStarTraitSchema: z.ZodObject<{
         unfolded: "unfolded";
     }>;
     status: z.ZodEnum<{
-        uncertain: "uncertain";
         "self-reported": "self-reported";
         pending: "pending";
         confirmed: "confirmed";
+        uncertain: "uncertain";
         rejected: "rejected";
         retired: "retired";
     }>;
@@ -143,8 +143,8 @@ export declare const storedStarCardSchema: z.ZodObject<{
     confidence: z.ZodNumber;
     calibration: z.ZodNullable<z.ZodObject<{
         verdict: z.ZodEnum<{
-            resonates: "resonates";
             uncertain: "uncertain";
+            resonates: "resonates";
             rejects: "rejects";
         }>;
         correction: z.ZodString;
@@ -279,9 +279,9 @@ export declare const storedStarStateSchema: z.ZodObject<{
         birthCity: z.ZodString;
         birthCityKnown: z.ZodBoolean;
         mbtiMode: z.ZodEnum<{
-            observe: "observe";
             known: "known";
             scenes: "scenes";
+            observe: "observe";
         }>;
         mbtiType: z.ZodString;
         mbtiAnswers: z.ZodArray<z.ZodEnum<{
@@ -325,10 +325,10 @@ export declare const storedStarStateSchema: z.ZodObject<{
             unfolded: "unfolded";
         }>;
         status: z.ZodEnum<{
-            uncertain: "uncertain";
             "self-reported": "self-reported";
             pending: "pending";
             confirmed: "confirmed";
+            uncertain: "uncertain";
             rejected: "rejected";
             retired: "retired";
         }>;
@@ -395,8 +395,8 @@ export declare const storedStarStateSchema: z.ZodObject<{
         confidence: z.ZodNumber;
         calibration: z.ZodNullable<z.ZodObject<{
             verdict: z.ZodEnum<{
-                resonates: "resonates";
                 uncertain: "uncertain";
+                resonates: "resonates";
                 rejects: "rejects";
             }>;
             correction: z.ZodString;

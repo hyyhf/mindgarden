@@ -1,5 +1,10 @@
 import { defineConfig } from 'tsdown'
 
+/** Keep installed packages and root-bundle subpaths as runtime imports. */
+const isRuntimeImport = (specifier: string): boolean => !specifier.startsWith('.')
+  && !specifier.startsWith('/')
+  && !/^[A-Za-z]:[\\/]/u.test(specifier)
+
 /** Build the package root and invariant companion as independent bundles. */
 export default defineConfig([
   {
@@ -11,6 +16,7 @@ export default defineConfig([
     fixedExtension: false,
     dts: false,
     clean: false,
+    deps: { neverBundle: isRuntimeImport },
   },
   {
     entry: ['lib/types/invariant.js'],
@@ -21,5 +27,6 @@ export default defineConfig([
     fixedExtension: false,
     dts: false,
     clean: false,
+    deps: { neverBundle: isRuntimeImport },
   },
 ])

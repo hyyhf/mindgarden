@@ -6,7 +6,7 @@ import { z } from "zod";
 /** Boundary contract shipped by this plugin version. */
 const MIND_GARDEN_CONTRACT_VERSION = 1;
 /** Durable session-state event version. */
-const MIND_GARDEN_STATE_VERSION = 1;
+const MIND_GARDEN_STATE_VERSION = 2;
 /** Error returned by the Mind Garden domain boundary. */
 var MindGardenError = class extends HarnessError {
 	/**
@@ -50,6 +50,16 @@ function positiveInteger(value, field) {
 	if (parsed < 1) throw new Error(`Mind Garden state ${field} must be positive`);
 	return parsed;
 }
+function decodeDisclosureAcceptance(value) {
+	if (value === null) return null;
+	if (!isRecord(value) || Object.keys(value).sort().join(",") !== "acceptedAt,contractVersion,locale") throw new Error("Mind Garden disclosure acceptance must be null or an exact receipt");
+	if (value["locale"] !== "zh-CN" && value["locale"] !== "en") throw new Error("Mind Garden disclosure acceptance locale is invalid");
+	return {
+		acceptedAt: nonNegativeInteger(value["acceptedAt"], "disclosure acceptedAt"),
+		locale: value["locale"],
+		contractVersion: positiveInteger(value["contractVersion"], "disclosure contractVersion")
+	};
+}
 /** Decode one exact whole state. */
 function decodeState(value) {
 	if (!isRecord(value)) throw new Error("Mind Garden state must be a record");
@@ -89,14 +99,26 @@ function decodeState(value) {
 */
 function decodeMindGardenStateEvent(value) {
 	if (!isRecord(value)) throw new Error("Mind Garden session-state event must be a record");
-	if (Object.keys(value).sort().join(",") !== "operation,state,version") throw new Error("Mind Garden session-state event must have exactly operation,state,version fields");
-	if (value["version"] !== 1) throw new Error(`unsupported Mind Garden session-state version ${String(value["version"])}`);
+	if (value["version"] !== 1 && value["version"] !== 2) throw new Error(`unsupported Mind Garden session-state version ${String(value["version"])}`);
+	const version = value["version"];
+	const expectedKeys = version === 1 ? "operation,state,version" : "disclosureAcceptance,operation,state,version";
+	if (Object.keys(value).sort().join(",") !== expectedKeys) throw new Error(`Mind Garden session-state event version ${String(version)} has invalid fields`);
 	if (typeof value["operation"] !== "string" || !OPERATIONS.has(value["operation"])) throw new Error("Mind Garden session-state operation is invalid");
-	return {
-		version: 1,
+	const event = {
+		version,
 		operation: value["operation"],
 		state: decodeState(value["state"])
 	};
+	return version === 1 ? event : {
+		...event,
+		disclosureAcceptance: decodeDisclosureAcceptance(value["disclosureAcceptance"])
+	};
+}
+function requireDisclosureReceipt(change) {
+	if (change.version === 1) return;
+	const receipt = change.disclosureAcceptance ?? null;
+	if ((change.operation === "accept-disclosure" || change.operation === "activate" && change.state.modelDisclosureAccepted) !== (receipt !== null)) throw new Error("Mind Garden disclosure acceptance receipt does not match the state transition");
+	if (receipt !== null && (receipt.acceptedAt !== change.state.updatedAt || receipt.contractVersion !== change.state.contractVersion)) throw new Error("Mind Garden disclosure acceptance receipt does not match the accepted contract");
 }
 /** Require fields that no post-activation operation may change. */
 function requireIdentity(current, next) {
@@ -111,6 +133,7 @@ function requireIdentity(current, next) {
 * @returns the event's whole post-change state.
 */
 function applyMindGardenChange(current, change) {
+	requireDisclosureReceipt(change);
 	const next = change.state;
 	if (change.operation === "activate") {
 		if (current !== null) throw new Error("Mind Garden activate requires an inactive session");
@@ -347,6 +370,7 @@ let MindGardenService = (() => {
 			if (cell.state !== null) throw new MindGardenError("this session is already a Mind Garden session", "MIND_GARDEN_ALREADY_ACTIVE");
 			if (session.events.some((event) => event.type === "turn/start")) throw new MindGardenError("Mind Garden activation requires a blank session", "MIND_GARDEN_SESSION_NOT_BLANK");
 			const now = Date.now();
+			const accepted = request.modelDisclosureAccepted ?? false;
 			return this.commit(session, cell, "activate", {
 				revision: 1,
 				activatedAt: now,
@@ -355,8 +379,12 @@ let MindGardenService = (() => {
 				supportIntent: request.supportIntent ?? "auto",
 				privacy: request.privacy,
 				contractVersion: 1,
-				modelDisclosureAccepted: request.modelDisclosureAccepted ?? false
-			});
+				modelDisclosureAccepted: accepted
+			}, accepted ? {
+				acceptedAt: now,
+				locale: request.disclosureLocale ?? "zh-CN",
+				contractVersion: 1
+			} : null);
 		}
 		/**
 		* Change the durable dialogue posture with compare-and-set semantics.
@@ -392,12 +420,17 @@ let MindGardenService = (() => {
 		* @param expectedRevision - caller's current revision.
 		* @returns current state when already accepted, otherwise the next revision.
 		*/
-		acceptModelDisclosure(session, expectedRevision) {
+		acceptModelDisclosure(session, expectedRevision, locale = "zh-CN") {
 			const cell = this.sync(session);
 			const current = this.requireCurrent(cell);
 			if (current.modelDisclosureAccepted) return { ...current };
 			this.assertRevision(current, expectedRevision);
-			return this.commit(session, cell, "accept-disclosure", this.next(current, { modelDisclosureAccepted: true }));
+			const next = this.next(current, { modelDisclosureAccepted: true });
+			return this.commit(session, cell, "accept-disclosure", next, {
+				acceptedAt: next.updatedAt,
+				locale,
+				contractVersion: next.contractVersion
+			});
 		}
 		/**
 		* Activate Mind Garden through the generated Remote boundary.
@@ -437,9 +470,9 @@ let MindGardenService = (() => {
 		* @param expectedRevision - caller's current projected revision.
 		* @returns the resulting state.
 		*/
-		remoteExportAcceptModelDisclosure(agent, expectedRevision) {
+		remoteExportAcceptModelDisclosure(agent, expectedRevision, locale = "zh-CN") {
 			this.assertLive(agent);
-			return this.acceptModelDisclosure(agent.session, expectedRevision);
+			return this.acceptModelDisclosure(agent.session, expectedRevision, locale);
 		}
 		/** Enforce exact live-Agent identity before accepting a Remote mutation. */
 		assertLive(agent) {
@@ -480,11 +513,12 @@ let MindGardenService = (() => {
 			};
 		}
 		/** Append one whole-state event and advance the strict cell. */
-		commit(session, cell, operation, state) {
+		commit(session, cell, operation, state, disclosureAcceptance = null) {
 			const data = {
-				version: 1,
+				version: 2,
 				operation,
-				state
+				state,
+				disclosureAcceptance
 			};
 			const event = session.append("mind-garden/session-state", data);
 			cell.state = applyMindGardenEvent(cell.state, event);

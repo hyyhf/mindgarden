@@ -325,6 +325,7 @@ describe('Mind Garden media service', () => {
       provider: 'vision', model: 'garden-eye', purpose: 'mind-garden-photo-observation',
       sessionId: agent.session.id,
     })
+    expect(modelCalls[0]?.reasoningEffort).toBeUndefined()
     expect(JSON.stringify(modelCalls[0]?.messages)).toContain(`\"attachmentId\":\"${attachment.attachmentId}\"`)
     expect(JSON.stringify(modelCalls[0]?.messages)).toContain('\"type\":\"image\"')
 
@@ -349,6 +350,7 @@ describe('Mind Garden media service', () => {
     if (!continued.ok) throw new Error('continue failed')
     expect(continued.value.turns[2]?.content).toContain('来自你的记忆')
     expect(modelCalls[1]?.purpose).toBe('mind-garden-photo-dialogue')
+    expect(modelCalls[1]?.reasoningEffort).toBeUndefined()
     const dialogueRequest = JSON.stringify(modelCalls[1]?.messages)
     expect(dialogueRequest).not.toContain('\"type\":\"image\"')
     expect(dialogueRequest).not.toContain(attachment.attachmentId)
@@ -359,6 +361,74 @@ describe('Mind Garden media service', () => {
     expect(durableMedium).not.toContain('白色杯子')
     expect(durableMedium).not.toContain('那确实是傍晚')
     expect(durableMedium).not.toContain('来自你的记忆')
+  })
+
+  it('disables reasoning only for the fixed DeepSeek photo route', async () => {
+    const { ctx, makeAgent, modelCalls, modelOutputs } = await harness({
+      observerProvider: 'deepseek-official',
+      observerModel: 'deepseek-v4-flash-vision-exp',
+    })
+    const agent = makeAgent('deepseek-photo-route')
+    const created = await ctx.mindGardenMedia.createPhotoStory(agent, createRequest())
+    if (!created.ok) throw new Error('create failed')
+    modelOutputs.push(observationOutput)
+
+    await expect(ctx.mindGardenMedia.observePhotoStory(agent, {
+      id: created.value.id,
+      ifVersion: created.value.version,
+    })).resolves.toMatchObject({ ok: true })
+    expect(modelCalls[0]).toMatchObject({
+      provider: 'deepseek-official',
+      model: 'deepseek-v4-flash-vision-exp',
+      reasoningEffort: 'off',
+    })
+  })
+
+  it('partitions model work by story under one global concurrency bound', async () => {
+    const { ctx, makeAgent, modelCalls, modelOutputs } = await harness({
+      maxConcurrentObserverRequests: 2,
+      observerProvider: 'vision',
+      observerModel: 'garden-eye',
+    })
+    const agent = makeAgent('photo-partitioned-model-work')
+    const first = await ctx.mindGardenMedia.createPhotoStory(agent, createRequest({ title: 'First' }))
+    const second = await ctx.mindGardenMedia.createPhotoStory(agent, createRequest({ title: 'Second' }))
+    const third = await ctx.mindGardenMedia.createPhotoStory(agent, createRequest({ title: 'Third' }))
+    if (!first.ok || !second.ok || !third.ok) throw new Error('create failed')
+    let releaseFirst!: () => void
+    let releaseSecond!: () => void
+    const firstGate = new Promise<void>((resolve) => { releaseFirst = resolve })
+    const secondGate = new Promise<void>((resolve) => { releaseSecond = resolve })
+    modelOutputs.push(
+      (async function* () { await firstGate; yield * textStream(observationOutput) })(),
+      (async function* () { await secondGate; yield * textStream(observationOutput) })(),
+    )
+
+    const firstOperation = ctx.mindGardenMedia.observePhotoStory(agent, {
+      id: first.value.id,
+      ifVersion: first.value.version,
+    })
+    await vi.waitFor(() => { expect(modelCalls).toHaveLength(1) })
+    await expect(ctx.mindGardenMedia.observePhotoStory(agent, {
+      id: first.value.id,
+      ifVersion: first.value.version,
+    })).resolves.toEqual({ ok: false, error: { code: 'photo-model-in-progress' } })
+
+    const secondOperation = ctx.mindGardenMedia.observePhotoStory(agent, {
+      id: second.value.id,
+      ifVersion: second.value.version,
+    })
+    await vi.waitFor(() => { expect(modelCalls).toHaveLength(2) })
+    await expect(ctx.mindGardenMedia.observePhotoStory(agent, {
+      id: third.value.id,
+      ifVersion: third.value.version,
+    })).resolves.toEqual({ ok: false, error: { code: 'photo-model-in-progress' } })
+
+    releaseFirst()
+    releaseSecond()
+    await expect(firstOperation).resolves.toMatchObject({ ok: true })
+    await expect(secondOperation).resolves.toMatchObject({ ok: true })
+    await ctx.fiber.dispose()
   })
 
   it('preflights route and attachment capability and keeps invalid model output atomic', async () => {

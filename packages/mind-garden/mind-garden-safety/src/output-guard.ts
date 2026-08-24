@@ -1,10 +1,14 @@
 /** Pure local response rendering and assistant-output policy checks. */
 
-import { MIND_GARDEN_RESOURCE_FALLBACK } from './resources.ts'
+import {
+  MIND_GARDEN_RESOURCE_FALLBACK,
+  MIND_GARDEN_RESOURCE_FALLBACK_EN,
+} from './resources.ts'
 import type {
   MindGardenOutputGuardReason,
   MindGardenOutputViolation,
   MindGardenSafetyAssessment,
+  MindGardenSafetyLocale,
 } from './types.ts'
 
 const OUTPUT_RULES: ReadonlyArray<readonly [MindGardenOutputViolation, RegExp]> = [
@@ -40,6 +44,22 @@ export function assessMindGardenOutput(
  * @returns a calm mainland-China support response containing verified contacts.
  */
 export function renderMindGardenSupportResponse(assessment: MindGardenSafetyAssessment): string {
+  if (assessment.locale === 'en') {
+    const safetyCheck = 'Are you safe right now, have you already hurt yourself or someone else, and can you reach anything that could cause harm?'
+    if (assessment.level >= 3) {
+      return 'I am concerned about the immediate danger you described. Pause everything else, move away from anything or anywhere that could cause harm, and ask someone you trust to stay with you. '
+        + `${safetyCheck} If danger is happening now, contact your local emergency services immediately. `
+        + `${MIND_GARDEN_RESOURCE_FALLBACK_EN} I cannot provide real-time rescue, so bringing in people and emergency help nearby matters most right now.`
+    }
+    if (assessment.level === 2) {
+      return 'Thank you for telling me. I will pause the rest of the conversation and focus on safety. '
+        + `${safetyCheck} Please ask someone you trust to stay with you and contact a qualified local crisis or health service. `
+        + 'If the danger becomes immediate, contact your local emergency services. I cannot replace emergency or professional help, but I can help you work out the next step for reaching support.'
+    }
+    return 'It sounds like you are carrying a great deal right now. I will not rush to analyse it. '
+      + 'Please consider letting someone you trust know what is happening and contacting a qualified local support service. '
+      + 'I cannot replace professional help. Would it help more if I listened quietly, or if we worked out a safer plan for today?'
+  }
   const support = assessment.resources.find(resource => resource.kind === 'support')
   const emergency = assessment.resources.filter(resource => resource.kind === 'emergency')
   const supportClause = support === undefined
@@ -75,7 +95,23 @@ export function renderMindGardenSupportResponse(assessment: MindGardenSafetyAsse
 export function renderMindGardenGuardReplacement(
   reason: MindGardenOutputGuardReason,
   violations: readonly MindGardenOutputViolation[],
+  locale: MindGardenSafetyLocale = 'zh-CN',
 ): string {
+  if (locale === 'en') {
+    if (reason === 'buffer-limit') {
+      return 'This response exceeded the amount Mind Garden can check safely, so it was not shown. We can break the topic into a smaller part and continue carefully.'
+    }
+    if (violations.includes('medication-direction')) {
+      return 'I cannot advise you to stop, switch, or change the dose of medication. Please contact the prescribing clinician or a local health service; I can help you organise what you want to tell them.'
+    }
+    if (violations.includes('delusion-confirmation')) {
+      return 'I cannot confirm that a threat or hidden message is definitely real. We can focus on what you can verify around you and on your immediate safety. If anyone may be in danger, contact someone you trust and your local emergency services.'
+    }
+    if (violations.includes('diagnosis')) {
+      return 'I cannot diagnose you or assign a personality label from this conversation. I can listen to the specific experience and help you prepare questions for a qualified professional.'
+    }
+    return 'I want to put that more safely: I can help you think this through, but I cannot replace relationships, professional care, or emergency support in your life. Let us return to the part you most wanted understood.'
+  }
   if (reason === 'buffer-limit') {
     return '这次回复超出了心智庭院能够安全检查的范围，因此没有继续显示。我们可以把刚才的话题拆小一些，再稳妥地继续。'
   }

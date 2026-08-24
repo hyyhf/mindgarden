@@ -6,8 +6,8 @@
 import type { Context } from '@deepseek-ai/cordis';
 import z from '@deepseek-ai/schemastery';
 export type * from './types.ts';
-export { mindGardenSafetyResources, MIND_GARDEN_RESOURCE_FALLBACK } from './resources.ts';
-export { assessMindGardenInput, normalizeMindGardenSafetyText, recoverMindGardenSafetyState, } from './classifier.ts';
+export { mindGardenSafetyResources, MIND_GARDEN_RESOURCE_FALLBACK, MIND_GARDEN_RESOURCE_FALLBACK_EN, } from './resources.ts';
+export { assessMindGardenInput, detectMindGardenSafetyLocale, normalizeMindGardenSafetyText, recoverMindGardenSafetyState, } from './classifier.ts';
 export { assessMindGardenOutput, renderMindGardenGuardReplacement, renderMindGardenSupportResponse, } from './output-guard.ts';
 /** Cordis plugin name used by Loader diagnostics. */
 export declare const name = "mind-garden-safety";

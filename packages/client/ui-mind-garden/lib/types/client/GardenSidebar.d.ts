@@ -1,4 +1,4 @@
-/** Local navigation for the original Mind Garden spaces. */
+/** Warm, two-level navigation for every Mind Garden destination. */
 import type { MindGardenKey } from './locales.ts';
 import type { MindGardenSpace } from './garden-store.ts';
 /** Props kept as plain values so the component remains independent from Client ctx. */
@@ -12,6 +12,6 @@ export interface GardenSidebarProps {
     readonly onToggle: () => void;
     readonly t: (key: MindGardenKey) => string;
 }
-/** Render the grouped garden rail and its live constellation entry. */
+/** Render the five garden regions and the exact spaces inside the active region. */
 export declare function GardenSidebar({ activeSpace, collapsed, starState, starCount, onSelect, onSettings, onToggle, t, }: GardenSidebarProps): import("react").JSX.Element;
 //# sourceMappingURL=GardenSidebar.d.ts.map

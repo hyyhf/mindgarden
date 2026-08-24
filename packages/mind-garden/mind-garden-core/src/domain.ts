@@ -14,11 +14,23 @@ export type MindGardenOperation =
   | 'select-support-intent'
   | 'accept-disclosure'
 
+/** Locale recorded with one explicit model/provider disclosure acceptance. */
+export type MindGardenDisclosureLocale = 'zh-CN' | 'en'
+
+/** Durable receipt for the exact contract the user accepted. */
+export interface MindGardenDisclosureAcceptance {
+  readonly acceptedAt: number
+  readonly locale: MindGardenDisclosureLocale
+  readonly contractVersion: number
+}
+
 /** Full-snapshot event payload; the latest valid state wins in the read projection. */
 export interface MindGardenSessionStateEvent {
-  readonly version: 1
+  readonly version: 1 | 2
   readonly operation: MindGardenOperation
   readonly state: MindGardenSessionState
+  /** Present on version two; non-null only when this event records acceptance. */
+  readonly disclosureAcceptance?: MindGardenDisclosureAcceptance | null
 }
 
 /** Required facts for activating a blank session. */
@@ -27,6 +39,7 @@ export interface ActivateMindGardenRequest {
   readonly supportIntent?: MindGardenSupportIntent
   readonly privacy: MindGardenPrivacy
   readonly modelDisclosureAccepted?: boolean
+  readonly disclosureLocale?: MindGardenDisclosureLocale
 }
 
 /** Stable machine-readable mutation failures. */

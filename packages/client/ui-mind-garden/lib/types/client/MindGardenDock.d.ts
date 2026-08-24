@@ -11,8 +11,8 @@ export interface MindGardenPanelProps extends MindGardenDockActions {
 }
 /** The visual Mind Garden dock surface. */
 export declare function MindGardenPanel({ projection, onActivate, onSelectMode, onSelectSupportIntent, defaultOpen, t, }: MindGardenPanelProps & PropsLocale<'mindGarden'>): import("react").JSX.Element | null;
-/** Full slot props: standard session kit, injected actions, and locale seat. */
-export type MindGardenDockProps = import('@deepseek-ai/dsh-client-ui-slots').PropsRuntime<'conversation.input.dock'> & MindGardenDockActions & PropsLocale<'mindGarden'>;
-/** Read the typed projection and adapt it to the visual panel. */
+/** Full composer-toolbar props: standard session kit, injected actions, and locale seat. */
+export type MindGardenDockProps = import('@deepseek-ai/dsh-client-ui-slots').PropsRuntime<'conversation.input.left'> & MindGardenDockActions & PropsLocale<'mindGarden'>;
+/** Read the typed projection and adapt it to the compact composer control. */
 export declare function MindGardenDock({ useProjection, ...props }: MindGardenDockProps): import("react").JSX.Element;
 //# sourceMappingURL=MindGardenDock.d.ts.map

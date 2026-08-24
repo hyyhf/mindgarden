@@ -2036,6 +2036,7 @@ select:disabled {
   background:
     linear-gradient(130deg, rgb(255 253 248 / 86%), rgb(244 234 220 / 92%)),
     var(--mg-xuan-texture);
+  background-color: var(--mg-paper-bright, #fffaf2);
   background-size: auto, 620px;
   box-shadow: -24px 0 64px rgb(53 40 29 / 19%);
 }
@@ -2050,6 +2051,7 @@ select:disabled {
   background:
     linear-gradient(115deg, rgb(255 253 247 / 80%), rgb(229 214 193 / 78%)),
     var(--mg-limestone-texture);
+  background-color: var(--mg-paper-deep, #ead8c0);
   background-size: auto, 520px;
 }
 
@@ -2673,4 +2675,35 @@ select:disabled {
   .heroPrimary,
   .heroSecondary { min-height: 42px; }
   .instrumentStatus { margin-block-start: 11px; }
+}
+
+/* The resident Harness composer remains the only composer. On narrow screens,
+   reserve its measured live height inside the plugin-owned scrollport. */
+@media (max-width: 900px) {
+  .workspace {
+    box-sizing: border-box;
+    padding-block-end: calc(var(--dsh-composer-height, 152px) + env(safe-area-inset-bottom, 0px) + 12px);
+    scroll-padding-block-end: calc(var(--dsh-composer-height, 152px) + env(safe-area-inset-bottom, 0px) + 24px);
+  }
+}
+
+@media (max-width: 620px) {
+  .workspace input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  .workspace textarea,
+  .workspace select { font-size: 16px; }
+
+  .settingsScrim {
+    inset-block-end: calc(var(--dsh-composer-height, 152px) + env(safe-area-inset-bottom, 0px) + 12px);
+    align-items: end;
+    padding: 12px 0 0;
+  }
+
+  .settingsSheet {
+    width: 100%;
+    max-height: calc(100% - 12px);
+    padding-block-end: env(safe-area-inset-bottom, 0px);
+    border-radius: 11px 11px 0 0;
+  }
+
+  .settingsHeading { padding-inline: 18px; }
 }

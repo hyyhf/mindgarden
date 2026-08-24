@@ -102,6 +102,7 @@ function dockActions(ctx: ClientContext, sessionId: SessionId): MindGardenDockAc
       supportIntent: 'auto',
       privacy: 'durable',
       modelDisclosureAccepted: true,
+      disclosureLocale: ctx.locale.getLocale().active === 'en' ? 'en' : 'zh-CN',
     }),
     onSelectMode: async (expectedRevision: number, mode: MindGardenMode) =>
       await ctx.remote.mindGarden.selectMode(sessionId, expectedRevision, mode),
@@ -294,6 +295,7 @@ function viewActions(ctx: ClientContext, sessionId: SessionId): MindGardenViewAc
       ctx.remote.mindGardenMedia.observePhotoStory(sessionId, {
         id: story.id,
         ifVersion: story.version,
+        locale: ctx.locale.getLocale().active === 'en' ? 'en' : 'zh-CN',
       }),
     ),
     onContinuePhotoStory: async (story, content, quickReplyKind = '') => await settle<MindGardenPhotoStory>(
@@ -302,6 +304,7 @@ function viewActions(ctx: ClientContext, sessionId: SessionId): MindGardenViewAc
         ifVersion: story.version,
         content,
         quickReplyKind,
+        locale: ctx.locale.getLocale().active === 'en' ? 'en' : 'zh-CN',
       }),
     ),
     onUpdatePhotoStory: async (story, title, note, particleConfig) => await settle<MindGardenPhotoStory>(

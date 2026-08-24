@@ -162,7 +162,11 @@ describe('Mind Garden browser plugin', () => {
     }
     const registerLocale = vi.fn(() => () => {})
     const ctx = {
-      locale: { register: registerLocale, bind: () => (key: string) => key },
+      locale: {
+        register: registerLocale,
+        bind: () => (key: string) => key,
+        getLocale: () => ({ active: 'en' }),
+      },
       remote: {
         mindGarden: {
           activate: answer('activate'),
@@ -377,6 +381,7 @@ describe('Mind Garden browser plugin', () => {
         method: 'activate',
         args: ['session-1', {
           mode: 'clarity', supportIntent: 'auto', privacy: 'durable', modelDisclosureAccepted: true,
+          disclosureLocale: 'en',
         }],
       },
       { method: 'selectMode', args: ['session-1', 2, 'serenity'] },
@@ -421,11 +426,14 @@ describe('Mind Garden browser plugin', () => {
         args: ['session-1', { data: 'AQID', mediaType: 'image/png', name: 'a-frame.png', title: 'a-frame', stamp }],
       },
       { method: 'readPhotoStory', args: ['session-1', { id: photo.id }] },
-      { method: 'observePhotoStory', args: ['session-1', { id: photo.id, ifVersion: photo.version }] },
+      {
+        method: 'observePhotoStory',
+        args: ['session-1', { id: photo.id, ifVersion: photo.version, locale: 'en' }],
+      },
       {
         method: 'continuePhotoStory',
         args: ['session-1', {
-          id: photo.id, ifVersion: photo.version, content: 'I remember this', quickReplyKind: 'remember',
+          id: photo.id, ifVersion: photo.version, content: 'I remember this', quickReplyKind: 'remember', locale: 'en',
         }],
       },
       {
@@ -521,7 +529,11 @@ describe('Mind Garden browser plugin', () => {
   it('flattens transport, business, and rejected reflection failures', async () => {
     const entries: Array<{ order?: number; inject?: (id: SessionId) => unknown }> = []
     const ctx = {
-      locale: { register: () => () => {}, bind: () => () => '' },
+      locale: {
+        register: () => () => {},
+        bind: () => () => '',
+        getLocale: () => ({ active: 'en' }),
+      },
       remote: {
         mindGarden: { activate: vi.fn(), selectMode: vi.fn(), selectSupportIntent: vi.fn() },
         mindGardenMemory: {

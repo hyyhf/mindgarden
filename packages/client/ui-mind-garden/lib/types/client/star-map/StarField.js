@@ -27,10 +27,11 @@ varying float vLinkPhase;
 
 void main() {
   float travelling = 0.5 + 0.5 * sin((vLinkProgress * 1.45 - time * 0.13 + vLinkPhase) * 6.2831853);
-  travelling = pow(travelling, 9.0);
-  float endpoint = pow(abs(vLinkProgress * 2.0 - 1.0), 1.8);
-  float strength = 0.54 + travelling * 1.68 + endpoint * 0.52;
-  gl_FragColor = vec4(vLinkColor * strength, 0.62 + travelling * 0.34 + endpoint * 0.12);
+  travelling = pow(travelling, 16.0);
+  float endpointFade = smoothstep(0.0, 0.1, vLinkProgress) * (1.0 - smoothstep(0.9, 1.0, vLinkProgress));
+  float strength = 0.7 + travelling * 1.8;
+  float alpha = (0.14 + travelling * 0.58) * endpointFade;
+  gl_FragColor = vec4(vLinkColor * strength, alpha);
 }
 `;
 const starVertexShader = `
@@ -115,16 +116,47 @@ function stablePhase(value) {
         hash = ((hash << 5) - hash + value.charCodeAt(index)) | 0;
     return ((hash >>> 0) % 10_000) / 10_000;
 }
+/** A tiny procedural texture gives every node a smooth photographic halo without a post-processing pass. */
+function makeRadialGlowTexture() {
+    const size = 96;
+    const data = new Uint8Array(size * size * 4);
+    for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+            const dx = (x + 0.5) / size * 2 - 1;
+            const dy = (y + 0.5) / size * 2 - 1;
+            const distance = Math.min(1, Math.hypot(dx, dy));
+            const core = Math.exp(-distance * distance * 38);
+            const bloom = Math.exp(-distance * distance * 7.5);
+            const mist = Math.max(0, 1 - distance) ** 3;
+            const alpha = Math.min(1, core * 0.92 + bloom * 0.48 + mist * 0.16);
+            const offset = (y * size + x) * 4;
+            data[offset] = 255;
+            data[offset + 1] = 250;
+            data[offset + 2] = 238;
+            data[offset + 3] = Math.round(alpha * 255);
+        }
+    }
+    const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.generateMipmaps = false;
+    texture.needsUpdate = true;
+    return texture;
+}
 function maximumPixelRatio() {
     const memory = navigator.deviceMemory ?? 8;
     const memoryLimit = memory <= 4 ? 1.25 : memory <= 8 ? 1.5 : 1.75;
-    return Math.min(Math.max(window.devicePixelRatio || 1, 1), memoryLimit);
+    return Math.min(Math.max(window.devicePixelRatio || 1, 1), Math.min(memoryLimit, 1.5));
 }
 function makeStarField(scene, colors, pixelRatio, materials, geometries) {
+    const memory = navigator.deviceMemory ?? 8;
+    const compact = typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 720px)').matches;
+    const density = memory <= 4 ? 0.52 : compact ? 0.68 : 1;
     const fields = [
-        [1_480, 42, 142, 1.65, 0.88, 31, colors.orbit],
-        [520, 24, 96, 2.35, 0.76, 79, colors.question],
-        [180, 18, 74, 3.8, 0.34, 131, colors.review],
+        [Math.round(1_320 * density), 42, 142, 1.65, 0.82, 31, colors.orbit],
+        [Math.round(420 * density), 24, 96, 2.3, 0.68, 79, colors.question],
+        [Math.round(120 * density), 18, 74, 3.6, 0.3, 131, colors.review],
     ];
     return fields.map(([count, minimumRadius, radiusRange, pointSize, opacity, seed, fieldColor]) => {
         const field = starPositions(count, minimumRadius, radiusRange, seed);
@@ -165,7 +197,7 @@ function makeLinkField(model, positions, colors) {
             .multiplyScalar(link.kind === 'continuity' ? 4.8 : 2.6);
         control.add(bend);
         const curve = new THREE.QuadraticBezierCurve3(source, control, target);
-        const geometry = new THREE.TubeGeometry(curve, tubularSegments, link.kind === 'continuity' ? 0.2 : 0.13, radialSegments, false);
+        const geometry = new THREE.TubeGeometry(curve, tubularSegments, link.kind === 'continuity' ? 0.055 : 0.036, radialSegments, false);
         const count = geometry.getAttribute('position').count;
         const linkColor = new Float32Array(count * 3);
         const linkProgress = new Float32Array(count);
@@ -213,54 +245,53 @@ export function mountGardenStarField(host, model, reducedMotion, selectedId = 'c
     const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: 'high-performance' });
     let pixelRatio = maximumPixelRatio();
     renderer.setPixelRatio(pixelRatio);
-    renderer.setClearColor(colors.background, 0.56);
+    renderer.setClearColor(colors.background, 0.04);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.04;
+    renderer.toneMappingExposure = 1.08;
     host.replaceChildren(renderer.domElement);
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(colors.background, 0.0019);
+    scene.fog = new THREE.FogExp2(colors.background, 0.00082);
     const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 400);
-    camera.position.set(0, 7, 68);
-    let targetCameraZ = 68;
+    const compactScene = typeof window.matchMedia === 'function'
+        && window.matchMedia('(max-width: 720px)').matches;
+    const initialCameraZ = compactScene ? 90 : 64;
+    camera.position.set(0, compactScene ? -10 : -4, initialCameraZ);
+    let targetCameraZ = initialCameraZ;
     const constellation = new THREE.Group();
     constellation.position.y = -4.2;
     constellation.rotation.x = -0.06;
     scene.add(constellation);
-    scene.add(new THREE.HemisphereLight(colors.orbit, colors.background, 2.25));
-    const centerLight = new THREE.PointLight(colors.center, 46, 125, 1.65);
+    scene.add(new THREE.HemisphereLight(colors.orbit, colors.background, 1.85));
+    const centerLight = new THREE.PointLight(colors.center, 34, 110, 1.8);
     centerLight.position.set(2, 7, 22);
     scene.add(centerLight);
     const geometries = [];
     const materials = [];
+    const textures = [];
     const animatedNodes = [];
     const focusRings = [];
     const nodeMeshes = [];
     const positions = new Map(model.nodes.map(node => [node.id, new THREE.Vector3(node.x, node.y, node.z)]));
-    const orbitRings = [
-        { radius: 14, tiltX: 1.16, tiltY: 0.22, opacity: 0.28 },
-        { radius: 22, tiltX: 0.82, tiltY: -0.48, opacity: 0.2 },
-        { radius: 30, tiltX: 1.42, tiltY: 0.54, opacity: 0.14 },
-    ].map(({ radius, tiltX, tiltY, opacity }) => {
-        const geometry = new THREE.TorusGeometry(radius, 0.055, 5, 112);
-        const material = new THREE.MeshBasicMaterial({ color: colors.orbit, depthWrite: false, opacity, transparent: true });
-        const ring = new THREE.Mesh(geometry, material);
-        ring.rotation.set(tiltX, tiltY, 0.12);
-        constellation.add(ring);
-        geometries.push(geometry);
-        materials.push(material);
-        return ring;
-    });
+    const glowTexture = makeRadialGlowTexture();
+    textures.push(glowTexture);
     for (const node of model.nodes) {
         const nodePaint = nodeColor(colors, node.kind);
         const selected = node.id === selectedId;
-        const geometry = new THREE.SphereGeometry(node.radius, node.kind === 'center' ? 36 : 24, 18);
-        const material = new THREE.MeshStandardMaterial({
-            color: nodePaint,
+        const visualRadius = node.radius * (node.kind === 'center' ? 0.48 : 0.44);
+        const geometry = node.kind === 'center'
+            ? new THREE.SphereGeometry(visualRadius, 28, 16)
+            : new THREE.OctahedronGeometry(visualRadius, 2);
+        const surfaceColor = new THREE.Color(nodePaint).lerp(new THREE.Color('#fff2d1'), node.kind === 'center' ? 0.28 : 0.12);
+        const material = new THREE.MeshPhysicalMaterial({
+            color: surfaceColor,
             emissive: nodePaint,
-            emissiveIntensity: selected ? 1.35 : node.kind === 'center' ? 0.92 : 0.52,
-            metalness: 0.06,
-            roughness: 0.3,
+            emissiveIntensity: selected ? 1.34 : node.kind === 'center' ? 1.08 : 0.62,
+            metalness: node.kind === 'center' ? 0.42 : 0.16,
+            roughness: node.kind === 'center' ? 0.24 : 0.36,
+            clearcoat: node.kind === 'center' ? 0.82 : 0.58,
+            clearcoatRoughness: 0.22,
+            flatShading: node.kind !== 'center',
         });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.position.set(node.x, node.y, node.z);
@@ -269,26 +300,43 @@ export function mountGardenStarField(host, model, reducedMotion, selectedId = 'c
         nodeMeshes.push(mesh);
         geometries.push(geometry);
         materials.push(material);
-        const shellGeometry = new THREE.SphereGeometry(node.radius * (selected ? 2.3 : 1.76), 18, 12);
-        const shellMaterial = new THREE.MeshBasicMaterial({
+        const coreGlowMaterial = new THREE.SpriteMaterial({
+            map: glowTexture,
             color: nodePaint,
             depthWrite: false,
-            opacity: selected ? 0.22 : 0.105,
-            side: THREE.BackSide,
+            opacity: selected ? 0.68 : node.kind === 'center' ? 0.52 : 0.38,
             transparent: true,
             blending: THREE.AdditiveBlending,
+            toneMapped: false,
         });
-        const shell = new THREE.Mesh(shellGeometry, shellMaterial);
-        shell.position.copy(mesh.position);
-        constellation.add(shell);
-        geometries.push(shellGeometry);
-        materials.push(shellMaterial);
-        animatedNodes.push({ mesh, shell, seed: stablePhase(node.id), selected });
+        const coreGlow = new THREE.Sprite(coreGlowMaterial);
+        const coreScale = node.radius * (selected ? 6.8 : node.kind === 'center' ? 6 : 5.6);
+        coreGlow.position.copy(mesh.position);
+        coreGlow.scale.setScalar(coreScale);
+        constellation.add(coreGlow);
+        materials.push(coreGlowMaterial);
+        const auraGlowMaterial = new THREE.SpriteMaterial({
+            map: glowTexture,
+            color: nodePaint,
+            depthWrite: false,
+            opacity: selected ? 0.2 : node.kind === 'center' ? 0.15 : 0.1,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            toneMapped: false,
+        });
+        const auraGlow = new THREE.Sprite(auraGlowMaterial);
+        const auraScale = node.radius * (selected ? 11.2 : node.kind === 'center' ? 10 : 9.3);
+        auraGlow.position.copy(mesh.position);
+        auraGlow.scale.setScalar(auraScale);
+        constellation.add(auraGlow);
+        materials.push(auraGlowMaterial);
+        animatedNodes.push({ mesh, coreGlow, auraGlow, coreScale, auraScale, seed: stablePhase(node.id), selected });
         if (selected) {
-            for (const [scale, tilt] of [[2.5, 0], [3.25, Math.PI / 2]]) {
-                const focusGeometry = new THREE.TorusGeometry(node.radius * scale, Math.max(0.04, node.radius * 0.04), 6, 72);
+            for (const [scale, tilt, opacity] of [[1.9, 0, 0.34], [2.7, Math.PI / 2, 0.18]]) {
+                const focusGeometry = new THREE.TorusGeometry(node.radius * scale, 0.024, 5, 88);
                 const focusMaterial = new THREE.MeshBasicMaterial({
-                    color: nodePaint, depthWrite: false, opacity: 0.58, transparent: true,
+                    color: nodePaint, depthWrite: false, opacity, transparent: true,
+                    blending: THREE.AdditiveBlending, toneMapped: false,
                 });
                 const focus = new THREE.Mesh(focusGeometry, focusMaterial);
                 focus.position.copy(mesh.position);
@@ -437,15 +485,17 @@ export function mountGardenStarField(host, model, reducedMotion, selectedId = 'c
             velocityY *= Math.pow(0.88, deltaScale);
         }
         camera.position.z += (targetCameraZ - camera.position.z) * Math.min(1, 0.12 * deltaScale);
-        orbitRings.forEach((ring, index) => { ring.rotation.z += (index % 2 === 0 ? 1 : -1) * 0.00035 * deltaScale; });
         focusRings.forEach((ring, index) => { ring.rotation.z += (index % 2 === 0 ? 1 : -1) * 0.0042 * deltaScale; });
-        animatedNodes.forEach(({ mesh, shell, seed, selected }) => {
+        animatedNodes.forEach(({ mesh, coreGlow, auraGlow, coreScale, auraScale, seed, selected }) => {
             const hovered = mesh.userData.starId === hoveredId;
-            const pulse = 1 + Math.sin(seconds * (0.72 + seed * 0.45) + seed * 16) * (selected ? 0.055 : 0.026);
-            mesh.scale.setScalar(pulse * (hovered ? 1.16 : selected ? 1.12 : 1));
-            shell.scale.setScalar(1 + Math.sin(seconds * 0.58 + seed * 21) * (selected ? 0.08 : 0.04));
-            shell.material.opacity = (hovered ? 0.2 : selected ? 0.22 : 0.105)
-                * (0.9 + Math.sin(seconds * 0.6 + seed * 12) * 0.1);
+            const wave = Math.sin(seconds * (0.56 + seed * 0.28) + seed * 16);
+            const pulse = 1 + wave * (selected ? 0.045 : 0.024);
+            mesh.scale.setScalar(pulse * (hovered ? 1.14 : selected ? 1.06 : 1));
+            mesh.rotation.y += (0.0012 + seed * 0.0014) * deltaScale;
+            coreGlow.scale.setScalar(coreScale * (1 + wave * (selected ? 0.09 : 0.05)));
+            auraGlow.scale.setScalar(auraScale * (1 - wave * 0.04));
+            coreGlow.material.opacity = (hovered ? 0.78 : selected ? 0.68 : mesh.userData.starId === 'center' ? 0.52 : 0.38) * (0.94 + wave * 0.06);
+            auraGlow.material.opacity = (hovered ? 0.26 : selected ? 0.2 : mesh.userData.starId === 'center' ? 0.15 : 0.1) * (0.95 - wave * 0.05);
         });
         if (linkField !== null) {
             const linkTime = linkField.material.uniforms.time;
@@ -498,6 +548,7 @@ export function mountGardenStarField(host, model, reducedMotion, selectedId = 'c
         canvas.removeEventListener('wheel', wheel);
         geometries.forEach((geometry) => { geometry.dispose(); });
         materials.forEach((material) => { material.dispose(); });
+        textures.forEach((texture) => { texture.dispose(); });
         renderer.dispose();
         renderer.forceContextLoss();
         canvas.remove();
@@ -507,13 +558,24 @@ export function mountGardenStarField(host, model, reducedMotion, selectedId = 'c
 export function StarField({ model, fallback, reducedMotion = false, selectedId = 'center', onSelect, }) {
     const [host, setHost] = useState(null);
     const [failed, setFailed] = useState(false);
+    const [systemReducedMotion, setSystemReducedMotion] = useState(() => typeof window.matchMedia === 'function'
+        && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     const [hovered, setHovered] = useState(null);
+    useEffect(() => {
+        if (typeof window.matchMedia !== 'function')
+            return;
+        const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const update = () => { setSystemReducedMotion(query.matches); };
+        update();
+        query.addEventListener?.('change', update);
+        return () => { query.removeEventListener?.('change', update); };
+    }, []);
     useEffect(() => {
         if (host === null)
             return;
         try {
             setFailed(false);
-            return mountGardenStarField(host, model, reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches, selectedId, onSelect, (id, x, y) => {
+            return mountGardenStarField(host, model, reducedMotion || systemReducedMotion, selectedId, onSelect, (id, x, y) => {
                 const node = model.nodes.find(candidate => candidate.id === id);
                 setHovered(node === undefined ? null : { node, x, y });
             });
@@ -522,7 +584,7 @@ export function StarField({ model, fallback, reducedMotion = false, selectedId =
             host.replaceChildren();
             setFailed(true);
         }
-    }, [host, model, onSelect, reducedMotion, selectedId]);
+    }, [host, model, onSelect, reducedMotion, selectedId, systemReducedMotion]);
     return (_jsxs("div", { className: css.scene, "data-render-state": failed ? 'fallback' : 'ready', children: [_jsx("div", { className: css.host, ref: setHost, "aria-hidden": "true" }), hovered !== null && (_jsxs("div", { className: css.tooltip, style: { '--mg-star-x': `${hovered.x}px`, '--mg-star-y': `${hovered.y}px` }, children: [_jsx("strong", { children: hovered.node.title }), _jsx("p", { children: hovered.node.detail })] })), failed && _jsx("div", { className: css.fallback, role: "status", children: fallback })] }));
 }
 //# sourceMappingURL=StarField.js.map

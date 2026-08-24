@@ -1,5 +1,5 @@
 /** Pure local response rendering and assistant-output policy checks. */
-import type { MindGardenOutputGuardReason, MindGardenOutputViolation, MindGardenSafetyAssessment } from './types.ts';
+import type { MindGardenOutputGuardReason, MindGardenOutputViolation, MindGardenSafetyAssessment, MindGardenSafetyLocale } from './types.ts';
 /**
  * Return every deterministic output rule matched by complete assistant text.
  * @param text - complete buffered text and reasoning output.
@@ -19,5 +19,5 @@ export declare function renderMindGardenSupportResponse(assessment: MindGardenSa
  * @param violations - matched rules when content policy caused replacement.
  * @returns user-visible replacement text with no unsafe output quotation.
  */
-export declare function renderMindGardenGuardReplacement(reason: MindGardenOutputGuardReason, violations: readonly MindGardenOutputViolation[]): string;
+export declare function renderMindGardenGuardReplacement(reason: MindGardenOutputGuardReason, violations: readonly MindGardenOutputViolation[], locale?: MindGardenSafetyLocale): string;
 //# sourceMappingURL=output-guard.d.ts.map

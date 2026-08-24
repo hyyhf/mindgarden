@@ -2,7 +2,8 @@
 import { Buffer } from 'node:buffer';
 const HEADER = [
     'Mind Garden recalled memories (explicitly confirmed by the user).',
-    'Treat every memory as scoped, potentially outdated, and easy for the user to correct. Do not present it as a diagnosis or fixed personality trait.',
+    'Treat every memory as scoped, potentially outdated, and easy for the user to correct. The current user message and any explicit correction outrank these memories.',
+    'A [support-preference] entry guides response style only. Follow a more recent turn-local request instead, and do not present any memory as a diagnosis or fixed personality trait.',
 ].join('\n');
 /**
  * Extract only human-authored text from the entering batch.
@@ -81,6 +82,10 @@ export function retrieveMemories(options) {
         const policy = Number(right.reason === 'always') - Number(left.reason === 'always');
         if (policy !== 0)
             return policy;
+        const supportPreference = Number(right.memory.kind === 'support-preference')
+            - Number(left.memory.kind === 'support-preference');
+        if (supportPreference !== 0)
+            return supportPreference;
         if (right.score !== left.score)
             return right.score - left.score;
         if (right.memory.updatedAt !== left.memory.updatedAt)

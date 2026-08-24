@@ -56,12 +56,15 @@ export function MindGardenPanel({
   t,
 }: MindGardenPanelProps & PropsLocale<'mindGarden'>) {
   const [open, setOpen] = useState(defaultOpen)
+  const [consentAccepted, setConsentAccepted] = useState(false)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const pendingRef = useRef(false)
   const surfaceRef = useRef<HTMLDivElement>(null)
+  const disclosureRef = useRef<HTMLElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const disclosureId = useId()
+  const consentId = useId()
   const controlsId = useId()
   const [popoverPosition, setPopoverPosition] = useState<CSSProperties>()
   const revision = projection?.state.revision
@@ -72,6 +75,7 @@ export function MindGardenPanel({
 
   const closeAndRestoreFocus = useCallback(() => {
     setOpen(false)
+    setConsentAccepted(false)
     queueMicrotask(() => { triggerRef.current?.focus() })
   }, [])
 
@@ -84,7 +88,7 @@ export function MindGardenPanel({
     }
     const closeOutside = (event: PointerEvent) => {
       if (!(event.target instanceof Node) || surfaceRef.current?.contains(event.target)) return
-      setOpen(false)
+      closeAndRestoreFocus()
     }
     document.addEventListener('keydown', closeOnEscape)
     document.addEventListener('pointerdown', closeOutside, true)
@@ -93,6 +97,31 @@ export function MindGardenPanel({
       document.removeEventListener('pointerdown', closeOutside, true)
     }
   }, [closeAndRestoreFocus, defaultOpen, open])
+
+  useEffect(() => {
+    if (!open || projection !== null || defaultOpen) return
+    const disclosure = disclosureRef.current
+    if (disclosure === null) return
+    disclosure.focus({ preventScroll: true })
+    const containFocus = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return
+      const focusable = [...disclosure.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+      )]
+      const first = focusable[0]
+      const last = focusable.at(-1)
+      if (first === undefined || last === undefined) return
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === disclosure)) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+    disclosure.addEventListener('keydown', containFocus)
+    return () => { disclosure.removeEventListener('keydown', containFocus) }
+  }, [defaultOpen, open, projection])
 
   const positionPopover = useCallback(() => {
     if (!open || defaultOpen || triggerRef.current === null) return
@@ -172,11 +201,15 @@ export function MindGardenPanel({
         </button>
         {open && (
           <section
+            ref={disclosureRef}
             id={disclosureId}
             className={css.panel}
             style={popoverPosition}
             data-positioned={popoverPosition === undefined ? 'false' : 'true'}
+            role="dialog"
+            aria-modal="true"
             aria-labelledby={`${disclosureId}-title`}
+            tabIndex={-1}
           >
             <div className={css.panelHeader}>
               <div>
@@ -202,13 +235,29 @@ export function MindGardenPanel({
                 <span><strong>{t('disclosure.authority.title')}</strong><small>{t('disclosure.authority.body')}</small></span>
               </li>
             </ul>
+            <label className={css.consent} htmlFor={consentId}>
+              <input
+                id={consentId}
+                type="checkbox"
+                checked={consentAccepted}
+                disabled={pending}
+                aria-label={t('disclosure.consent')}
+                aria-describedby={`${consentId}-hint`}
+                onChange={(event) => { setConsentAccepted(event.target.checked) }}
+              />
+              <span>
+                <strong>{t('disclosure.consent')}</strong>
+                <small id={`${consentId}-hint`}>{t('disclosure.consent.hint')}</small>
+              </span>
+            </label>
             <div className={css.modeGrid}>
               {MODES.map(mode => (
                 <button
                   key={mode}
                   type="button"
                   className={css.modeCard}
-                  disabled={pending}
+                  disabled={pending || !consentAccepted}
+                  aria-describedby={`${consentId}-hint`}
                   onClick={() => { void run(() => onActivate(mode)) }}
                 >
                   <span className={css.modeIcon}>{mode === 'serenity' ? <ConcernsIcon size={18} /> : <PhilosophyIcon size={18} />}</span>

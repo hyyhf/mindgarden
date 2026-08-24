@@ -40,7 +40,7 @@ import { Buffer } from 'node:buffer';
 import { randomUUID } from 'node:crypto';
 import s from '@deepseek-ai/schemastery';
 import { AttachmentId, AttachmentError, isImageAdmissionError, } from '@deepseek-ai/dsh-attachment';
-import { BlockAssembler, createUserMessage } from '@deepseek-ai/dsh-llm';
+import { BlockAssembler, createUserMessage, ReasoningEffortId } from '@deepseek-ai/dsh-llm';
 import { MindGardenVaultError, MindGardenVaultRecordId, } from '@deepseek-ai/dsh-mind-garden/vault';
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol';
 import { decodeStoredMediaRecord, mindGardenPhotoParticleConfigSchema, storedPhotoModelRunSchema, storedPhotoStorySchema, } from "./records.js";
@@ -57,6 +57,7 @@ const DEFAULT_MAX_STORIES_PER_LIST = 100;
 const DEFAULT_MAX_OBSERVER_MESSAGE_BYTES = 4096;
 const DEFAULT_MAX_OBSERVER_INPUT_BYTES = 24 * 1024;
 const DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS = 1600;
+const DEFAULT_MAX_CONCURRENT_OBSERVER_REQUESTS = 2;
 const MAX_DIALOGUE_TURNS = 25;
 class MediaBusinessError extends Error {
     failure;
@@ -87,6 +88,7 @@ function resolveConfig(config) {
         maxObserverMessageBytes: positiveInteger(config.maxObserverMessageBytes, DEFAULT_MAX_OBSERVER_MESSAGE_BYTES),
         maxObserverInputBytes: positiveInteger(config.maxObserverInputBytes, DEFAULT_MAX_OBSERVER_INPUT_BYTES),
         maxObserverOutputTokens: positiveInteger(config.maxObserverOutputTokens, DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS),
+        maxConcurrentObserverRequests: positiveInteger(config.maxConcurrentObserverRequests, DEFAULT_MAX_CONCURRENT_OBSERVER_REQUESTS),
         observerProvider,
         observerModel,
     };
@@ -219,12 +221,13 @@ let MindGardenMediaService = (() => {
             maxObserverMessageBytes: s.number().default(DEFAULT_MAX_OBSERVER_MESSAGE_BYTES),
             maxObserverInputBytes: s.number().default(DEFAULT_MAX_OBSERVER_INPUT_BYTES),
             maxObserverOutputTokens: s.number().default(DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS),
+            maxConcurrentObserverRequests: s.number().default(DEFAULT_MAX_CONCURRENT_OBSERVER_REQUESTS),
             observerProvider: s.string().default(''),
             observerModel: s.string().default(''),
         });
         options = __runInitializers(this, _instanceExtraInitializers);
         operationTail = Promise.resolve();
-        modelOperation = null;
+        modelOperations = new Map();
         modelControllers = new Set();
         admissionOpen = true;
         /** Install the media Remote and drain admitted operations during disposal. */
@@ -235,7 +238,9 @@ let MindGardenMediaService = (() => {
                 this.admissionOpen = false;
                 for (const controller of this.modelControllers)
                     controller.abort();
-                await this.modelOperation?.catch(() => undefined);
+                await Promise.all([...this.modelOperations.values()].map(async (operation) => {
+                    await operation.catch(() => undefined);
+                }));
                 await this.operationTail;
             }, 'mind-garden-media.drain');
         }
@@ -359,15 +364,18 @@ let MindGardenMediaService = (() => {
             const access = this.accessFailure(agent);
             if (access !== null)
                 return Promise.resolve(rejected(access));
-            if (this.modelOperation !== null)
+            const operationKey = `${agent.session.id}\0${String(request.id)}`;
+            if (this.modelOperations.has(operationKey)
+                || this.modelOperations.size >= this.options.maxConcurrentObserverRequests) {
                 return Promise.resolve(rejected({ code: 'photo-model-in-progress' }));
+            }
             const controller = new AbortController();
             this.modelControllers.add(controller);
             const operation = this.runObservation(agent, request, controller.signal).finally(() => {
                 this.modelControllers.delete(controller);
-                this.modelOperation = null;
+                this.modelOperations.delete(operationKey);
             });
-            this.modelOperation = operation;
+            this.modelOperations.set(operationKey, operation);
             return operation;
         }
         /**
@@ -382,15 +390,18 @@ let MindGardenMediaService = (() => {
             const access = this.accessFailure(agent);
             if (access !== null)
                 return Promise.resolve(rejected(access));
-            if (this.modelOperation !== null)
+            const operationKey = `${agent.session.id}\0${String(request.id)}`;
+            if (this.modelOperations.has(operationKey)
+                || this.modelOperations.size >= this.options.maxConcurrentObserverRequests) {
                 return Promise.resolve(rejected({ code: 'photo-model-in-progress' }));
+            }
             const controller = new AbortController();
             this.modelControllers.add(controller);
             const operation = this.runDialogue(agent, request, controller.signal).finally(() => {
                 this.modelControllers.delete(controller);
-                this.modelOperation = null;
+                this.modelOperations.delete(operationKey);
             });
-            this.modelOperation = operation;
+            this.modelOperations.set(operationKey, operation);
             return operation;
         }
         /**
@@ -573,7 +584,7 @@ let MindGardenMediaService = (() => {
                 }
                 throw error;
             }
-            const envelope = buildPhotoObservationEnvelope(this.options.maxObserverInputBytes);
+            const envelope = buildPhotoObservationEnvelope(this.options.maxObserverInputBytes, request.locale ?? 'zh-CN');
             if (envelope === null) {
                 throw new MediaBusinessError({ code: 'photo-input-too-large', maxBytes: this.options.maxObserverInputBytes });
             }
@@ -707,7 +718,7 @@ let MindGardenMediaService = (() => {
             const target = this.modelTarget(agent, request);
             if (target === null)
                 throw new MediaBusinessError({ code: 'photo-model-unavailable' });
-            const envelope = buildPhotoDialogueEnvelope(snapshot(current), content, quickReplyKind, this.options.maxObserverInputBytes);
+            const envelope = buildPhotoDialogueEnvelope(snapshot(current), content, quickReplyKind, this.options.maxObserverInputBytes, request.locale ?? 'zh-CN');
             if (envelope === null) {
                 throw new MediaBusinessError({ code: 'photo-input-too-large', maxBytes: this.options.maxObserverInputBytes });
             }
@@ -752,6 +763,10 @@ let MindGardenMediaService = (() => {
             const options = {
                 provider: prepared.run.provider,
                 model: prepared.run.model,
+                ...(prepared.run.provider === 'deepseek-official'
+                    && prepared.run.model === 'deepseek-v4-flash-vision-exp'
+                    ? { reasoningEffort: ReasoningEffortId('off') }
+                    : {}),
                 system: prepared.envelope.system,
                 messages: [createUserMessage({ content, source: { kind: 'plugin', plugin: name } })],
                 temperature: kind === 'observation' ? 0.2 : 0.45,

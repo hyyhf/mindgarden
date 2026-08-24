@@ -48,6 +48,9 @@ describe('Mind Garden dialogue policy', () => {
           expect(rendered).toContain(`Posture — ${mode}:`)
           expect(rendered).toContain(`Requested support — ${supportIntent}:`)
           expect(rendered).toContain(privacy === 'durable' ? 'durable session storage' : 'ephemeral policy label')
+          expect(rendered).toContain('current message and explicit correction outrank')
+          expect(rendered).toContain('do not give advice this time')
+          expect(rendered).toContain('Do not claim that a turn-local correction changed durable memory')
           expect(rendered).toContain('Do not diagnose')
         }
       }

@@ -64,7 +64,7 @@ describe('StarObserver', () => {
       onApplyRevision={vi.fn()}
     />)
     fireEvent.click(view.getByRole('button', { name: /抽一张心象卡/ }))
-    expect(view.getByText(/2\/4/)).toBeTruthy()
+    expect(view.getAllByText(/2\/4/)).toHaveLength(2)
     fireEvent.click(view.getByRole('button', { name: zh['star.observer.deck.inner-debate'] }))
     fireEvent.change(view.getByLabelText(zh['star.observer.question']), { target: { value: '  我要怎样开始？  ' } })
     fireEvent.click(view.getByRole('button', { name: zh['star.observer.draw'] }))

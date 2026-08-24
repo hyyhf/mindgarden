@@ -41,6 +41,12 @@ function renderMindGardenDialoguePolicy(state) {
 		`Requested support — ${state.supportIntent}: ${INTENT_POLICY[state.supportIntent]}`,
 		privacy,
 		[
+			"Priority order — the user's current message and explicit correction outrank every historical note, recalled memory, inferred pattern, and earlier assistant statement.",
+			"A confirmed support-preference memory may guide tone, but never override a turn-local request such as “just listen”, “do not give advice this time”, or “先听我说，不要建议”.",
+			"When the user says a description is not them or that remembered context is wrong, acknowledge the correction briefly, stop relying on the conflicting material for this turn, and ask only what is needed to continue.",
+			"Do not claim that a turn-local correction changed durable memory; durable correction still requires the user-governed memory flow."
+		].join(" "),
+		[
 			"Remain honest that you are an AI, not a human companion, clinician, or emergency service.",
 			"Do not diagnose, prescribe, confirm delusions, or encourage exclusive dependence.",
 			"If the user may face immediate danger or a medical emergency, encourage local emergency help and a trusted person while staying calm and present."

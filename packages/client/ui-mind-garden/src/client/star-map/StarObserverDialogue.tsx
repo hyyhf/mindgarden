@@ -1,7 +1,11 @@
 /** Recoverable card-owned conversation and explicit revision acceptance surface. */
 
 import { useEffect, useRef, useState } from 'react'
-import { MarkdownText } from '@deepseek-ai/dsh-client-ui-primitives'
+import {
+  IconSendOutline14,
+  IconSparkle16,
+  MarkdownText,
+} from '@deepseek-ai/dsh-client-ui-primitives'
 import type {
   MindGardenApplyStarCardRevisionRequest,
   MindGardenContinueStarCardRequest,
@@ -79,7 +83,7 @@ export function StarObserverDialogue({ card, t, onContinue, onApplyRevision }: S
   return (
     <section className={css.dialogue} aria-label={t('star.observer.dialogue.title')}>
       <header className={css.dialogueHeader}>
-        <div><span aria-hidden="true">✧</span><strong>{t('star.observer.dialogue.title')}</strong></div>
+        <div><span aria-hidden="true"><IconSparkle16 size={15} /></span><strong>{t('star.observer.dialogue.title')}</strong></div>
         <small role="status" aria-live="polite">
           {pending === 'continue' ? t('star.observer.dialogue.thinking') : t('star.observer.dialogue.ready')}
         </small>
@@ -147,7 +151,9 @@ export function StarObserverDialogue({ card, t, onContinue, onApplyRevision }: S
             onChange={(event) => { setInput(event.target.value) }}
           />
         </label>
-        <button type="submit" disabled={pending !== null || input.trim().length === 0} aria-label={t('star.observer.dialogue.send')}>↑</button>
+        <button type="submit" disabled={pending !== null || input.trim().length === 0} aria-label={t('star.observer.dialogue.send')}>
+          <IconSendOutline14 size={16} />
+        </button>
       </form>
       {error && <p className={css.error} role="alert">{t('star.observer.dialogue.error')}</p>}
     </section>

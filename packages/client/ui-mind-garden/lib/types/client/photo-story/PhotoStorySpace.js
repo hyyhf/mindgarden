@@ -1,16 +1,17 @@
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 /** Harness-native photo archive with a real 3D particle story surface. */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { IconChevronLeftOutline14, IconChevronRightOutline14, IconPauseOutline16, IconPlayOutline16, IconPlusOutline16, IconRefreshOutline14, Modal, } from '@deepseek-ai/dsh-client-ui-primitives';
+import { IconChevronLeftOutline14, IconChevronRightOutline14, IconFullscreenOutline16, IconNewChatOutline16, IconPauseOutline16, IconPlayOutline16, IconPlusOutline16, IconRefreshOutline14, IconSettingsOutline16, Modal, } from '@deepseek-ai/dsh-client-ui-primitives';
 import { calendarStamp } from "../calendar.js";
+import { PHOTO_MEMORY_STAGE_V5 } from "../generated-assets.js";
 import { applyPhotoParticlePreset } from "./presets.js";
 import { PhotoParticleScene } from "./PhotoParticleScene.js";
 import css from './PhotoStorySpace.module.css';
-import { PhotoStoryIcon } from "../GardenIcons.js";
-import { PHOTO_STORY_EMPTY_WARM } from "../generated-assets.js";
 const PAGE_SIZE = 9;
 const DYNAMIC_LIMIT = 10;
+const MAX_IMAGE_CACHE_ENTRIES = 14;
 const PRESETS = ['soft', 'dust', 'fluid', 'nebula'];
+const ALBUM_VIEWS = ['classic', 'dynamic'];
 function useReducedMotion() {
     const [reduced, setReduced] = useState(() => typeof window !== 'undefined' && typeof window.matchMedia === 'function'
         && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -34,6 +35,18 @@ function updateConfigGroup(config, group, patch) {
 function replaceCount(copy, count) {
     return copy.replace('{count}', new Intl.NumberFormat().format(count));
 }
+function observationErrorKey(code) {
+    if (code === 'photo-model-failed')
+        return 'photo.error.observe.model';
+    if (code === 'photo-output-invalid')
+        return 'photo.error.observe.output';
+    if (code === 'photo-image-unsupported' || code === 'photo-model-unavailable') {
+        return 'photo.error.observe.route';
+    }
+    if (code === 'attachment-unavailable')
+        return 'photo.error.load';
+    return 'photo.error.observe';
+}
 /** Render the encrypted photo-story album and its parameterized particle editor. */
 export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory, onReadPhotoStory, onObservePhotoStory, onContinuePhotoStory, onUpdatePhotoStory, onDeletePhotoStory, t, }) {
     const [stories, setStories] = useState([]);
@@ -51,7 +64,7 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
     const [pending, setPending] = useState(false);
-    const [error, setError] = useState(false);
+    const [errorKey, setErrorKey] = useState(null);
     const [saved, setSaved] = useState(false);
     const [deleteArmed, setDeleteArmed] = useState(false);
     const [preview, setPreview] = useState(false);
@@ -64,6 +77,10 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
     const [dialoguePending, setDialoguePending] = useState(false);
     const [dialogueDraft, setDialogueDraft] = useState('');
     const inputRef = useRef(null);
+    const viewTabRefs = useRef({
+        classic: null,
+        dynamic: null,
+    });
     const dynamicCardRefs = useRef([]);
     const dynamicFocusTargetRef = useRef(null);
     const dynamicGestureRef = useRef({ pointerId: -1, lastX: 0, angle: 0, velocity: 0 });
@@ -80,10 +97,10 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
         if (result.ok) {
             setStories(result.value);
             setPage(current => Math.min(current, Math.max(1, Math.ceil(result.value.length / PAGE_SIZE))));
-            setError(false);
+            setErrorKey(null);
         }
         else {
-            setError(true);
+            setErrorKey('photo.error.load');
         }
         setLoading(false);
     }, [onListPhotoStories]);
@@ -136,14 +153,33 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
             if (request !== imageRequestRef.current)
                 return;
             if (entries.some(entry => !entry.result.ok))
-                setError(true);
+                setErrorKey('photo.error.load');
+            entries.forEach(({ story, result }) => {
+                if (!result.ok)
+                    requestedImagesRef.current.delete(storyKey(story));
+            });
             setImages((current) => {
                 const next = new Map(current);
+                let changed = false;
                 entries.forEach(({ story, result }) => {
-                    if (result.ok)
-                        next.set(storyKey(story), result.value);
+                    if (result.ok) {
+                        const key = storyKey(story);
+                        next.delete(key);
+                        next.set(key, result.value);
+                        changed = true;
+                    }
                 });
-                return next;
+                const protectedKeys = new Set(candidates.map(storyKey));
+                for (const [key] of next) {
+                    if (next.size <= MAX_IMAGE_CACHE_ENTRIES)
+                        break;
+                    if (protectedKeys.has(key))
+                        continue;
+                    next.delete(key);
+                    requestedImagesRef.current.delete(key);
+                    changed = true;
+                }
+                return changed ? next : current;
             });
         });
         return () => { imageRequestRef.current++; };
@@ -163,7 +199,7 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
         if (files.length === 0 || uploading)
             return;
         setUploading(true);
-        setError(false);
+        setErrorKey(null);
         try {
             let rejected = false;
             for (const file of files) {
@@ -173,10 +209,10 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
             }
             await refresh();
             if (rejected)
-                setError(true);
+                setErrorKey('photo.error.upload');
         }
         catch {
-            setError(true);
+            setErrorKey('photo.error.upload');
         }
         finally {
             setUploading(false);
@@ -193,6 +229,27 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
         const nextIndex = (dynamicIndex + delta + dynamicStories.length) % dynamicStories.length;
         dynamicFocusTargetRef.current = moveFocus ? nextIndex : null;
         setDynamicIndex(nextIndex);
+    }
+    function selectAlbumView(next, moveFocus = false) {
+        setView(next);
+        if (moveFocus)
+            queueMicrotask(() => { viewTabRefs.current[next]?.focus(); });
+    }
+    function moveAlbumView(event, current) {
+        const currentIndex = ALBUM_VIEWS.indexOf(current);
+        const next = event.key === 'ArrowRight'
+            ? ALBUM_VIEWS[(currentIndex + 1) % ALBUM_VIEWS.length]
+            : event.key === 'ArrowLeft'
+                ? ALBUM_VIEWS[(currentIndex - 1 + ALBUM_VIEWS.length) % ALBUM_VIEWS.length]
+                : event.key === 'Home'
+                    ? ALBUM_VIEWS[0]
+                    : event.key === 'End'
+                        ? ALBUM_VIEWS.at(-1)
+                        : undefined;
+        if (next === undefined)
+            return;
+        event.preventDefault();
+        selectAlbumView(next, true);
     }
     function startDynamicGesture(event) {
         if (reducedMotion || dynamicStories.length < 2 || event.button !== 0)
@@ -239,7 +296,7 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
     }
     async function saveStory(story, particleConfig) {
         setPending(true);
-        setError(false);
+        setErrorKey(null);
         setSaved(false);
         try {
             const result = await onUpdatePhotoStory(story, title.trim(), note.trim(), particleConfig);
@@ -249,12 +306,12 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
                 setSaved(true);
             }
             else {
-                setError(true);
+                setErrorKey('photo.error.save');
                 await refresh();
             }
         }
         catch {
-            setError(true);
+            setErrorKey('photo.error.save');
         }
         finally {
             setPending(false);
@@ -266,16 +323,16 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
     }
     async function observeStory(story) {
         setDialoguePending(true);
-        setError(false);
+        setErrorKey(null);
         try {
             const result = await onObservePhotoStory(story);
             if (result.ok)
                 adoptStory(result.value);
             else
-                setError(true);
+                setErrorKey(observationErrorKey(result.code));
         }
         catch {
-            setError(true);
+            setErrorKey('photo.error.observe');
         }
         finally {
             setDialoguePending(false);
@@ -286,7 +343,7 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
         if (message === '' || dialoguePending)
             return;
         setDialoguePending(true);
-        setError(false);
+        setErrorKey(null);
         try {
             const result = await onContinuePhotoStory(story, message, quickReplyKind);
             if (result.ok) {
@@ -294,11 +351,11 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
                 setDialogueDraft('');
             }
             else {
-                setError(true);
+                setErrorKey('photo.error.dialogue');
             }
         }
         catch {
-            setError(true);
+            setErrorKey('photo.error.dialogue');
         }
         finally {
             setDialoguePending(false);
@@ -314,7 +371,7 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
             return;
         }
         setPending(true);
-        setError(false);
+        setErrorKey(null);
         try {
             const result = await onDeletePhotoStory(story);
             if (result.ok) {
@@ -328,11 +385,11 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
                 await refresh();
             }
             else {
-                setError(true);
+                setErrorKey('photo.error.delete');
             }
         }
         catch {
-            setError(true);
+            setErrorKey('photo.error.delete');
         }
         finally {
             setPending(false);
@@ -341,20 +398,23 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
     }
     const activeImage = active === null ? undefined : images.get(storyKey(active));
     if (active !== null && config !== null) {
-        return (_jsxs("main", { className: css.story, "data-mind-garden-space": "photo-story", "data-photo-mode": "story", children: [_jsxs("header", { className: css.storyHeader, children: [_jsxs("div", { className: css.storyHeading, children: [_jsx("h1", { children: t('photo.dialogue.title') }), _jsx("button", { type: "button", className: css.back, onClick: () => { setActive(null); }, children: t('photo.back') })] }), _jsxs("div", { className: css.storyMeta, children: [_jsx("span", { children: t('photo.date').replace('{date}', active.stamp.localDate) }), particleCount > 0 && _jsx("span", { children: replaceCount(t('photo.sceneCount'), particleCount) })] })] }), error && _jsxs("div", { className: css.error, role: "alert", children: [_jsx("span", { children: t('photo.error') }), _jsx("button", { type: "button", onClick: retryPhotoStories, children: t('photo.retry') })] }), _jsxs("div", { className: css.storyGrid, children: [_jsx("section", { className: css.sceneColumn, children: activeImage === undefined ? (_jsx("div", { className: css.sceneLoading, role: "status", children: t('photo.sceneLoading') })) : (_jsxs(_Fragment, { children: [_jsx(PhotoParticleScene, { src: activeImage, alt: title || t('photo.scene'), config: config, labels: {
+        return (_jsxs("main", { className: css.story, "data-mind-garden-space": "photo-story", "data-photo-mode": "story", style: { '--mg-photo-stage': `url("${PHOTO_MEMORY_STAGE_V5}")` }, children: [_jsxs("header", { className: css.storyHeader, children: [_jsxs("div", { className: css.storyHeading, children: [_jsx("h1", { children: t('photo.dialogue.title') }), _jsx("button", { type: "button", className: css.back, onClick: () => { setActive(null); }, children: t('photo.back') })] }), _jsxs("div", { className: css.storyMeta, children: [_jsx("span", { children: t('photo.date').replace('{date}', active.stamp.localDate) }), particleCount > 0 && _jsx("span", { children: replaceCount(t('photo.sceneCount'), particleCount) })] })] }), errorKey !== null && _jsxs("div", { className: css.error, role: "alert", children: [_jsx("span", { children: t(errorKey) }), errorKey === 'photo.error.load' && _jsx("button", { type: "button", onClick: retryPhotoStories, children: t('photo.retry') })] }), _jsxs("div", { className: css.storyGrid, children: [_jsx("section", { className: css.sceneColumn, children: activeImage === undefined ? (_jsx("div", { className: css.sceneLoading, role: "status", children: t('photo.sceneLoading') })) : (_jsxs(_Fragment, { children: [_jsx(PhotoParticleScene, { src: activeImage, alt: title || t('photo.scene'), config: config, labels: {
                                             scene: t('photo.scene'),
                                             loading: t('photo.sceneLoading'),
                                             fallback: t('photo.sceneFallback'),
                                             reduced: t('photo.sceneReducedMotion'),
-                                        }, onCount: setParticleCount, recomposeToken: particleRecompose }), _jsxs("div", { className: css.sceneTools, children: [_jsxs("button", { type: "button", className: css.preview, onClick: () => { setParticleRecompose(value => value + 1); }, children: [_jsx(IconRefreshOutline14, {}), t('photo.recompose')] }), _jsx("button", { type: "button", className: css.preview, onClick: () => { setPreview(true); }, children: t('photo.preview') })] })] })) }), _jsxs("aside", { className: css.editor, "aria-label": t('photo.panel.controls'), children: [_jsxs("nav", { className: css.storyPanelTabs, "aria-label": t('photo.panel.controls'), children: [_jsx("button", { type: "button", "aria-pressed": storyPanel === 'dialogue', onClick: () => { setStoryPanel('dialogue'); }, children: t('photo.panel.dialogue') }), _jsx("button", { type: "button", "aria-pressed": storyPanel === 'edit', onClick: () => { setStoryPanel('edit'); }, children: t('photo.panel.edit') })] }), _jsxs("div", { className: css.editorForm, hidden: storyPanel !== 'edit', children: [_jsxs("label", { children: [_jsx("span", { children: t('photo.storyTitle') }), _jsx("input", { value: title, maxLength: 160, onChange: (event) => { setTitle(event.target.value); setSaved(false); } })] }), _jsxs("label", { children: [_jsx("span", { children: t('photo.storyNote') }), _jsx("textarea", { value: note, maxLength: 8_000, placeholder: t('photo.storyPlaceholder'), onChange: (event) => { setNote(event.target.value); setSaved(false); } })] }), _jsxs("section", { className: css.particleEditor, children: [_jsx("h2", { children: t('photo.particleTitle') }), _jsx("div", { className: css.presets, children: PRESETS.map(preset => (_jsx("button", { type: "button", "data-active": config.preset === preset, onClick: () => { setConfig(applyPhotoParticlePreset(config, preset)); setSaved(false); }, children: t(`photo.particle.${preset}`) }, preset))) }), _jsx(RangeField, { label: t('photo.pointSize'), value: config.rendering.pointSize, min: 0.7, max: 6, step: 0.1, onChange: (pointSize) => { setConfig(updateConfigGroup(config, 'rendering', { pointSize })); setSaved(false); } }), _jsx(RangeField, { label: t('photo.depth'), value: config.depth.strength, min: 0, max: 60, step: 1, onChange: (strength) => { setConfig(updateConfigGroup(config, 'depth', { strength })); setSaved(false); } }), _jsx(RangeField, { label: t('photo.interaction'), value: config.interaction.strength, min: 0, max: 16, step: 0.1, onChange: (strength) => { setConfig(updateConfigGroup(config, 'interaction', { strength })); setSaved(false); } }), _jsx(RangeField, { label: t('photo.motion'), value: config.animation.idleStrength, min: 0, max: 1.5, step: 0.01, onChange: (idleStrength) => { setConfig(updateConfigGroup(config, 'animation', { idleStrength })); setSaved(false); } })] }), saved && _jsx("p", { className: css.saved, role: "status", children: t('photo.saved') }), _jsxs("div", { className: css.editorActions, children: [_jsx("button", { type: "button", className: css.save, disabled: pending || title.trim() === '', onClick: () => { void saveStory(active, config); }, children: pending ? t('photo.saving') : t('photo.save') }), _jsx("button", { type: "button", className: css.delete, disabled: pending, onClick: () => { void deleteStory(active); }, children: deleteArmed ? t('photo.deleteConfirm') : t('photo.delete') })] }), deleteArmed && _jsx("p", { className: css.deleteHint, children: t('photo.deleteHint') })] }), _jsxs("section", { className: css.photoDialogue, hidden: storyPanel !== 'dialogue', "aria-labelledby": "mind-garden-photo-dialogue-title", children: [_jsxs("header", { children: [_jsx("h2", { id: "mind-garden-photo-dialogue-title", children: t('photo.dialogue.title') }), _jsx("p", { children: t('photo.dialogue.boundary') })] }), active.observation == null ? (_jsxs("div", { className: css.observationGate, children: [_jsxs("div", { children: [_jsx("h3", { children: t('photo.observe.title') }), _jsx("p", { children: t('photo.observe.disclosure') })] }), _jsx("button", { type: "button", disabled: dialoguePending, onClick: () => { void observeStory(active); }, children: dialoguePending ? t('photo.observe.pending') : t('photo.observe.action') })] })) : (_jsxs(_Fragment, { children: [_jsxs("article", { className: css.grounding, children: [_jsx("span", { children: t('photo.observe.unconfirmed') }), _jsx("p", { children: active.observation.grounding.visualSummary }), active.observation.grounding.visibleElements.length > 0 && (_jsx("ul", { "aria-label": t('photo.observe.visible'), children: active.observation.grounding.visibleElements.map(element => _jsx("li", { children: element }, element)) })), active.observation.grounding.uncertainDetails.length > 0 && (_jsxs("details", { children: [_jsx("summary", { children: t('photo.observe.uncertain') }), _jsx("ul", { children: active.observation.grounding.uncertainDetails.map(detail => _jsx("li", { children: detail }, detail)) })] }))] }), _jsx("div", { className: css.dialogueTurns, role: "log", "aria-live": "polite", children: active.turns.map(turn => (_jsxs("article", { "data-role": turn.role, children: [_jsx("span", { children: turn.role === 'user' ? t('photo.dialogue.me') : t('photo.dialogue.companion') }), _jsx("p", { children: turn.content })] }, String(turn.id)))) }), active.quickReplies.length > 0 && (_jsx("div", { className: css.quickReplies, "aria-label": t('photo.dialogue.suggestions'), children: active.quickReplies.map(reply => (_jsx("button", { type: "button", disabled: dialoguePending, onClick: () => { void continueStory(active, reply.label, reply.kind); }, children: reply.label }, reply.kind))) })), _jsxs("form", { className: css.dialogueForm, onSubmit: (event) => { submitDialogue(event, active); }, children: [_jsx("label", { htmlFor: "mind-garden-photo-dialogue-input", children: t('photo.dialogue.input') }), _jsxs("div", { children: [_jsx("textarea", { id: "mind-garden-photo-dialogue-input", maxLength: 8_000, placeholder: t('photo.dialogue.placeholder'), value: dialogueDraft, onChange: (event) => { setDialogueDraft(event.target.value); } }), _jsx("button", { type: "submit", disabled: dialoguePending || dialogueDraft.trim() === '', children: dialoguePending ? t('photo.dialogue.pending') : t('photo.dialogue.send') })] })] })] }))] })] })] }), _jsx(Modal, { open: preview && activeImage !== undefined, title: t('photo.previewDialog'), closeLabel: t('photo.previewClose'), className: css.previewModal ?? '', contentClassName: css.previewModalContent ?? '', onClose: () => { setPreview(false); }, children: activeImage !== undefined && (_jsx("img", { className: css.previewImage, src: activeImage, alt: title || t('photo.scene') })) })] }));
+                                        }, onCount: setParticleCount, recomposeToken: particleRecompose }), _jsxs("div", { className: css.sceneTools, children: [_jsxs("button", { type: "button", className: css.preview, "aria-label": t('photo.preview'), onClick: () => { setPreview(true); }, children: [_jsx(IconFullscreenOutline16, { size: 15 }), _jsx("span", { "aria-hidden": "true", children: t('photo.toolbar.original') })] }), _jsxs("button", { type: "button", className: css.preview, "aria-label": t('photo.recompose'), onClick: () => { setParticleRecompose(value => value + 1); }, children: [_jsx(IconRefreshOutline14, {}), _jsx("span", { "aria-hidden": "true", children: t('photo.toolbar.recompose') })] }), _jsxs("button", { type: "button", className: css.preview, "aria-controls": "mind-garden-photo-workbench", "aria-label": t('photo.panel.dialogue'), "aria-pressed": storyPanel === 'dialogue', onClick: () => { setStoryPanel('dialogue'); }, children: [_jsx(IconNewChatOutline16, { size: 15 }), _jsx("span", { "aria-hidden": "true", children: t('photo.toolbar.dialogue') })] }), _jsxs("button", { type: "button", className: css.preview, "aria-controls": "mind-garden-photo-workbench", "aria-label": t('photo.panel.edit'), "aria-pressed": storyPanel === 'edit', onClick: () => { setStoryPanel('edit'); }, children: [_jsx(IconSettingsOutline16, { size: 15 }), _jsx("span", { "aria-hidden": "true", children: t('photo.toolbar.particles') })] })] })] })) }), _jsxs("aside", { id: "mind-garden-photo-workbench", className: css.editor, "aria-label": t('photo.panel.controls'), children: [_jsxs("div", { className: css.editorForm, hidden: storyPanel !== 'edit', children: [_jsxs("label", { children: [_jsx("span", { children: t('photo.storyTitle') }), _jsx("input", { value: title, maxLength: 160, onChange: (event) => { setTitle(event.target.value); setSaved(false); } })] }), _jsxs("label", { children: [_jsx("span", { children: t('photo.storyNote') }), _jsx("textarea", { value: note, maxLength: 8_000, placeholder: t('photo.storyPlaceholder'), onChange: (event) => { setNote(event.target.value); setSaved(false); } })] }), _jsxs("section", { className: css.particleEditor, children: [_jsx("h2", { children: t('photo.particleTitle') }), _jsx("div", { className: css.presets, children: PRESETS.map(preset => (_jsx("button", { type: "button", "data-active": config.preset === preset, onClick: () => { setConfig(applyPhotoParticlePreset(config, preset)); setSaved(false); }, children: t(`photo.particle.${preset}`) }, preset))) }), _jsx(RangeField, { label: t('photo.pointSize'), value: config.rendering.pointSize, min: 0.7, max: 6, step: 0.1, onChange: (pointSize) => { setConfig(updateConfigGroup(config, 'rendering', { pointSize })); setSaved(false); } }), _jsx(RangeField, { label: t('photo.depth'), value: config.depth.strength, min: 0, max: 60, step: 1, onChange: (strength) => { setConfig(updateConfigGroup(config, 'depth', { strength })); setSaved(false); } }), _jsx(RangeField, { label: t('photo.interaction'), value: config.interaction.strength, min: 0, max: 16, step: 0.1, onChange: (strength) => { setConfig(updateConfigGroup(config, 'interaction', { strength })); setSaved(false); } }), _jsx(RangeField, { label: t('photo.motion'), value: config.animation.idleStrength, min: 0, max: 1.5, step: 0.01, onChange: (idleStrength) => { setConfig(updateConfigGroup(config, 'animation', { idleStrength })); setSaved(false); } })] }), saved && _jsx("p", { className: css.saved, role: "status", children: t('photo.saved') }), _jsxs("div", { className: css.editorActions, children: [_jsx("button", { type: "button", className: css.save, disabled: pending || title.trim() === '', onClick: () => { void saveStory(active, config); }, children: pending ? t('photo.saving') : t('photo.save') }), _jsx("button", { type: "button", className: css.delete, disabled: pending, onClick: () => { void deleteStory(active); }, children: deleteArmed ? t('photo.deleteConfirm') : t('photo.delete') })] }), deleteArmed && _jsx("p", { className: css.deleteHint, children: t('photo.deleteHint') })] }), _jsxs("section", { className: css.photoDialogue, hidden: storyPanel !== 'dialogue', "aria-labelledby": "mind-garden-photo-dialogue-title", children: [_jsxs("header", { children: [_jsx("h2", { id: "mind-garden-photo-dialogue-title", children: t('photo.dialogue.title') }), _jsx("p", { children: t('photo.dialogue.boundary') })] }), active.observation == null ? (_jsxs("div", { className: css.observationGate, children: [_jsxs("div", { children: [_jsx("h3", { children: t('photo.observe.title') }), _jsx("p", { children: t('photo.observe.disclosure') })] }), _jsx("button", { type: "button", disabled: dialoguePending, onClick: () => { void observeStory(active); }, children: dialoguePending ? t('photo.observe.pending') : t('photo.observe.action') })] })) : (_jsxs(_Fragment, { children: [_jsxs("article", { className: css.grounding, children: [_jsx("span", { children: t('photo.observe.unconfirmed') }), _jsx("p", { children: active.observation.grounding.visualSummary }), active.observation.grounding.visibleElements.length > 0 && (_jsx("ul", { "aria-label": t('photo.observe.visible'), children: active.observation.grounding.visibleElements.map(element => _jsx("li", { children: element }, element)) })), active.observation.grounding.uncertainDetails.length > 0 && (_jsxs("details", { children: [_jsx("summary", { children: t('photo.observe.uncertain') }), _jsx("ul", { children: active.observation.grounding.uncertainDetails.map(detail => _jsx("li", { children: detail }, detail)) })] }))] }), _jsx("div", { className: css.dialogueTurns, role: "log", "aria-live": "polite", children: active.turns.map(turn => (_jsxs("article", { "data-role": turn.role, children: [_jsx("span", { children: turn.role === 'user' ? t('photo.dialogue.me') : t('photo.dialogue.companion') }), _jsx("p", { children: turn.content })] }, String(turn.id)))) }), active.quickReplies.length > 0 && (_jsx("div", { className: css.quickReplies, "aria-label": t('photo.dialogue.suggestions'), children: active.quickReplies.map(reply => (_jsx("button", { type: "button", disabled: dialoguePending, onClick: () => { void continueStory(active, reply.label, reply.kind); }, children: reply.label }, reply.kind))) })), _jsxs("form", { className: css.dialogueForm, onSubmit: (event) => { submitDialogue(event, active); }, children: [_jsx("label", { htmlFor: "mind-garden-photo-dialogue-input", children: t('photo.dialogue.input') }), _jsxs("div", { children: [_jsx("textarea", { id: "mind-garden-photo-dialogue-input", maxLength: 8_000, placeholder: t('photo.dialogue.placeholder'), value: dialogueDraft, onChange: (event) => { setDialogueDraft(event.target.value); } }), _jsx("button", { type: "submit", disabled: dialoguePending || dialogueDraft.trim() === '', children: dialoguePending ? t('photo.dialogue.pending') : t('photo.dialogue.send') })] })] })] }))] })] })] }), stories.length > 1 && (_jsx("nav", { className: css.memoryRail, "aria-label": t('photo.albumView'), children: stories.slice(0, DYNAMIC_LIMIT).map((story, index) => {
+                        const key = storyKey(story);
+                        return (_jsxs("button", { type: "button", "data-active": key === storyKey(active), "aria-current": key === storyKey(active) ? 'true' : undefined, "aria-label": `${t('photo.open')} · ${story.title}`, onClick: () => { openStory(story); }, children: [images.get(key) === undefined ? _jsx("span", { className: css.shimmer }) : _jsx("img", { src: images.get(key), alt: "" }), _jsx("span", { children: String(index + 1).padStart(2, '0') })] }, key));
+                    }) })), _jsx(Modal, { open: preview && activeImage !== undefined, title: t('photo.previewDialog'), closeLabel: t('photo.previewClose'), className: css.previewModal ?? '', contentClassName: css.previewModalContent ?? '', onClose: () => { setPreview(false); }, children: activeImage !== undefined && (_jsx("img", { className: css.previewImage, src: activeImage, alt: title || t('photo.scene') })) })] }));
     }
-    return (_jsxs("main", { className: css.album, "data-mind-garden-space": "photo-story", "data-photo-mode": "album", children: [_jsx("div", { className: css.aurora, "aria-hidden": "true" }), _jsxs("header", { className: css.albumHeader, children: [_jsxs("div", { children: [_jsx("h1", { children: t('photo.title') }), _jsx("p", { children: t('photo.subtitle') }), stories.length > 0 && _jsx("strong", { children: t('photo.count').replace('{count}', String(stories.length)) })] }), _jsxs("div", { className: css.headerActions, children: [_jsxs("div", { className: css.viewSwitch, role: "tablist", "aria-label": t('photo.albumView'), children: [_jsx("button", { type: "button", role: "tab", "aria-selected": view === 'classic', onClick: () => { setView('classic'); }, children: t('photo.classic') }), _jsx("button", { type: "button", role: "tab", "aria-selected": view === 'dynamic', onClick: () => { setView('dynamic'); }, children: t('photo.dynamic') })] }), _jsxs("button", { type: "button", className: css.upload, disabled: uploading, onClick: () => {
+    return (_jsxs("main", { className: css.album, style: { '--mg-photo-stage': `url("${PHOTO_MEMORY_STAGE_V5}")` }, "data-mind-garden-space": "photo-story", "data-photo-mode": "album", "data-empty": stories.length === 0, children: [_jsx("div", { className: css.aurora, "aria-hidden": "true" }), _jsxs("header", { className: css.albumHeader, children: [_jsxs("div", { children: [_jsx("h1", { children: t('photo.title') }), _jsx("p", { children: t('photo.subtitle') }), stories.length > 0 && _jsx("strong", { children: t('photo.count').replace('{count}', String(stories.length)) })] }), _jsxs("div", { className: css.headerActions, children: [stories.length > 0 && _jsx("div", { className: css.viewSwitch, role: "tablist", "aria-label": t('photo.albumView'), children: ALBUM_VIEWS.map(option => (_jsx("button", { type: "button", role: "tab", id: `mind-garden-photo-${option}-tab`, "aria-controls": `mind-garden-photo-${option}-panel`, "aria-selected": view === option, tabIndex: view === option ? 0 : -1, ref: (node) => { viewTabRefs.current[option] = node; }, onClick: () => { selectAlbumView(option); }, onKeyDown: (event) => { moveAlbumView(event, option); }, children: t(`photo.${option}`) }, option))) }), _jsxs("button", { type: "button", className: css.upload, disabled: uploading, onClick: () => {
                                     /* v8 ignore next -- React assigns the rendered input before user click handlers can run. */
                                     inputRef.current?.click();
-                                }, children: [_jsx(IconPlusOutline16, { size: 15 }), uploading ? t('photo.uploading') : t('photo.upload')] }), _jsx("input", { ref: inputRef, className: css.fileInput, type: "file", accept: "image/png,image/jpeg,image/webp,image/gif", multiple: true, onChange: (event) => { void chooseFiles(event); } })] })] }), _jsx("p", { className: css.uploadHint, children: t('photo.uploadHint') }), error && _jsxs("div", { className: css.error, role: "alert", children: [_jsx("span", { children: t('photo.error') }), _jsx("button", { type: "button", onClick: retryPhotoStories, children: t('photo.retry') })] }), loading ? (_jsx("div", { className: css.empty, role: "status", children: t('photo.loading') })) : stories.length === 0 ? (_jsxs("div", { className: css.empty, children: [_jsxs("div", { className: css.emptyCopy, children: [_jsx("span", { className: css.emptyGlyph, children: _jsx(PhotoStoryIcon, { size: 24 }) }), _jsx("h2", { children: t('photo.empty.title') }), _jsx("p", { children: t('photo.empty.body') }), _jsx("button", { type: "button", disabled: uploading, onClick: () => {
-                                    /* v8 ignore next -- React assigns the rendered input before user click handlers can run. */
-                                    inputRef.current?.click();
-                                }, children: t('photo.empty.action') })] }), _jsx("img", { className: css.emptyArtwork, src: PHOTO_STORY_EMPTY_WARM, alt: "" })] })) : view === 'classic' ? (_jsxs(_Fragment, { children: [_jsx("section", { className: css.grid, "aria-label": t('photo.albumView'), children: pageStories.map((story, index) => (_jsx(PhotoCard, { story: story, index: (page - 1) * PAGE_SIZE + index + 1, src: images.get(storyKey(story)), t: t, onOpen: openStory }, storyKey(story)))) }), _jsxs("nav", { className: css.pagination, "aria-label": t('photo.albumView'), children: [_jsx("button", { type: "button", disabled: page <= 1, onClick: () => { setPage(current => current - 1); }, children: t('photo.pagePrevious') }), _jsx("span", { children: t('photo.page').replace('{current}', String(page)).replace('{total}', String(pageCount)) }), _jsx("button", { type: "button", disabled: page >= pageCount, onClick: () => { setPage(current => current + 1); }, children: t('photo.pageNext') })] })] })) : (_jsxs("section", { className: css.dynamic, "aria-label": t('photo.albumView'), onPointerEnter: () => { setDynamicPointerActive(true); }, onPointerLeave: () => { setDynamicPointerActive(false); }, onPointerDown: startDynamicGesture, onPointerMove: moveDynamicGesture, onPointerUp: finishDynamicGesture, onPointerCancel: (event) => { finishDynamicGesture(event, true); }, onFocusCapture: () => { setDynamicFocusWithin(true); }, onBlurCapture: (event) => {
+                                }, children: [_jsx(IconPlusOutline16, { size: 15 }), uploading ? t('photo.uploading') : t('photo.upload')] }), _jsx("input", { ref: inputRef, className: css.fileInput, type: "file", accept: "image/png,image/jpeg,image/webp,image/gif", multiple: true, onChange: (event) => { void chooseFiles(event); } })] })] }), _jsx("p", { className: css.uploadHint, children: t('photo.uploadHint') }), errorKey !== null && _jsxs("div", { className: css.error, role: "alert", children: [_jsx("span", { children: t(errorKey) }), errorKey === 'photo.error.load' && _jsx("button", { type: "button", onClick: retryPhotoStories, children: t('photo.retry') })] }), loading ? (_jsx("div", { className: css.empty, role: "status", children: t('photo.loading') })) : stories.length === 0 ? (_jsx("div", { className: css.empty, children: _jsxs("div", { className: css.emptyCopy, children: [_jsx("h2", { children: t('photo.empty.title') }), _jsx("p", { children: t('photo.empty.body') }), _jsx("button", { type: "button", disabled: uploading, onClick: () => {
+                                /* v8 ignore next -- React assigns the rendered input before user click handlers can run. */
+                                inputRef.current?.click();
+                            }, children: t('photo.empty.action') })] }) })) : view === 'classic' ? (_jsxs("div", { id: "mind-garden-photo-classic-panel", role: "tabpanel", "aria-labelledby": "mind-garden-photo-classic-tab", children: [_jsx("section", { className: css.grid, "aria-label": t('photo.albumView'), children: pageStories.map((story, index) => (_jsx(PhotoCard, { story: story, index: (page - 1) * PAGE_SIZE + index + 1, src: images.get(storyKey(story)), t: t, onOpen: openStory }, storyKey(story)))) }), _jsxs("nav", { className: css.pagination, "aria-label": t('photo.albumView'), children: [_jsx("button", { type: "button", disabled: page <= 1, onClick: () => { setPage(current => current - 1); }, children: t('photo.pagePrevious') }), _jsx("span", { children: t('photo.page').replace('{current}', String(page)).replace('{total}', String(pageCount)) }), _jsx("button", { type: "button", disabled: page >= pageCount, onClick: () => { setPage(current => current + 1); }, children: t('photo.pageNext') })] })] })) : (_jsxs("section", { id: "mind-garden-photo-dynamic-panel", role: "tabpanel", "aria-labelledby": "mind-garden-photo-dynamic-tab", className: css.dynamic, "aria-label": t('photo.albumView'), onPointerEnter: () => { setDynamicPointerActive(true); }, onPointerLeave: () => { setDynamicPointerActive(false); }, onPointerDown: startDynamicGesture, onPointerMove: moveDynamicGesture, onPointerUp: finishDynamicGesture, onPointerCancel: (event) => { finishDynamicGesture(event, true); }, onFocusCapture: () => { setDynamicFocusWithin(true); }, onBlurCapture: (event) => {
                     if (!event.currentTarget.contains(event.relatedTarget))
                         setDynamicFocusWithin(false);
                 }, children: [_jsxs("div", { className: css.carouselControls, "aria-label": t('photo.carouselControls'), children: [_jsx("button", { type: "button", "aria-label": t('photo.carouselPrevious'), disabled: dynamicStories.length < 2, onClick: () => { moveDynamicFrame(-1); }, children: _jsx(IconChevronLeftOutline14, { size: 14 }) }), _jsx("span", { "aria-live": dynamicAutoPlay ? 'off' : 'polite', children: t('photo.carouselPosition')

@@ -15,7 +15,7 @@ import {
   type ImageAttachmentRef,
   type SaveImageAttachment,
 } from '@deepseek-ai/dsh-attachment'
-import { BlockAssembler, createUserMessage } from '@deepseek-ai/dsh-llm'
+import { BlockAssembler, createUserMessage, ReasoningEffortId } from '@deepseek-ai/dsh-llm'
 import type { FinishReason, GenerateOptions } from '@deepseek-ai/dsh-llm'
 import type {} from '@deepseek-ai/dsh-mind-garden/core'
 import type { JsonValue } from '@deepseek-ai/dsh-session/types'
@@ -101,6 +101,7 @@ const DEFAULT_MAX_STORIES_PER_LIST = 100
 const DEFAULT_MAX_OBSERVER_MESSAGE_BYTES = 4096
 const DEFAULT_MAX_OBSERVER_INPUT_BYTES = 24 * 1024
 const DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS = 1600
+const DEFAULT_MAX_CONCURRENT_OBSERVER_REQUESTS = 2
 const MAX_DIALOGUE_TURNS = 25
 
 /** Cordis plugin configuration. */
@@ -121,6 +122,8 @@ export interface Config {
   maxObserverInputBytes?: number
   /** Maximum provider output tokens accepted by one photo auxiliary request. */
   maxObserverOutputTokens?: number
+  /** Global bound for simultaneous photo-model calls; each story still admits only one. */
+  maxConcurrentObserverRequests?: number
   /** Optional default photo observer provider; configure with `observerModel`. */
   observerProvider?: string
   /** Optional default photo observer model; configure with `observerProvider`. */
@@ -136,6 +139,7 @@ interface ResolvedConfig {
   readonly maxObserverMessageBytes: number
   readonly maxObserverInputBytes: number
   readonly maxObserverOutputTokens: number
+  readonly maxConcurrentObserverRequests: number
   readonly observerProvider: string
   readonly observerModel: string
 }
@@ -179,6 +183,10 @@ function resolveConfig(config: Config): ResolvedConfig {
     maxObserverMessageBytes: positiveInteger(config.maxObserverMessageBytes, DEFAULT_MAX_OBSERVER_MESSAGE_BYTES),
     maxObserverInputBytes: positiveInteger(config.maxObserverInputBytes, DEFAULT_MAX_OBSERVER_INPUT_BYTES),
     maxObserverOutputTokens: positiveInteger(config.maxObserverOutputTokens, DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS),
+    maxConcurrentObserverRequests: positiveInteger(
+      config.maxConcurrentObserverRequests,
+      DEFAULT_MAX_CONCURRENT_OBSERVER_REQUESTS,
+    ),
     observerProvider,
     observerModel,
   }
@@ -300,13 +308,14 @@ export class MindGardenMediaService extends TypertRemoteService {
     maxObserverMessageBytes: s.number().default(DEFAULT_MAX_OBSERVER_MESSAGE_BYTES),
     maxObserverInputBytes: s.number().default(DEFAULT_MAX_OBSERVER_INPUT_BYTES),
     maxObserverOutputTokens: s.number().default(DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS),
+    maxConcurrentObserverRequests: s.number().default(DEFAULT_MAX_CONCURRENT_OBSERVER_REQUESTS),
     observerProvider: s.string().default(''),
     observerModel: s.string().default(''),
   })
 
   private readonly options: ResolvedConfig
   private operationTail: Promise<void> = Promise.resolve()
-  private modelOperation: Promise<unknown> | null = null
+  private readonly modelOperations = new Map<string, Promise<unknown>>()
   private readonly modelControllers = new Set<AbortController>()
   private admissionOpen = true
 
@@ -317,7 +326,9 @@ export class MindGardenMediaService extends TypertRemoteService {
     ctx.effect(() => async () => {
       this.admissionOpen = false
       for (const controller of this.modelControllers) controller.abort()
-      await this.modelOperation?.catch(() => undefined)
+      await Promise.all([...this.modelOperations.values()].map(async operation => {
+        await operation.catch(() => undefined)
+      }))
       await this.operationTail
     }, 'mind-garden-media.drain')
   }
@@ -442,14 +453,18 @@ export class MindGardenMediaService extends TypertRemoteService {
     if (!this.admissionOpen) return Promise.reject(new Error('mind-garden-media: service is disposing'))
     const access = this.accessFailure(agent)
     if (access !== null) return Promise.resolve(rejected(access))
-    if (this.modelOperation !== null) return Promise.resolve(rejected({ code: 'photo-model-in-progress' }))
+    const operationKey = `${agent.session.id}\0${String(request.id)}`
+    if (this.modelOperations.has(operationKey)
+      || this.modelOperations.size >= this.options.maxConcurrentObserverRequests) {
+      return Promise.resolve(rejected({ code: 'photo-model-in-progress' }))
+    }
     const controller = new AbortController()
     this.modelControllers.add(controller)
     const operation = this.runObservation(agent, request, controller.signal).finally(() => {
       this.modelControllers.delete(controller)
-      this.modelOperation = null
+      this.modelOperations.delete(operationKey)
     })
-    this.modelOperation = operation
+    this.modelOperations.set(operationKey, operation)
     return operation
   }
 
@@ -467,14 +482,18 @@ export class MindGardenMediaService extends TypertRemoteService {
     if (!this.admissionOpen) return Promise.reject(new Error('mind-garden-media: service is disposing'))
     const access = this.accessFailure(agent)
     if (access !== null) return Promise.resolve(rejected(access))
-    if (this.modelOperation !== null) return Promise.resolve(rejected({ code: 'photo-model-in-progress' }))
+    const operationKey = `${agent.session.id}\0${String(request.id)}`
+    if (this.modelOperations.has(operationKey)
+      || this.modelOperations.size >= this.options.maxConcurrentObserverRequests) {
+      return Promise.resolve(rejected({ code: 'photo-model-in-progress' }))
+    }
     const controller = new AbortController()
     this.modelControllers.add(controller)
     const operation = this.runDialogue(agent, request, controller.signal).finally(() => {
       this.modelControllers.delete(controller)
-      this.modelOperation = null
+      this.modelOperations.delete(operationKey)
     })
-    this.modelOperation = operation
+    this.modelOperations.set(operationKey, operation)
     return operation
   }
 
@@ -658,7 +677,10 @@ export class MindGardenMediaService extends TypertRemoteService {
       }
       throw error
     }
-    const envelope = buildPhotoObservationEnvelope(this.options.maxObserverInputBytes)
+    const envelope = buildPhotoObservationEnvelope(
+      this.options.maxObserverInputBytes,
+      request.locale ?? 'zh-CN',
+    )
     if (envelope === null) {
       throw new MediaBusinessError({ code: 'photo-input-too-large', maxBytes: this.options.maxObserverInputBytes })
     }
@@ -799,6 +821,7 @@ export class MindGardenMediaService extends TypertRemoteService {
       content,
       quickReplyKind,
       this.options.maxObserverInputBytes,
+      request.locale ?? 'zh-CN',
     )
     if (envelope === null) {
       throw new MediaBusinessError({ code: 'photo-input-too-large', maxBytes: this.options.maxObserverInputBytes })
@@ -850,6 +873,10 @@ export class MindGardenMediaService extends TypertRemoteService {
     const options: GenerateOptions = {
       provider: prepared.run.provider,
       model: prepared.run.model,
+      ...(prepared.run.provider === 'deepseek-official'
+        && prepared.run.model === 'deepseek-v4-flash-vision-exp'
+        ? { reasoningEffort: ReasoningEffortId('off') }
+        : {}),
       system: prepared.envelope.system,
       messages: [createUserMessage({ content, source: { kind: 'plugin', plugin: name } })],
       temperature: kind === 'observation' ? 0.2 : 0.45,

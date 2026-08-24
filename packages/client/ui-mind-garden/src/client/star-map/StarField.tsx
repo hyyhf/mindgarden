@@ -620,7 +620,20 @@ export function StarField({
 }) {
   const [host, setHost] = useState<HTMLDivElement | null>(null)
   const [failed, setFailed] = useState(false)
+  const [systemReducedMotion, setSystemReducedMotion] = useState(
+    () => typeof window.matchMedia === 'function'
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
   const [hovered, setHovered] = useState<{ readonly node: GardenStarNode; readonly x: number; readonly y: number } | null>(null)
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => { setSystemReducedMotion(query.matches) }
+    update()
+    query.addEventListener?.('change', update)
+    return () => { query.removeEventListener?.('change', update) }
+  }, [])
 
   useEffect(() => {
     if (host === null) return
@@ -629,7 +642,7 @@ export function StarField({
       return mountGardenStarField(
         host,
         model,
-        reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+        reducedMotion || systemReducedMotion,
         selectedId,
         onSelect,
         (id, x, y) => {
@@ -641,7 +654,7 @@ export function StarField({
       host.replaceChildren()
       setFailed(true)
     }
-  }, [host, model, onSelect, reducedMotion, selectedId])
+  }, [host, model, onSelect, reducedMotion, selectedId, systemReducedMotion])
 
   return (
     <div className={css.scene} data-render-state={failed ? 'fallback' : 'ready'}>

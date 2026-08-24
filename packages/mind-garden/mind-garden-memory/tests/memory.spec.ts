@@ -6,7 +6,7 @@ import LlmRuntime, {
   type GenerateOptions,
   type StreamChunk,
 } from '@deepseek-ai/dsh-llm'
-import SessionStore, { Session, SessionId } from '@deepseek-ai/dsh-session'
+import SessionStore, { Session, SessionId, type JsonValue } from '@deepseek-ai/dsh-session'
 import Storage from '@deepseek-ai/dsh-storage'
 import { DomainFacility } from '@deepseek-ai/dsh-storage-domain'
 import MindGardenVault, {
@@ -17,6 +17,8 @@ import MindGardenMemory, {
   storedExtractionRunSchema,
   storedMemorySchema,
   type Config,
+  type MindGardenMemoryId,
+  type MindGardenMemoryVersion,
 } from '@deepseek-ai/dsh-mind-garden/memory'
 import AgentRegistry, { agentEvents, type Agent, type PreStepDecision } from '@deepseek-ai/dsh-agent'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
@@ -512,7 +514,14 @@ describe('Mind Garden memory service', () => {
     await expect(ctx.mindGardenMemory.delete(agent, {
       id: latest.value.id,
       ifVersion: latest.value.version,
-    })).resolves.toEqual({ ok: true, value: { absent: true } })
+    })).resolves.toEqual({ ok: true, value: {
+      absent: true,
+      memoryRecordRemoved: true,
+      deletionTombstoneRecorded: true,
+      extractionRunsRedacted: 0,
+      sessionHistory: 'retained-by-host',
+      providerCopies: 'provider-controlled',
+    } })
     await expect(ctx.mindGardenMemory.delete(agent, {
       id: rejectedProposal.value.id,
       ifVersion: rejectedProposal.value.version,
@@ -524,7 +533,14 @@ describe('Mind Garden memory service', () => {
     await expect(ctx.mindGardenMemory.delete(agent, {
       id: latest.value.id,
       ifVersion: latest.value.version,
-    })).resolves.toEqual({ ok: true, value: { absent: true } })
+    })).resolves.toEqual({ ok: true, value: {
+      absent: true,
+      memoryRecordRemoved: false,
+      deletionTombstoneRecorded: true,
+      extractionRunsRedacted: 0,
+      sessionHistory: 'retained-by-host',
+      providerCopies: 'provider-controlled',
+    } })
 
     const listed = await ctx.mindGardenMemory.list(agent)
     expect(listed).toMatchObject({ ok: true, value: { items: [{ status: 'rejected' }] } })
@@ -560,6 +576,91 @@ describe('Mind Garden memory service', () => {
     await expect(ctx.mindGardenMemory.update(agent, {
       id: local.value.id, ifVersion: local.value.version, reason: 'too late',
     })).resolves.toMatchObject({ ok: false, error: { code: 'invalid-transition', status: 'expired' } })
+    await ctx.fiber.dispose()
+  })
+
+  it('redacts extraction-plan plaintext when its candidate memory is deleted', async () => {
+    const { ctx, makeAgent } = await serviceHarness()
+    const agent = makeAgent('memory-delete-extraction-copy')
+    const runId = '10000000-0000-4000-8000-000000000081'
+    const candidate = storedMemorySchema.parse({
+      recordType: 'memory',
+      formatVersion: 1,
+      id: '20000000-0000-4000-8000-000000000081',
+      version: '30000000-0000-4000-8000-000000000081',
+      status: 'candidate',
+      kind: 'support-preference',
+      sensitivity: 'normal',
+      content: 'Please listen before offering a plan.',
+      reason: 'This preference should be removable.',
+      recallPolicy: 'never',
+      sources: [{ sessionId: agent.id }],
+      proposalOrigin: 'model-extraction',
+      confidence: 0.9,
+      importance: 0.9,
+      extractionRunId: runId,
+      revisions: [],
+      createdAt: 1,
+      updatedAt: 1,
+    })
+    const run = storedExtractionRunSchema.parse({
+      recordType: 'extraction-run',
+      formatVersion: 1,
+      id: runId,
+      sessionId: agent.id,
+      trigger: 'manual',
+      status: 'completed',
+      provider: 'fixture',
+      model: 'fixture',
+      system: 'safe system policy',
+      prompt: JSON.stringify({ transcript: candidate.content }),
+      sourceMessageIds: [],
+      comparedMemoryIds: [],
+      rawOutput: JSON.stringify({ memories: [{ content: candidate.content }] }),
+      candidates: [candidate],
+      createdAt: 1,
+      updatedAt: 1,
+    })
+    await ctx.mindGardenVault.put(
+      'memories',
+      MindGardenVaultRecordId(candidate.id),
+      candidate as unknown as JsonValue,
+    )
+    await ctx.mindGardenVault.put(
+      'memories',
+      MindGardenVaultRecordId(run.id),
+      run as unknown as JsonValue,
+    )
+
+    await expect(ctx.mindGardenMemory.delete(agent, {
+      id: candidate.id as MindGardenMemoryId,
+      ifVersion: candidate.version as MindGardenMemoryVersion,
+    })).resolves.toEqual({ ok: true, value: {
+      absent: true,
+      memoryRecordRemoved: true,
+      deletionTombstoneRecorded: true,
+      extractionRunsRedacted: 1,
+      sessionHistory: 'retained-by-host',
+      providerCopies: 'provider-controlled',
+    } })
+    const encryptedRecords = await ctx.mindGardenVault.entries('memories')
+    expect(JSON.stringify(encryptedRecords)).not.toContain(candidate.content)
+    expect(encryptedRecords).toHaveLength(2)
+    expect(encryptedRecords.map(([, value]) => value)).toContainEqual(expect.objectContaining({
+      recordType: 'memory-tombstone',
+      id: candidate.id,
+    }))
+    const redactedRun = encryptedRecords.find(([, value]) => (
+      typeof value === 'object'
+      && value !== null
+      && !Array.isArray(value)
+      && value.recordType === 'extraction-run'
+    ))?.[1]
+    expect(storedExtractionRunSchema.parse(redactedRun)).toMatchObject({
+      candidates: [],
+      prompt: '{"redacted":true,"reason":"memory-deleted"}',
+      rawOutput: '{"redacted":true,"reason":"memory-deleted"}',
+    })
     await ctx.fiber.dispose()
   })
 
@@ -955,6 +1056,47 @@ describe('Mind Garden memory service', () => {
     const physical = JSON.stringify(pool.media.get('mind_garden_vault'))
     expect(physical).not.toContain('short pause before advice')
     expect(physical).not.toContain('This may change how')
+    await ctx.fiber.dispose()
+  })
+
+  it('bounds settled extraction audit retention without deleting live recovery state', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(45_000)
+    const { ctx, makeAgent } = await serviceHarness({ maxExtractionRunEntries: 2 })
+    const agent = makeAgent('memory-extraction-retention')
+    const human = createUserMessage({
+      content: [{ type: 'text', text: 'I prefer a short pause before advice.' }],
+      source: { kind: 'user' },
+    })
+    agent.session.append('user/message', human, { surfaceOp: 'append' })
+    ctx.llm.registerAdapter(['retention'], new ScriptedExtractionAdapter([
+      response('{"memories":[]}'),
+      response('{"memories":[]}'),
+      response('{"memories":[]}'),
+    ]))
+
+    const runIds: string[] = []
+    for (let index = 0; index < 3; index += 1) {
+      vi.setSystemTime(45_000 + index)
+      const result = await ctx.mindGardenMemory.extract(agent, {
+        provider: 'retention',
+        model: 'retention-model',
+      })
+      if (!result.ok) throw new Error('retention extraction failed')
+      runIds.push(result.value.run.id)
+    }
+
+    const settled = (await ctx.mindGardenVault.entries('memories')).flatMap(([, value]) => {
+      const parsed = storedExtractionRunSchema.safeParse(value)
+      return parsed.success ? [parsed.data] : []
+    })
+    expect(settled).toHaveLength(2)
+    expect(settled.map(run => run.id)).not.toContain(runIds[0])
+    expect(settled.map(run => run.id)).toEqual(expect.arrayContaining(runIds.slice(1)))
+    await expect(ctx.mindGardenMemory.latestExtraction(agent)).resolves.toMatchObject({
+      ok: true,
+      value: { run: { id: runIds[2], status: 'completed' } },
+    })
     await ctx.fiber.dispose()
   })
 

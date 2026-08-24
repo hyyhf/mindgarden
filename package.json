@@ -14,6 +14,10 @@
       "types": "./lib/types/invariant.d.ts",
       "default": "./lib/invariant.js"
     },
+    "./typert": {
+      "types": "./lib/typert.host.d.ts",
+      "default": "./lib/typert.host.js"
+    },
     "./cordis.patch.yml": "./cordis.patch.yml",
     "./client": {
       "types": "./packages/client/ui-mind-garden/lib/types/client/index.d.ts",
@@ -188,12 +192,20 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "assets/*.png",
     "cordis.patch.yml",
     "lib/index.js",
     "lib/invariant.js",
+    "lib/typert.host.js",
+    "lib/typert.host.d.ts",
     "lib/types/**/*.d.ts",
-    "packages/**",
+    "packages/client/ui-mind-garden/package.json",
+    "packages/client/ui-mind-garden/lib/index.js",
+    "packages/client/ui-mind-garden/lib/invariant.js",
+    "packages/client/ui-mind-garden/lib/client.js",
+    "packages/client/ui-mind-garden/lib/types/**/*.d.ts",
+    "packages/mind-garden/*/package.json",
+    "packages/mind-garden/*/lib/**",
+    "packages/mind-garden/mind-garden-skills/skills/**",
     "README.zh.md"
   ],
   "license": "MIT",
@@ -242,10 +254,12 @@
     "@deepseek-ai/dsh-storage": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-storage-domain": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-timeout": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-typert-registry": "^0.1.0-rc.8",
     "@deepseek-ai/dsh-typert-protocol": "^0.1.0-rc.8",
     "zod": "^4.4.3"
   },
   "scripts": {
+    "build": "node scripts/build-root.mjs",
     "check": "node scripts/verify-release.mjs",
     "test": "node --test tests/release-layout.test.mjs"
   },

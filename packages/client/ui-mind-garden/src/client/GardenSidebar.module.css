@@ -464,11 +464,11 @@
     gap: 4px;
     padding: 5px 1px;
     border-radius: 9px;
-    font-size: 10px;
+    font-size: 11px;
   }
   .region > svg { width: 17px; height: 17px; flex-basis: 17px; }
   .region::after { inset: auto 12px -4px; }
-  .utilities { inset: 62px 7px auto auto; }
+  .utilities { z-index: 2; inset: 62px 7px auto auto; }
   .settings { width: 40px; min-height: 40px; }
   .spaceNavigation {
     min-height: 48px;
@@ -488,3 +488,19 @@
 .space[data-active='true']::after { display: none; }
 .spaceNavigation { border-block-start: 0; background: rgb(241 228 209 / 24%); }
 .space[data-active='true'] { color: var(--mg-indigo, #405f87); background: rgb(255 252 246 / 72%); box-shadow: 0 8px 22px rgb(74 54 37 / 7%); }
+
+@media (max-width: 620px) {
+  .space,
+  .settings,
+  .utility,
+  .constellationStatus { min-height: 44px; }
+
+  .utility,
+  .constellationStatus,
+  .settings { width: 44px; }
+
+  .spaceNavigation {
+    padding-inline-end: 54px;
+    mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 22px), transparent 100%);
+  }
+}

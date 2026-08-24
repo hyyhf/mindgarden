@@ -98,6 +98,7 @@ let MindGardenService = (() => {
                 throw new MindGardenError('Mind Garden activation requires a blank session', 'MIND_GARDEN_SESSION_NOT_BLANK');
             }
             const now = Date.now();
+            const accepted = request.modelDisclosureAccepted ?? false;
             return this.commit(session, cell, 'activate', {
                 revision: 1,
                 activatedAt: now,
@@ -106,8 +107,12 @@ let MindGardenService = (() => {
                 supportIntent: request.supportIntent ?? 'auto',
                 privacy: request.privacy,
                 contractVersion: MIND_GARDEN_CONTRACT_VERSION,
-                modelDisclosureAccepted: request.modelDisclosureAccepted ?? false,
-            });
+                modelDisclosureAccepted: accepted,
+            }, accepted ? {
+                acceptedAt: now,
+                locale: request.disclosureLocale ?? 'zh-CN',
+                contractVersion: MIND_GARDEN_CONTRACT_VERSION,
+            } : null);
         }
         /**
          * Change the durable dialogue posture with compare-and-set semantics.
@@ -145,13 +150,18 @@ let MindGardenService = (() => {
          * @param expectedRevision - caller's current revision.
          * @returns current state when already accepted, otherwise the next revision.
          */
-        acceptModelDisclosure(session, expectedRevision) {
+        acceptModelDisclosure(session, expectedRevision, locale = 'zh-CN') {
             const cell = this.sync(session);
             const current = this.requireCurrent(cell);
             if (current.modelDisclosureAccepted)
                 return { ...current };
             this.assertRevision(current, expectedRevision);
-            return this.commit(session, cell, 'accept-disclosure', this.next(current, { modelDisclosureAccepted: true }));
+            const next = this.next(current, { modelDisclosureAccepted: true });
+            return this.commit(session, cell, 'accept-disclosure', next, {
+                acceptedAt: next.updatedAt,
+                locale,
+                contractVersion: next.contractVersion,
+            });
         }
         /**
          * Activate Mind Garden through the generated Remote boundary.
@@ -191,9 +201,9 @@ let MindGardenService = (() => {
          * @param expectedRevision - caller's current projected revision.
          * @returns the resulting state.
          */
-        remoteExportAcceptModelDisclosure(agent, expectedRevision) {
+        remoteExportAcceptModelDisclosure(agent, expectedRevision, locale = 'zh-CN') {
             this.assertLive(agent);
-            return this.acceptModelDisclosure(agent.session, expectedRevision);
+            return this.acceptModelDisclosure(agent.session, expectedRevision, locale);
         }
         /** Enforce exact live-Agent identity before accepting a Remote mutation. */
         assertLive(agent) {
@@ -237,11 +247,12 @@ let MindGardenService = (() => {
             };
         }
         /** Append one whole-state event and advance the strict cell. */
-        commit(session, cell, operation, state) {
+        commit(session, cell, operation, state, disclosureAcceptance = null) {
             const data = {
                 version: MIND_GARDEN_STATE_VERSION,
                 operation,
                 state,
+                disclosureAcceptance,
             };
             const event = session.append('mind-garden/session-state', data);
             cell.state = applyMindGardenEvent(cell.state, event);

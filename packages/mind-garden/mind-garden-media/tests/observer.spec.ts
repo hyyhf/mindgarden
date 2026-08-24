@@ -49,11 +49,12 @@ const story = (turns: MindGardenPhotoStory['turns'] = []): MindGardenPhotoStory 
 
 describe('Mind Garden photo observer contracts', () => {
   it('builds a bounded image envelope without story copy or attachment identifiers', () => {
-    const envelope = buildPhotoObservationEnvelope(24 * 1024)
+    const envelope = buildPhotoObservationEnvelope(24 * 1024, 'zh-CN')
     expect(envelope).not.toBeNull()
     expect(envelope?.prompt).toContain('separately attached private image')
     expect(envelope?.prompt).not.toContain('sha256:')
     expect(envelope?.prompt).not.toContain('窗边')
+    expect(JSON.parse(envelope!.prompt)).toMatchObject({ responseLanguage: 'zh-CN' })
     expect(buildPhotoObservationEnvelope(1)).toBeNull()
   })
 
@@ -83,10 +84,14 @@ describe('Mind Garden photo observer contracts', () => {
         createdAt: index + 1,
       }),
     )
-    const envelope = buildPhotoDialogueEnvelope(story(turns), '这是傍晚。', 'remember', 24 * 1024)
+    const envelope = buildPhotoDialogueEnvelope(story(turns), '这是傍晚。', 'remember', 24 * 1024, 'zh-CN')
     expect(envelope).not.toBeNull()
     expect(envelope?.prompt).toContain('model-observation-unconfirmed')
-    const prompt = JSON.parse(envelope?.prompt ?? '{}') as { priorTurns?: { content: string }[] }
+    const prompt = JSON.parse(envelope?.prompt ?? '{}') as {
+      priorTurns?: { content: string }[]
+      responseLanguage?: string
+    }
+    expect(prompt.responseLanguage).toBe('zh-CN')
     expect(prompt.priorTurns?.map(turn => turn.content)).toEqual([
       'turn-2', 'turn-3', 'turn-4', 'turn-5', 'turn-6',
       'turn-7', 'turn-8', 'turn-9', 'turn-10', 'turn-11',

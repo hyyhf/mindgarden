@@ -37,6 +37,7 @@ function dockActions(ctx, sessionId) {
             supportIntent: 'auto',
             privacy: 'durable',
             modelDisclosureAccepted: true,
+            disclosureLocale: ctx.locale.getLocale().active === 'en' ? 'en' : 'zh-CN',
         }),
         onSelectMode: async (expectedRevision, mode) => await ctx.remote.mindGarden.selectMode(sessionId, expectedRevision, mode),
         onSelectSupportIntent: async (expectedRevision, supportIntent) => await ctx.remote.mindGarden.selectSupportIntent(sessionId, expectedRevision, supportIntent),
@@ -170,12 +171,14 @@ function viewActions(ctx, sessionId) {
         onObservePhotoStory: async (story) => await settle(ctx.remote.mindGardenMedia.observePhotoStory(sessionId, {
             id: story.id,
             ifVersion: story.version,
+            locale: ctx.locale.getLocale().active === 'en' ? 'en' : 'zh-CN',
         })),
         onContinuePhotoStory: async (story, content, quickReplyKind = '') => await settle(ctx.remote.mindGardenMedia.continuePhotoStory(sessionId, {
             id: story.id,
             ifVersion: story.version,
             content,
             quickReplyKind,
+            locale: ctx.locale.getLocale().active === 'en' ? 'en' : 'zh-CN',
         })),
         onUpdatePhotoStory: async (story, title, note, particleConfig) => await settle(ctx.remote.mindGardenMedia.updatePhotoStory(sessionId, {
             id: story.id,
@@ -363,8 +366,8 @@ function viewActions(ctx, sessionId) {
 export function apply(ctx) {
     ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'ui-mind-garden: dictionaries');
     const t = ctx.locale.bind(NS);
-    ctx.slots.inject('conversation.input.dock', () => ctx.slots.register({
-        name: 'conversation.input.dock',
+    ctx.slots.inject('conversation.input.left', () => ctx.slots.register({
+        name: 'conversation.input.left',
         id: 'mind-garden',
         order: 5,
         locale: NS,

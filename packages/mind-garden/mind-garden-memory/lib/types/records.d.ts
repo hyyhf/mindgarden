@@ -146,9 +146,9 @@ export declare const storedExtractionRunSchema: z.ZodObject<{
     }>>;
     status: z.ZodEnum<{
         running: "running";
-        committing: "committing";
         completed: "completed";
         failed: "failed";
+        committing: "committing";
     }>;
     provider: z.ZodString;
     model: z.ZodString;
@@ -307,6 +307,13 @@ export declare const storedAutomationStateSchema: z.ZodObject<{
     }>>;
     updatedAt: z.ZodNumber;
 }, z.core.$strict>;
+/** Content-free deletion marker kept under the removed memory's original id. */
+export declare const storedMemoryTombstoneSchema: z.ZodObject<{
+    recordType: z.ZodLiteral<"memory-tombstone">;
+    formatVersion: z.ZodLiteral<1>;
+    id: z.ZodUUID;
+    deletedAt: z.ZodNumber;
+}, z.core.$strict>;
 /** Authenticated plaintext for one encrypted memory record. */
 export type StoredMemory = z.infer<typeof storedMemorySchema>;
 /** Authenticated plaintext for one encrypted retrieval audit. */
@@ -317,8 +324,10 @@ export type StoredExtractionRun = z.infer<typeof storedExtractionRunSchema>;
 export type StoredAutomationPolicy = z.infer<typeof storedAutomationPolicySchema>;
 /** Authenticated plaintext for one automatic-extraction progress cursor. */
 export type StoredAutomationState = z.infer<typeof storedAutomationStateSchema>;
+/** Authenticated marker that prevents an older backup from reviving a deleted memory. */
+export type StoredMemoryTombstone = z.infer<typeof storedMemoryTombstoneSchema>;
 /** Complete version-one plaintext vocabulary accepted from the vault. */
-export type StoredMindGardenMemoryRecord = StoredMemory | StoredAudit | StoredExtractionRun | StoredAutomationPolicy | StoredAutomationState;
+export type StoredMindGardenMemoryRecord = StoredMemory | StoredAudit | StoredExtractionRun | StoredAutomationPolicy | StoredAutomationState | StoredMemoryTombstone;
 /**
  * Decode one authenticated plaintext record without trusting its producer.
  * @param value - Plaintext returned after vault authentication.

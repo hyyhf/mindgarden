@@ -221,6 +221,16 @@ export interface MindGardenMemoryDeleteRequest {
 /** Stable absent postcondition for deletion and safe retries. */
 export interface MindGardenMemoryDeleteValue {
     readonly absent: true;
+    /** Whether the primary encrypted memory record existed and was removed. */
+    readonly memoryRecordRemoved: boolean;
+    /** Whether a content-free marker now prevents an older backup from reviving this id. */
+    readonly deletionTombstoneRecorded: boolean;
+    /** Number of encrypted extraction-run copies whose prompt/output plan was redacted. */
+    readonly extractionRunsRedacted: number;
+    /** Host Session history is governed by the configured Harness provider. */
+    readonly sessionHistory: 'retained-by-host';
+    /** Copies already processed by a model provider remain provider-controlled. */
+    readonly providerCopies: 'provider-controlled';
 }
 /** Profile-wide list in first-creation order. */
 export interface MindGardenMemoryListValue {

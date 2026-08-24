@@ -29,9 +29,14 @@ import type {
 } from './types.ts'
 
 export type * from './types.ts'
-export { mindGardenSafetyResources, MIND_GARDEN_RESOURCE_FALLBACK } from './resources.ts'
+export {
+  mindGardenSafetyResources,
+  MIND_GARDEN_RESOURCE_FALLBACK,
+  MIND_GARDEN_RESOURCE_FALLBACK_EN,
+} from './resources.ts'
 export {
   assessMindGardenInput,
+  detectMindGardenSafetyLocale,
   normalizeMindGardenSafetyText,
   recoverMindGardenSafetyState,
 } from './classifier.ts'
@@ -237,7 +242,10 @@ function guardedModelStream(
       const reason = limitExceeded ? 'buffer-limit' : 'policy-violation'
       await recordOutputGuard(ctx, agent, step, reason, violations)
       signal?.throwIfAborted()
-      yield* textStream(renderMindGardenGuardReplacement(reason, violations), buffered.usage)
+      yield* textStream(
+        renderMindGardenGuardReplacement(reason, violations, assessment?.locale),
+        buffered.usage,
+      )
       return
     }
     yield* chunks

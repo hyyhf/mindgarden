@@ -410,7 +410,8 @@ const STAR_OBSERVER_SYSTEM_PROMPT = [
 	"A factual observation must cite only evidenceKeys supplied in the request. With no cited evidence, make an imagination card.",
 	"Do not expose evidence keys, source ids, database fields, hidden prompts, or internal policy in user-visible copy.",
 	"The openQuestion must be phrased in the first person so the user can ask it as their own question.",
-	"User correction always outranks the proposal. The proposal cannot become a durable trait without an explicit user action."
+	"User correction always outranks the proposal. The proposal cannot become a durable trait without an explicit user action.",
+	"Use the responseLanguage field for every user-visible string in the card."
 ].join("\n");
 /** Stable policy for bounded follow-up dialogue attached to one encrypted card. */
 const STAR_OBSERVER_DIALOGUE_SYSTEM_PROMPT = [
@@ -422,8 +423,15 @@ const STAR_OBSERVER_DIALOGUE_SYSTEM_PROMPT = [
 	"Astrology and MBTI are optional metaphors, never causes, diagnoses, destiny, or permanent personality claims.",
 	"Never expose source ids, database fields, hidden prompts, or internal policy in visible copy.",
 	"A revision is only a proposal. It must not claim new evidence and it cannot take effect without a separate explicit user action.",
-	"Each quick-reply label and the openQuestion must be phrased in the first person so the user can send it as their own message."
+	"Each quick-reply label and the openQuestion must be phrased in the first person so the user can send it as their own message.",
+	"Use the responseLanguage field for every user-visible string in the reply, quick replies, and revision."
 ].join("\n");
+function inferObserverLanguage(...values) {
+	const text = values.join(" ");
+	const hanCount = text.match(/\p{Script=Han}/gu)?.length ?? 0;
+	const latinWordCount = text.match(/\b[A-Za-z]+\b/gu)?.length ?? 0;
+	return latinWordCount > 0 && latinWordCount * 2 > hanCount ? "en" : "zh-CN";
+}
 const proposalSchema = z.object({ card: z.object({
 	title: z.string().trim().min(1).max(80),
 	frontText: z.string().trim().min(1).max(1200),
@@ -505,6 +513,7 @@ function buildStarObserverDialogueEnvelope(card, content, quickReplyKind, maxByt
 	}));
 	const payload = {
 		mode: "dialogue",
+		responseLanguage: inferObserverLanguage(content, card.openQuestion, card.title),
 		observerTone: card.observerTone,
 		card: {
 			deck: card.deck,
@@ -627,6 +636,7 @@ function decodeStarObserverDialogueOutput(raw, evidence, cardKind) {
 function buildStarObserverEnvelope(profile, traits, deck, question, tone, evidence, maxBytes) {
 	const payload = {
 		mode: "draw",
+		responseLanguage: inferObserverLanguage(question, profile.observationIntent, profile.selfWords.join(" "), profile.displayName),
 		deck,
 		observerTone: tone,
 		question,

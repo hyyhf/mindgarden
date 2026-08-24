@@ -1,5 +1,6 @@
-# Mind Garden is a Web-profile add-on. Core and dialogue stay on the Host
-# plane; the browser row is discovered from its dsh.client manifest.
+# Mind Garden is a Web-profile add-on. Business services stay on the Host
+# plane; the root row exposes the combined Typert and browser faces required
+# by the installable single-package build.
 - insert:
     - id: mind-garden-vault
       name: '@deepseek-ai/dsh-mind-garden/vault'
@@ -34,5 +35,5 @@
     - id: mind-garden-portability
       name: '@deepseek-ai/dsh-mind-garden/portability'
 
-    - id: ui-mind-garden
-      name: '@deepseek-ai/dsh-mind-garden/ui'
+    - id: mind-garden-standalone
+      name: '@deepseek-ai/dsh-mind-garden'

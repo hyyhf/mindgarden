@@ -324,9 +324,9 @@ export declare const storedPeriodReviewSchema: z.ZodObject<{
     sources: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
         id: z.ZodUUID;
         sourceType: z.ZodEnum<{
-            concern: "concern";
             checkin: "checkin";
             journal: "journal";
+            concern: "concern";
             contemplation: "contemplation";
             principle: "principle";
             experiment: "experiment";
