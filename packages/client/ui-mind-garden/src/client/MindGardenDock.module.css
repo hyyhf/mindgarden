@@ -107,6 +107,8 @@
     linear-gradient(145deg, color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 8%, transparent), transparent 44%),
     color-mix(in srgb, var(--dsw-alias-bg-layer-1, #fffdf9) 96%, #fffdf9);
   box-shadow: var(--dsw-shadow-lv3);
+  --dsh-scrollbar-thumb: var(--dsw-alias-scrollbar-bg-l2);
+  --dsh-scrollbar-thumb-hover: var(--dsw-alias-scrollbar-hover-l2);
   scrollbar-color: var(--dsw-alias-scrollbar-bg-l2) transparent;
   animation: posturePopoverIn 150ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }

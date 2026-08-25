@@ -219,6 +219,10 @@ dsh plugin --profile web add .
 
 组合包的 [`cordis.patch.yml`](cordis.patch.yml) 会通过标准 profile 层机制插入全部 Host 与 Web 配置行。
 
+### 源码权威与发行同步
+
+生产权威源码位于相邻 DeepSeek Harness checkout 的 `packages/mind-garden/*` 与 `packages/client/ui-mind-garden`。本仓库是可独立安装的单包发行投影；根 manifest、Loader patch、聚合导出与编译产物属于发行层覆盖。从本仓库的 Git checkout 运行 `npm run check:harness-source`，可以验证全部发行源码、测试、技能和已批准 UI 素材在完成确定性的包名投影后与 Harness 正式生产包一致；维护者仅在明确需要刷新发行投影时运行 `npm run sync:harness`。同步器不会读取 `ui-mind-garden-qa`，不会修改 Harness，也不会删除发行仓库中的资源。
+
 ## 第一次使用
 
 1. 在 Harness 模型设置中为普通陪伴对话配置提供方和模型。提供方凭据继续由 Harness 管理，心智庭院没有 API Key 输入框；显式照片观察使用组合包指定的 `deepseek-official` / `deepseek-v4-flash-vision-exp` 路由。
@@ -304,7 +308,7 @@ npm test
 npm run check
 ```
 
-本次修订的发布资格检查还会把仅含 216 个文件的运行时包打包并安装进空目录，解析全部 47 个公开导出，实际导入 12 个 Host face，通过 379 项聚焦 Harness 测试，加载真实 Web 入口，并从生产 UI 重新录制 18 张桌面状态与 18 张紧凑状态。随后又在同一个全新 Session 中用 `deepseek-v4-flash` 与 `deepseek-v4-flash-vision-exp` 完成独立的真实模型旅程：断言插件持久记录的提供方与模型来源，经 Harness 附件上传并观察真实图片，打开已验证原图，完成首次观星仪式，并在无浏览器错误的情况下检查 390px 布局。这些是有记录的发布检查，不会冒充当前 GitHub Actions 已经强制执行的覆盖，详见[完善执行计划](MIND_GARDEN_IMPROVEMENT_PLAN.md)。
+本次修订的发布资格检查还会把仅含 216 个文件的运行时包打包并安装进空目录，解析全部 47 个公开导出，实际导入 12 个 Host face，通过 461 项聚焦 Harness 测试，加载真实 Web 入口，并从生产 UI 重新录制 18 张桌面状态与 18 张紧凑状态。随后又在同一个全新 Session 中用 `deepseek-v4-flash` 与 `deepseek-v4-flash-vision-exp` 完成独立的真实模型旅程：断言插件持久记录的提供方与模型来源，经 Harness 附件上传并观察真实图片，打开已验证原图，完成首次观星仪式，并在无浏览器错误的情况下检查 390px 布局。这些是有记录的发布检查，不会冒充当前 GitHub Actions 已经强制执行的覆盖，详见[完善执行计划](MIND_GARDEN_IMPROVEMENT_PLAN.md)。
 
 ## 提供方与安全行为
 

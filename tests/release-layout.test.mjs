@@ -82,3 +82,10 @@ test('the approved shipping UI resources cannot be removed or silently replaced'
     assert.equal(actualHash, expectedHash, `${fileName} changed; preserve the approved resource and add a new version instead`)
   }
 })
+
+test('the standalone release exposes an explicit Harness source-authority gate', () => {
+  assert.equal(manifest.scripts['sync:harness'], 'node scripts/sync-from-harness.mjs --write')
+  assert.equal(manifest.scripts['check:harness-source'], 'node scripts/sync-from-harness.mjs --check')
+  const syncScript = readFileSync(resolve(root, 'scripts/sync-from-harness.mjs'), 'utf8')
+  assert.doesNotMatch(syncScript, /ui-mind-garden-qa/)
+})

@@ -219,6 +219,10 @@ dsh plugin --profile web add .
 
 The bundle's [`cordis.patch.yml`](cordis.patch.yml) inserts every Host and Web row through the normal profile layer mechanism.
 
+### Source authority and release sync
+
+The production source of record lives in the adjacent DeepSeek Harness checkout under `packages/mind-garden/*` and `packages/client/ui-mind-garden`. This repository is the installable, single-package release projection; its root manifest, Loader patch, consolidated exports, and compiled artifacts are release-owned overlays. From a Git checkout of this repository, `npm run check:harness-source` proves that every shipped source, test, skill, and approved UI asset matches the production Harness packages after the deterministic package-name projection. Maintainers deliberately run `npm run sync:harness` to refresh that projection. The sync never reads `ui-mind-garden-qa`, never edits Harness, and never deletes destination resources.
+
 ## First session
 
 1. Configure the desired provider and model for ordinary companion dialogue in Harness Models. Provider credentials remain owned by Harness; Mind Garden has no API-key field. Explicit Photo Story observation uses the bundle's `deepseek-official` / `deepseek-v4-flash-vision-exp` route.
@@ -304,7 +308,7 @@ npm test
 npm run check
 ```
 
-For this revision, release qualification also packed the 216-file runtime bundle, installed it into an empty directory, resolved all 47 public exports, imported all 12 Host faces, passed 379 focused Harness tests, loaded the real Web entrypoint, and recaptured 18 desktop plus 18 compact production-UI states. A separate live-provider journey then exercised `deepseek-v4-flash` and `deepseek-v4-flash-vision-exp` in one fresh Session, asserted the provider/model provenance stored by the plugin, uploaded and observed a real image through Harness attachments, opened its verified original, completed the constellation ritual, and checked the 390 px composition without browser errors. These are recorded release checks rather than claims about coverage already enforced by GitHub Actions; see the [improvement execution plan](MIND_GARDEN_IMPROVEMENT_PLAN.md).
+For this revision, release qualification also packed the 216-file runtime bundle, installed it into an empty directory, resolved all 47 public exports, imported all 12 Host faces, passed 461 focused Harness tests, loaded the real Web entrypoint, and recaptured 18 desktop plus 18 compact production-UI states. A separate live-provider journey then exercised `deepseek-v4-flash` and `deepseek-v4-flash-vision-exp` in one fresh Session, asserted the provider/model provenance stored by the plugin, uploaded and observed a real image through Harness attachments, opened its verified original, completed the constellation ritual, and checked the 390 px composition without browser errors. These are recorded release checks rather than claims about coverage already enforced by GitHub Actions; see the [improvement execution plan](MIND_GARDEN_IMPROVEMENT_PLAN.md).
 
 ## Provider and safety behavior
 

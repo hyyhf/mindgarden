@@ -260,6 +260,8 @@
   },
   "scripts": {
     "build": "node scripts/build-root.mjs",
+    "sync:harness": "node scripts/sync-from-harness.mjs --write",
+    "check:harness-source": "node scripts/sync-from-harness.mjs --check",
     "check": "node scripts/verify-release.mjs",
     "test": "node --test tests/release-layout.test.mjs"
   },

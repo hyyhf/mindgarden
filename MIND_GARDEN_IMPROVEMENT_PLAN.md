@@ -2,23 +2,23 @@
 
 Date: 2026-08-25
 Status: in progress
-Scope: the standalone `@deepseek-ai/dsh-mind-garden` plugin repository only
+Scope: Mind Garden production packages in DeepSeek Harness, projected into the standalone `@deepseek-ai/dsh-mind-garden` release repository
 
 ## Objective
 
 Move Mind Garden from a feature-rich reflection plugin toward a dependable companion Agent without weakening any of its nine spaces, user-governed records, Photo Story particle and ripple experience, Constellation 3D experience, backup and recovery flows, or explicit handoff to the resident Harness conversation.
 
-The work must preserve Mind Garden as an installable DeepSeek Harness plugin. It may use documented Cordis services, events, Remotes, client slots, providers, and package exports, but it must not modify DeepSeek Harness source code, fork the Harness conversation loop, create a second composer, or take ownership of Harness models, Sessions, credentials, attachments, or storage providers.
+The work must preserve Mind Garden as an installable DeepSeek Harness plugin. Mind Garden-owned packages, bundle fixtures, and integration tests inside the Harness checkout are the production source of record; the standalone repository is a deterministic release projection. The work may use documented Cordis services, events, Remotes, client slots, providers, and package exports, but it must not modify unrelated Harness framework source, fork the Harness conversation loop, create a second composer, or take ownership of Harness models, Sessions, credentials, attachments, or storage providers.
 
 ## 本轮执行状态
 
 本文件是持续更新的真实执行清单：`[x]` 代表已经实现并通过对应测试，`[ ]` 代表仍需后续完成，不把“已经开始”写成“已经完成”。当前批次已经完成安全与信任阻断项、首次授权、记忆删除与防复活、照片故事并发隔离、照片故事/星图语言约束、星图数据披露，以及第一轮移动端和无障碍加固。对话策略现已明确让当前消息和显式纠正压过历史材料，并优先呈现同等授权条件下的 `support-preference` 记忆。照片故事与星图观察台的关键正文、输入与操作字号已提高，Unicode 伪图标已替换为现有图标体系。照片粒子、水波纹、原图回退、功能栏、九个空间、星图 WebGL 与 Harness 唯一对话输入框均保留。
 
-验证使用独立插件源码覆盖到一个隔离的、来自 Harness `HEAD` 的干净验证树；原始 `deepseek-harness` 工作树没有被写入。独立插件根入口现已通过标准 Cordis Loader 与聚合 Typert face 接入 Harness，客户端注册也使用同一个根包身份，不再依赖子路径被 Loader 特殊发现。当前 npm 发布包已经收窄到 216 个文件，压缩后约 3.36 MB、解包约 8.5 MB；它已在空目录完成安装，47 个公开导出均可解析，12 个 Host face 已实际导入。桌面与 390 × 844 手机端各 18 张生产 UI 交互图已从隔离 Harness 重新录制并抽检。另一个全新 Session 已完成 `deepseek-v4-flash` 陪伴对话与 `deepseek-v4-flash-vision-exp` 照片观察的真实在线旅程，并保存对话、问题落地、粒子重构、已验证原图、星图仪式和手机端结果图；测试同时断言了持久事件中的提供方与模型来源。
+权威工作流已经重建：Harness 正式 `ui-mind-garden` 与十个 Host 插件目录承载生产源码，独立仓库通过 `sync-from-harness.mjs` 做确定性包名投影，并以只读门禁阻止源码漂移。重复的 QA 包不会进入同步、构建、截图或发行路径；其获批准图片已完整进入正式生产包并受哈希防删测试保护。独立插件根入口通过标准 Cordis Loader 与聚合 Typert face 接入 Harness，客户端注册使用同一个发行根包身份。当前 npm 发布包已经收窄到 216 个文件，压缩后约 3.36 MB、解包约 8.5 MB；它已在空目录完成安装，47 个公开导出均可解析，12 个 Host face 已实际导入。桌面与 390 × 844 手机端各 18 张生产 UI 交互图已从隔离 Harness 重新录制并抽检。另一个全新 Session 已完成 `deepseek-v4-flash` 陪伴对话与 `deepseek-v4-flash-vision-exp` 照片观察的真实在线旅程，并保存对话、问题落地、粒子重构、已验证原图、星图仪式和手机端结果图；测试同时断言了持久事件中的提供方与模型来源。
 
 ## Non-negotiable boundaries
 
-- Modify only this standalone plugin repository.
+- Modify only Mind Garden-owned package, bundle, test, and release-projection paths; leave unrelated Harness framework source unchanged.
 - Keep all nine existing spaces and their current records and actions.
 - Keep Photo Story particles, verified original-image fallback, ripple/cinematic interaction, and its existing control bar.
 - Keep Constellation WebGL, semantic node list, correction flow, evidence provenance, and reduced-motion fallback.
@@ -30,9 +30,11 @@ The work must preserve Mind Garden as an installable DeepSeek Harness plugin. It
 
 ## Phase 0 — source and release authority
 
-- [x] Restore the standalone GitHub plugin repository as the only write target for this work.
-- [x] Leave the existing `deepseek-harness` worktree unchanged.
-- [x] Remove duplicated QA-source authority from the screenshot release path; the gallery installs the canonical production package and its root client registration only.
+- [x] Establish `packages/mind-garden/*` and `packages/client/ui-mind-garden` in Harness as the production source authority.
+- [x] Keep `hyyhf/mindgarden` as the only GitHub push and standalone installation target.
+- [x] Leave unrelated DeepSeek Harness framework source unchanged.
+- [x] Add deterministic Harness-to-standalone source sync and a read-only drift gate.
+- [x] Remove duplicated QA-source authority from sync, build, screenshot, and release paths; preserve its approved resources in the production package.
 - [x] Add a reproducible runtime dependency lock and frozen root install path.
 - [x] Build source, run package tests, and rebuild committed runtime artifacts from the canonical standalone tree.
 - [ ] Make the standalone development checkout self-contained for source typecheck and browser rebundling instead of borrowing Harness workspace build presets in the isolated verification tree.
