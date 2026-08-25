@@ -430,8 +430,9 @@
 .memoryRail button:hover, .memoryRail button[data-active='true'] { outline-color: #e6b96f; opacity: 1; transform: translateY(-2px); }
 .memoryRail button > span:last-child { position: absolute; right: 5px; bottom: 4px; color: #fff1dc; font-size: 7px; text-shadow: 0 2px 8px #000; }
 
-.previewModal {
+.previewModal.previewModal {
   width: min(920px, calc(100vw - 40px));
+  max-width: calc(100vw - 40px);
   max-height: calc(100dvh - 40px);
   padding-block-end: 0;
   border-color: rgb(239 189 112 / 28%);
@@ -442,9 +443,9 @@
   --dsw-alias-label-secondary: #e5d2b8;
   --dsw-alias-interactive-bg-hover: rgb(239 189 112 / 14%);
 }
-.previewModalContent { width: 100%; max-height: calc(100dvh - 40px); overflow: hidden; background: #0c0b0b; }
+.previewModalContent { width: 100%; max-height: calc(100dvh - 40px); overflow: hidden; color: #fff7e9; background: #0c0b0b; }
 .previewModalContent > :last-child { align-items: center; margin-block-start: 0; padding: 0 20px 20px; }
-.previewImage { display: block; width: auto; max-width: 100%; max-height: calc(100dvh - 120px); border-radius: 10px; object-fit: contain; background: #090909; }
+.previewImage.previewImage { display: block; width: 100%; height: auto; max-width: 100%; max-height: calc(100dvh - 120px); border-radius: 10px; object-fit: contain; background: #090909; }
 
 .album button:focus-visible,
 .story button:focus-visible,

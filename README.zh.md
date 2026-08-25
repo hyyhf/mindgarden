@@ -35,7 +35,14 @@ dsh web
 
 ## 一段真实旅程，不是静态样稿
 
-下面的连续结果来自同一个全新 Harness Web Session。用户进入心智庭院，向 `deepseek-v4-flash` 发送反思消息，通过界面保存开放问题，完成首次观星仪式，切换到紧凑布局，准入一张照片，再请 `deepseek-v4-flash-vision-exp` 观察它。测试会先断言持久事件中记录的提供方和模型，再保存这些截图。
+下面的连续结果来自同一个全新 Harness Web Session。用户进入心智庭院，向 `deepseek-v4-flash` 发送反思消息，通过界面保存开放问题，完成首次观星仪式，切换到紧凑布局，准入一张照片，请 `deepseek-v4-flash-vision-exp` 观察它，再从粒子工具栏打开已验证原图。测试会先断言持久事件中记录的提供方和模型，再保存这些截图。
+
+| 2026-08-25 本轮真实证据 | 结果 |
+|---|---|
+| 生产装配 | 只安装正式 `ui-mind-garden`；图册与真实模型测试均不使用 QA fork。 |
+| 模拟用户历史 | 九个空间都通过真实 Host API 写入记录：签到、日记、心事、开放问题、实验与观察、确认记忆、沉思与原则、周期回望、照片故事和星图底稿。 |
+| 在线模型来源 | 陪伴对话为 `deepseek-official` / `deepseek-v4-flash`；照片观察为 `deepseek-official` / `deepseek-v4-flash-vision-exp`。 |
+| 浏览器证据 | 18 张桌面状态 + 18 张紧凑状态 + 6 张真实模型旅程 = **42 张本轮重新录制的截图**。 |
 
 <table>
   <tr>
@@ -98,7 +105,7 @@ dsh web
 
 ## 完整运行图册
 
-下方所有桌面图都来自真实的 DeepSeek Harness Web 装配。确定性的图册场景通过已安装的 Host 服务写入仓库自有的虚构记录，让生成的演示照片经过 Harness 附件准入，打开可操作的 Client 空间，再捕获最终渲染结果；其中没有个人材料或静态 UI 拼图。
+下方所有桌面图都来自真实的 DeepSeek Harness Web 装配。确定性的图册场景让同一位虚构用户依次留下签到、日记、带提醒心事、开放问题、现实实验与观察、已确认陪伴偏好、沉思与已采纳原则、周回望、准入照片和星图底稿；每条记录都先由已安装的 Host 服务接受，再打开 Client 空间并截图。其中没有个人材料、DOM 假数据或静态 UI 拼图。
 
 ### 进入与边界说明
 
@@ -183,6 +190,51 @@ dsh web
 </p>
 
 同一个插件会进入 Harness 紧凑壳层：导航收起、密集控制简化、Canvas 工作量受限，同时保留 Harness 固定输入区。姿态浮层会测量视口，并根据空间在触发按钮上方或下方展开，不会在移动端形成宽控制条。开启减少动态效果或缺少 WebGL 时，记录仍可通过列表与静态图片使用。集成图册还会在 `assets/mind-garden-demo-mobile-*.png` 下生成紧凑入口、签到、心事、日历、记忆、生活议题、回望、哲学和设置状态。
+
+<details>
+<summary><strong>展开其余 18 张交互结果</strong> · 所有列表态与紧凑操作结果都可逐张核对</summary>
+
+#### 其余桌面记录状态
+
+<table>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-concerns.png" alt="含虚构用户定时记录的桌面心事列表"><br><strong>已安排的心事</strong></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-memory.png" alt="含虚构用户确认记录的桌面记忆列表"><br><strong>受治理记忆</strong></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-growth.png" alt="含现实实验与观察的桌面生活议题列表"><br><strong>已有观察的实验</strong></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-philosophy.png" alt="含沉思与原则记录的桌面哲学列表"><br><strong>沉思与原则</strong></td>
+  </tr>
+</table>
+
+#### 完整紧凑端记录轨迹
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-entry.png" width="23%" alt="紧凑端进入披露">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-today-practice.png" width="23%" alt="紧凑端已完成每日签到">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-concerns.png" width="23%" alt="紧凑端心事列表">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-concerns-detail.png" width="23%" alt="紧凑端心事详情">
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-calendar.png" width="23%" alt="紧凑端日历投影">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-photo-library.png" width="23%" alt="紧凑端已准入照片藏馆">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-memory.png" width="23%" alt="紧凑端记忆列表">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-memory-detail.png" width="23%" alt="紧凑端已确认记忆详情">
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-growth.png" width="23%" alt="紧凑端生活议题列表">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-growth-detail.png" width="23%" alt="紧凑端现实实验观察">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-life-review.png" width="23%" alt="紧凑端已保存人生回望">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-philosophy.png" width="23%" alt="紧凑端哲学列表">
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-philosophy-detail.png" width="31%" alt="紧凑端已采纳原则详情">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-settings.png" width="31%" alt="紧凑端庭院设置">
+</p>
+
+以上每一帧都在相应 Host 写入成功后捕获，不是桌面截图的另一套静态样稿。
+
+</details>
 
 ## 安装
 
@@ -308,7 +360,7 @@ npm test
 npm run check
 ```
 
-本次修订的发布资格检查还会把仅含 216 个文件的运行时包打包并安装进空目录，解析全部 47 个公开导出，实际导入 12 个 Host face，通过 461 项聚焦 Harness 测试，加载真实 Web 入口，并从生产 UI 重新录制 18 张桌面状态与 18 张紧凑状态。随后又在同一个全新 Session 中用 `deepseek-v4-flash` 与 `deepseek-v4-flash-vision-exp` 完成独立的真实模型旅程：断言插件持久记录的提供方与模型来源，经 Harness 附件上传并观察真实图片，打开已验证原图，完成首次观星仪式，并在无浏览器错误的情况下检查 390px 布局。这些是有记录的发布检查，不会冒充当前 GitHub Actions 已经强制执行的覆盖，详见[完善执行计划](MIND_GARDEN_IMPROVEMENT_PLAN.md)。
+本次修订的发布资格检查还会把仅含 216 个文件的运行时包安装进空目录，解析 47 个可执行公开导出，实际导入 12 个 Host face，通过 461 项聚焦 Harness 测试和 2 项组合包装配测试，完成全部生产包类型检查，并构建 UI 与 9 个 Host bundle。随后，完整 replay 工作流、桌面与 390 × 844 图册、全新真实模型旅程共 8 项生产 Web E2E 全部通过；本轮重新录制全部 42 张 README 截图，断言持久事件中的提供方与模型来源，经 Harness 附件上传并观察真实图片，打开已验证原图，完成首次观星仪式，并拒绝浏览器错误与警告。这些是有记录的发布检查，不会冒充当前 GitHub Actions 已经强制执行的覆盖，详见[完善执行计划](MIND_GARDEN_IMPROVEMENT_PLAN.md)。
 
 ## 提供方与安全行为
 

@@ -35,7 +35,14 @@ Requires DeepSeek Harness `0.1.1-rc.1` or newer, `pnpm` on `PATH`, and a configu
 
 ## A real journey, not a mockup
 
-The sequence below comes from one fresh Harness Web session. A user enters Mind Garden, sends a reflective message to `deepseek-v4-flash`, saves an open question, completes the constellation ritual, switches to the compact layout, admits a photograph, and asks `deepseek-v4-flash-vision-exp` to observe it. The tests assert the provider and model recorded in the durable events before saving these screenshots.
+The sequence below comes from one fresh Harness Web session. A user enters Mind Garden, sends a reflective message to `deepseek-v4-flash`, saves an open question, completes the constellation ritual, switches to the compact layout, admits a photograph, asks `deepseek-v4-flash-vision-exp` to observe it, and opens the verified original from the particle toolbar. The tests assert the provider and model recorded in the durable events before saving these screenshots.
+
+| Proof captured on 2026-08-25 | Result |
+|---|---|
+| Production composition | Canonical `ui-mind-garden`; the QA fork is not installed by the gallery or live-provider tests. |
+| Simulated user history | Nine spaces populated through real Host APIs: check-in, journal, concern, question, experiment and observation, confirmed memory, contemplation and principle, period review, photo story, and constellation profile. |
+| Live model provenance | `deepseek-official` / `deepseek-v4-flash` for companion dialogue and `deepseek-official` / `deepseek-v4-flash-vision-exp` for the grounded photo observation. |
+| Browser evidence | 18 desktop states + 18 compact states + 6 live-provider states = **42 freshly recorded screenshots**. |
 
 <table>
   <tr>
@@ -98,7 +105,7 @@ The persistent garden rail exposes nine spaces:
 
 ## The complete live gallery
 
-Every desktop image below comes from the real DeepSeek Harness Web composition. The deterministic gallery scenario writes fictional, repository-owned records through the installed Host services, admits the generated demo photograph through Harness attachments, opens the working Client space, and captures the rendered result. No personal material or static UI mockup is used.
+Every desktop image below comes from the real DeepSeek Harness Web composition. The deterministic gallery scenario follows one fictional user through a check-in, journal, scheduled concern, open question, observed reality experiment, confirmed support preference, contemplation, adopted principle, saved weekly review, admitted photograph, and completed constellation profile. Each record is accepted by the installed Host service before the Client space is opened and captured. No personal material, DOM fixture, or static UI mockup is used.
 
 ### Entry and disclosure
 
@@ -183,6 +190,51 @@ Settings provide a second path to the same Session posture and support intent wh
 </p>
 
 The same plugin participates in the compact Harness shell. Navigation collapses, dense controls simplify, canvas work is bounded, and the fixed Harness composer remains available. The posture panel measures the viewport and flips above or below its trigger instead of creating a wide mobile bar. Reduced-motion and non-WebGL paths keep records usable without the visual scene. The integration gallery also captures compact entry, check-in, concerns, calendar, memory, growth, review, philosophy, and settings states under `assets/mind-garden-demo-mobile-*.png`.
+
+<details>
+<summary><strong>Open the remaining 18 interaction frames</strong> · every list state and compact result is inspectable</summary>
+
+#### Additional desktop record states
+
+<table>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-concerns.png" alt="Desktop concerns list with a scheduled fictional user record"><br><strong>Scheduled concerns</strong></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-memory.png" alt="Desktop governed-memory list with a confirmed fictional user record"><br><strong>Governed memory</strong></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-growth.png" alt="Desktop growth list with an observed reality experiment"><br><strong>Observed experiment</strong></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-philosophy.png" alt="Desktop philosophy list with contemplation and principle records"><br><strong>Contemplation and principle</strong></td>
+  </tr>
+</table>
+
+#### Complete compact record trail
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-entry.png" width="23%" alt="Compact entry disclosure">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-today-practice.png" width="23%" alt="Compact completed daily check-in">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-concerns.png" width="23%" alt="Compact concerns list">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-concerns-detail.png" width="23%" alt="Compact concern detail">
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-calendar.png" width="23%" alt="Compact calendar projection">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-photo-library.png" width="23%" alt="Compact admitted-photo library">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-memory.png" width="23%" alt="Compact memory list">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-memory-detail.png" width="23%" alt="Compact confirmed-memory detail">
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-growth.png" width="23%" alt="Compact growth list">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-growth-detail.png" width="23%" alt="Compact experiment observation">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-life-review.png" width="23%" alt="Compact saved life review">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-philosophy.png" width="23%" alt="Compact philosophy list">
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-philosophy-detail.png" width="31%" alt="Compact adopted-principle detail">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-demo-mobile-settings.png" width="31%" alt="Compact garden settings">
+</p>
+
+All frames above were captured after the corresponding Host write succeeded; they are not alternate mockups of the desktop screens.
+
+</details>
 
 ## Install
 
@@ -308,7 +360,7 @@ npm test
 npm run check
 ```
 
-For this revision, release qualification also packed the 216-file runtime bundle, installed it into an empty directory, resolved all 47 public exports, imported all 12 Host faces, passed 461 focused Harness tests, loaded the real Web entrypoint, and recaptured 18 desktop plus 18 compact production-UI states. A separate live-provider journey then exercised `deepseek-v4-flash` and `deepseek-v4-flash-vision-exp` in one fresh Session, asserted the provider/model provenance stored by the plugin, uploaded and observed a real image through Harness attachments, opened its verified original, completed the constellation ritual, and checked the 390 px composition without browser errors. These are recorded release checks rather than claims about coverage already enforced by GitHub Actions; see the [improvement execution plan](MIND_GARDEN_IMPROVEMENT_PLAN.md).
+For this revision, release qualification also packed the 216-file runtime bundle, installed it into an empty directory, resolved all 47 executable public exports, imported all 12 Host faces, passed 461 focused Harness tests and 2 bundle-composition tests, typechecked all production packages, and built the UI plus 9 Host bundles. Eight production-Web E2E cases then passed across the complete replay workflow, desktop and 390 × 844 galleries, and a fresh live-provider journey. The run recaptured all 42 README screenshots, asserted stored provider/model provenance, uploaded and observed a real image through Harness attachments, opened its verified original, completed the constellation ritual, and rejected browser errors and warnings. These are recorded release checks rather than claims about coverage already enforced by GitHub Actions; see the [improvement execution plan](MIND_GARDEN_IMPROVEMENT_PLAN.md).
 
 ## Provider and safety behavior
 
