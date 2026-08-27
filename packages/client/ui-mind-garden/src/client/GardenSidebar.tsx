@@ -30,10 +30,10 @@ interface GardenNavRegion {
   readonly id: 'now' | 'inner-life' | 'time' | 'keepsakes' | 'star-garden'
   readonly label: MindGardenKey
   readonly icon: ComponentType<GardenIconProps>
-  readonly items: readonly GardenNavItem[]
+  readonly items: readonly [GardenNavItem, ...GardenNavItem[]]
 }
 
-const NAV_REGIONS: readonly GardenNavRegion[] = [
+const NAV_REGIONS: readonly [GardenNavRegion, ...GardenNavRegion[]] = [
   {
     id: 'now',
     label: 'space.region.now',
@@ -101,7 +101,7 @@ export function GardenSidebar({
   onToggle,
   t,
 }: GardenSidebarProps) {
-  const activeRegion = NAV_REGIONS.find(region => region.items.some(item => item.id === activeSpace)) ?? NAV_REGIONS[0]!
+  const activeRegion = NAV_REGIONS.find(region => region.items.some(item => item.id === activeSpace)) ?? NAV_REGIONS[0]
 
   return (
     <header className={css.sidebar} data-compact={collapsed} aria-label={t('space.navigation')}>
@@ -122,7 +122,7 @@ export function GardenSidebar({
                 data-active={active}
                 key={region.id}
                 aria-pressed={active}
-                onClick={() => { onSelect(region.items[0]!.id) }}
+                onClick={() => { onSelect(region.items[0].id) }}
               >
                 <RegionIcon size={17} />
                 <span>{t(region.label)}</span>

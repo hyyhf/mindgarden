@@ -6,6 +6,7 @@ import { calendarStamp } from "../calendar.js";
 import { PHOTO_MEMORY_STAGE_V5 } from "../generated-assets.js";
 import { applyPhotoParticlePreset } from "./presets.js";
 import { PhotoParticleScene } from "./PhotoParticleScene.js";
+import { preparePhotoUpload } from "./photo-upload.js";
 import css from './PhotoStorySpace.module.css';
 const PAGE_SIZE = 9;
 const DYNAMIC_LIMIT = 10;
@@ -47,8 +48,23 @@ function observationErrorKey(code) {
         return 'photo.error.load';
     return 'photo.error.observe';
 }
+function uploadErrorKey(code, reason) {
+    if (reason === 'IMAGE_TOO_LARGE')
+        return 'photo.error.upload.size';
+    if (reason === 'IMAGE_DIMENSION_TOO_LARGE' || reason === 'IMAGE_TOO_MANY_PIXELS') {
+        return 'photo.error.upload.dimension';
+    }
+    if (reason === 'UNSUPPORTED_MEDIA_TYPE' || reason === 'INVALID_IMAGE' || reason === 'IMAGE_TYPE_MISMATCH') {
+        return 'photo.error.upload.format';
+    }
+    if (reason === 'BROWSER_TRANSCODE_FAILED')
+        return 'photo.error.upload.browser';
+    if (code === 'attachment-unavailable' || code === 'unavailable')
+        return 'photo.error.upload.unavailable';
+    return 'photo.error.upload';
+}
 /** Render the encrypted photo-story album and its parameterized particle editor. */
-export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory, onReadPhotoStory, onObservePhotoStory, onContinuePhotoStory, onUpdatePhotoStory, onDeletePhotoStory, t, }) {
+export function PhotoStorySpace({ today, imageLimits, onListPhotoStories, onCreatePhotoStory, onReadPhotoStory, onObservePhotoStory, onContinuePhotoStory, onUpdatePhotoStory, onDeletePhotoStory, t, }) {
     const [stories, setStories] = useState([]);
     const [images, setImages] = useState(new Map());
     const [active, setActive] = useState(null);
@@ -65,6 +81,7 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
     const [uploading, setUploading] = useState(false);
     const [pending, setPending] = useState(false);
     const [errorKey, setErrorKey] = useState(null);
+    const [uploadNoticeKey, setUploadNoticeKey] = useState(null);
     const [saved, setSaved] = useState(false);
     const [deleteArmed, setDeleteArmed] = useState(false);
     const [preview, setPreview] = useState(false);
@@ -200,16 +217,28 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
             return;
         setUploading(true);
         setErrorKey(null);
+        setUploadNoticeKey(null);
         try {
-            let rejected = false;
+            let failure = null;
+            let optimized = false;
             for (const file of files) {
-                const result = await onCreatePhotoStory(file, calendarStamp(today));
+                const prepared = imageLimits === undefined
+                    ? { ok: true, file, optimized: false }
+                    : await preparePhotoUpload(file, imageLimits);
+                if (!prepared.ok) {
+                    failure ??= uploadErrorKey('attachment-rejected', prepared.reason);
+                    continue;
+                }
+                optimized ||= prepared.optimized;
+                const result = await onCreatePhotoStory(prepared.file, calendarStamp(today));
                 if (!result.ok)
-                    rejected = true;
+                    failure ??= uploadErrorKey(result.code, result.reason);
             }
             await refresh();
-            if (rejected)
-                setErrorKey('photo.error.upload');
+            if (optimized)
+                setUploadNoticeKey('photo.upload.optimized');
+            if (failure !== null)
+                setErrorKey(failure);
         }
         catch {
             setErrorKey('photo.error.upload');
@@ -411,7 +440,7 @@ export function PhotoStorySpace({ today, onListPhotoStories, onCreatePhotoStory,
     return (_jsxs("main", { className: css.album, style: { '--mg-photo-stage': `url("${PHOTO_MEMORY_STAGE_V5}")` }, "data-mind-garden-space": "photo-story", "data-photo-mode": "album", "data-empty": stories.length === 0, children: [_jsx("div", { className: css.aurora, "aria-hidden": "true" }), _jsxs("header", { className: css.albumHeader, children: [_jsxs("div", { children: [_jsx("h1", { children: t('photo.title') }), _jsx("p", { children: t('photo.subtitle') }), stories.length > 0 && _jsx("strong", { children: t('photo.count').replace('{count}', String(stories.length)) })] }), _jsxs("div", { className: css.headerActions, children: [stories.length > 0 && _jsx("div", { className: css.viewSwitch, role: "tablist", "aria-label": t('photo.albumView'), children: ALBUM_VIEWS.map(option => (_jsx("button", { type: "button", role: "tab", id: `mind-garden-photo-${option}-tab`, "aria-controls": `mind-garden-photo-${option}-panel`, "aria-selected": view === option, tabIndex: view === option ? 0 : -1, ref: (node) => { viewTabRefs.current[option] = node; }, onClick: () => { selectAlbumView(option); }, onKeyDown: (event) => { moveAlbumView(event, option); }, children: t(`photo.${option}`) }, option))) }), _jsxs("button", { type: "button", className: css.upload, disabled: uploading, onClick: () => {
                                     /* v8 ignore next -- React assigns the rendered input before user click handlers can run. */
                                     inputRef.current?.click();
-                                }, children: [_jsx(IconPlusOutline16, { size: 15 }), uploading ? t('photo.uploading') : t('photo.upload')] }), _jsx("input", { ref: inputRef, className: css.fileInput, type: "file", accept: "image/png,image/jpeg,image/webp,image/gif", multiple: true, onChange: (event) => { void chooseFiles(event); } })] })] }), _jsx("p", { className: css.uploadHint, children: t('photo.uploadHint') }), errorKey !== null && _jsxs("div", { className: css.error, role: "alert", children: [_jsx("span", { children: t(errorKey) }), errorKey === 'photo.error.load' && _jsx("button", { type: "button", onClick: retryPhotoStories, children: t('photo.retry') })] }), loading ? (_jsx("div", { className: css.empty, role: "status", children: t('photo.loading') })) : stories.length === 0 ? (_jsx("div", { className: css.empty, children: _jsxs("div", { className: css.emptyCopy, children: [_jsx("h2", { children: t('photo.empty.title') }), _jsx("p", { children: t('photo.empty.body') }), _jsx("button", { type: "button", disabled: uploading, onClick: () => {
+                                }, children: [_jsx(IconPlusOutline16, { size: 15 }), uploading ? t('photo.uploading') : t('photo.upload')] }), _jsx("input", { ref: inputRef, className: css.fileInput, type: "file", accept: "image/png,image/jpeg,image/webp,image/gif", multiple: true, onChange: (event) => { void chooseFiles(event); } })] })] }), _jsx("p", { className: css.uploadHint, children: t('photo.uploadHint') }), uploadNoticeKey !== null && _jsx("p", { className: css.uploadNotice, role: "status", children: t(uploadNoticeKey) }), errorKey !== null && _jsxs("div", { className: css.error, role: "alert", children: [_jsx("span", { children: t(errorKey) }), errorKey === 'photo.error.load' && _jsx("button", { type: "button", onClick: retryPhotoStories, children: t('photo.retry') })] }), loading ? (_jsx("div", { className: css.empty, role: "status", children: t('photo.loading') })) : stories.length === 0 ? (_jsx("div", { className: css.empty, children: _jsxs("div", { className: css.emptyCopy, children: [_jsx("h2", { children: t('photo.empty.title') }), _jsx("p", { children: t('photo.empty.body') }), _jsx("button", { type: "button", disabled: uploading, onClick: () => {
                                 /* v8 ignore next -- React assigns the rendered input before user click handlers can run. */
                                 inputRef.current?.click();
                             }, children: t('photo.empty.action') })] }) })) : view === 'classic' ? (_jsxs("div", { id: "mind-garden-photo-classic-panel", role: "tabpanel", "aria-labelledby": "mind-garden-photo-classic-tab", children: [_jsx("section", { className: css.grid, "aria-label": t('photo.albumView'), children: pageStories.map((story, index) => (_jsx(PhotoCard, { story: story, index: (page - 1) * PAGE_SIZE + index + 1, src: images.get(storyKey(story)), t: t, onOpen: openStory }, storyKey(story)))) }), _jsxs("nav", { className: css.pagination, "aria-label": t('photo.albumView'), children: [_jsx("button", { type: "button", disabled: page <= 1, onClick: () => { setPage(current => current - 1); }, children: t('photo.pagePrevious') }), _jsx("span", { children: t('photo.page').replace('{current}', String(page)).replace('{total}', String(pageCount)) }), _jsx("button", { type: "button", disabled: page >= pageCount, onClick: () => { setPage(current => current + 1); }, children: t('photo.pageNext') })] })] })) : (_jsxs("section", { id: "mind-garden-photo-dynamic-panel", role: "tabpanel", "aria-labelledby": "mind-garden-photo-dynamic-tab", className: css.dynamic, "aria-label": t('photo.albumView'), onPointerEnter: () => { setDynamicPointerActive(true); }, onPointerLeave: () => { setDynamicPointerActive(false); }, onPointerDown: startDynamicGesture, onPointerMove: moveDynamicGesture, onPointerUp: finishDynamicGesture, onPointerCancel: (event) => { finishDynamicGesture(event, true); }, onFocusCapture: () => { setDynamicFocusWithin(true); }, onBlurCapture: (event) => {

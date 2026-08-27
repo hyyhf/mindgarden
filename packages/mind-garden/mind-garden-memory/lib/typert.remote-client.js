@@ -142,6 +142,11 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_delete_result$schema 
   'ok': z.literal(true).readonly(),
   'value': z.object({
   'absent': z.literal(true).readonly(),
+  'memoryRecordRemoved': z.boolean().readonly(),
+  'deletionTombstoneRecorded': z.boolean().readonly(),
+  'extractionRunsRedacted': z.number().readonly(),
+  'sessionHistory': z.literal("retained-by-host").readonly(),
+  'providerCopies': z.literal("provider-controlled").readonly(),
 }).readonly(),
 }), z.object({
   'ok': z.literal(false).readonly(),
@@ -934,7 +939,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryAutomationPolicyResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_automationPolicy_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":873,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":884,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/confirm',
@@ -974,7 +979,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryConfirmResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_confirm_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":557,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":568,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/delete',
@@ -1014,7 +1019,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryDeleteResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_delete_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1015,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1026,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/extract',
@@ -1054,7 +1059,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryExtractResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_extract_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":948,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":959,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/latestAudit',
@@ -1084,7 +1089,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryLatestAuditResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_latestAudit_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1042,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1094,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/latestExtraction',
@@ -1114,7 +1119,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryLatestExtractionResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_latestExtraction_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":991,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1002,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/list',
@@ -1144,7 +1149,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryListResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_list_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":489,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":500,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/listRevisions',
@@ -1184,7 +1189,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryListRevisionsResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_listRevisions_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":849,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":860,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/propose',
@@ -1224,7 +1229,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryProposeResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_propose_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":512,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":523,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/reject',
@@ -1264,7 +1269,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryRejectResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_reject_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":681,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":692,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/resolveRelationship',
@@ -1304,7 +1309,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryResolveRelationshipResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_resolveRelationship_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":724,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":735,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/setAutomationPolicy',
@@ -1344,7 +1349,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemorySetAutomationPolicyResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_setAutomationPolicy_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":893,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":904,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/update',
@@ -1384,7 +1389,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryUpdateResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_update_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":618,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":629,"column":3},
     },
   ],
 }

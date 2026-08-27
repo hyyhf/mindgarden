@@ -31,6 +31,7 @@ import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenViewActions } from '../slots.ts'
 import { applyPhotoParticlePreset } from './presets.ts'
 import { PhotoParticleScene } from './PhotoParticleScene.tsx'
+import { preparePhotoUpload, type PhotoUploadLimits } from './photo-upload.ts'
 import css from './PhotoStorySpace.module.css'
 
 const PAGE_SIZE = 9
@@ -71,6 +72,7 @@ type PhotoActions = Pick<
 /** Plain props retained at the conversation-view boundary. */
 export interface PhotoStorySpaceProps extends PhotoActions {
   readonly today: string
+  readonly imageLimits?: PhotoUploadLimits
   readonly t: (key: MindGardenKey) => string
 }
 
@@ -100,9 +102,23 @@ function observationErrorKey(code: string): MindGardenKey {
   return 'photo.error.observe'
 }
 
+function uploadErrorKey(code: string, reason?: string): MindGardenKey {
+  if (reason === 'IMAGE_TOO_LARGE') return 'photo.error.upload.size'
+  if (reason === 'IMAGE_DIMENSION_TOO_LARGE' || reason === 'IMAGE_TOO_MANY_PIXELS') {
+    return 'photo.error.upload.dimension'
+  }
+  if (reason === 'UNSUPPORTED_MEDIA_TYPE' || reason === 'INVALID_IMAGE' || reason === 'IMAGE_TYPE_MISMATCH') {
+    return 'photo.error.upload.format'
+  }
+  if (reason === 'BROWSER_TRANSCODE_FAILED') return 'photo.error.upload.browser'
+  if (code === 'attachment-unavailable' || code === 'unavailable') return 'photo.error.upload.unavailable'
+  return 'photo.error.upload'
+}
+
 /** Render the encrypted photo-story album and its parameterized particle editor. */
 export function PhotoStorySpace({
   today,
+  imageLimits,
   onListPhotoStories,
   onCreatePhotoStory,
   onReadPhotoStory,
@@ -128,6 +144,7 @@ export function PhotoStorySpace({
   const [uploading, setUploading] = useState(false)
   const [pending, setPending] = useState(false)
   const [errorKey, setErrorKey] = useState<MindGardenKey | null>(null)
+  const [uploadNoticeKey, setUploadNoticeKey] = useState<MindGardenKey | null>(null)
   const [saved, setSaved] = useState(false)
   const [deleteArmed, setDeleteArmed] = useState(false)
   const [preview, setPreview] = useState(false)
@@ -265,14 +282,25 @@ export function PhotoStorySpace({
     if (files.length === 0 || uploading) return
     setUploading(true)
     setErrorKey(null)
+    setUploadNoticeKey(null)
     try {
-      let rejected = false
+      let failure: MindGardenKey | null = null
+      let optimized = false
       for (const file of files) {
-        const result = await onCreatePhotoStory(file, calendarStamp(today))
-        if (!result.ok) rejected = true
+        const prepared = imageLimits === undefined
+          ? { ok: true as const, file, optimized: false }
+          : await preparePhotoUpload(file, imageLimits)
+        if (!prepared.ok) {
+          failure ??= uploadErrorKey('attachment-rejected', prepared.reason)
+          continue
+        }
+        optimized ||= prepared.optimized
+        const result = await onCreatePhotoStory(prepared.file, calendarStamp(today))
+        if (!result.ok) failure ??= uploadErrorKey(result.code, result.reason)
       }
       await refresh()
-      if (rejected) setErrorKey('photo.error.upload')
+      if (optimized) setUploadNoticeKey('photo.upload.optimized')
+      if (failure !== null) setErrorKey(failure)
     } catch {
       setErrorKey('photo.error.upload')
     } finally {
@@ -724,6 +752,7 @@ export function PhotoStorySpace({
       </header>
 
       <p className={css.uploadHint}>{t('photo.uploadHint')}</p>
+      {uploadNoticeKey !== null && <p className={css.uploadNotice} role="status">{t(uploadNoticeKey)}</p>}
       {errorKey !== null && <div className={css.error} role="alert"><span>{t(errorKey)}</span>{errorKey === 'photo.error.load' && <button type="button" onClick={retryPhotoStories}>{t('photo.retry')}</button>}</div>}
       {loading ? (
         <div className={css.empty} role="status">{t('photo.loading')}</div>

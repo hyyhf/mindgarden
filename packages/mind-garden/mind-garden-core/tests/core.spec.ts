@@ -284,7 +284,7 @@ describe('Mind Garden strict replay', () => {
     expect(service.remoteExportSelectMode(agent, 1, 'clarity')).toMatchObject({ revision: 2, mode: 'clarity' })
     expect(service.remoteExportSelectSupportIntent(agent, 2, 'listen'))
       .toMatchObject({ revision: 3, supportIntent: 'listen' })
-    expect(service.remoteExportAcceptModelDisclosure(agent, 0)).toMatchObject({ revision: 3 })
+    expect(service.remoteExportAcceptModelDisclosure(agent, 0, 'zh-CN')).toMatchObject({ revision: 3 })
 
     const impostor = { id: session.id, session } as unknown as import('@deepseek-ai/dsh-agent').Agent
     expect(() => service.remoteExportSelectMode(impostor, 3, 'serenity'))

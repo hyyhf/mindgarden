@@ -160,6 +160,9 @@ describe('Mind Garden portability real Loader composition', () => {
       stamp: { localDate: '2026-08-20', timeZone: 'Asia/Shanghai', utcOffsetMinutes: 480 },
     })
     if (!created.ok) throw new Error('photo story creation failed')
+    const admitted = await first.ctx.mindGardenMedia.readPhotoStory(agent, { id: created.value.id })
+    if (!admitted.ok) throw new Error('admitted photo read failed')
+    const admittedData = admitted.value.data
 
     await first.ctx.fiber.dispose()
     context = undefined
@@ -187,7 +190,7 @@ describe('Mind Garden portability real Loader composition', () => {
     expect(restoredMemory?.value).toMatchObject({ content: PRIVATE_MEMORY })
     expect(restored.collections.media[0]?.value).toMatchObject({ title: PRIVATE_TITLE })
     expect(restored.attachments).toHaveLength(1)
-    expect(restored.attachments[0]?.data).toBe(PNG)
+    expect(restored.attachments[0]?.data).toBe(admittedData)
 
     await restarted.ctx.fiber.dispose()
     context = undefined
@@ -229,7 +232,7 @@ describe('Mind Garden portability real Loader composition', () => {
     if (story === undefined) throw new Error('restored photo story missing')
     const image = await target.ctx.mindGardenMedia.readPhotoStory(targetAgent, { id: story.id })
     if (!image.ok) throw new Error(`restored media read failed: ${image.error.code}`)
-    expect(image.value.data).toBe(PNG)
+    expect(image.value.data).toBe(admittedData)
 
     await expect(target.ctx.mindGardenPortability.restoreBackup(targetAgent, {
       data: exported.value.data,

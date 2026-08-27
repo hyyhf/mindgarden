@@ -62,6 +62,7 @@ function safeVisibleCopy(values) {
 /**
  * Build the complete observation request without embedding user copy or attachment identifiers.
  * @param maxBytes - maximum UTF-8 bytes admitted for the complete text payload.
+ * @param locale - language requested for the visible model response.
  * @returns exact provider text, or null instead of silently truncating.
  */
 export function buildPhotoObservationEnvelope(maxBytes, locale = 'zh-CN') {
@@ -128,6 +129,7 @@ export function decodePhotoObservationOutput(raw) {
  * @param content - newest user-authored message.
  * @param quickReplyKind - optional semantic kind of the selected continuation.
  * @param maxBytes - maximum UTF-8 bytes for the complete text payload.
+ * @param locale - language requested for the visible model response.
  * @returns exact provider envelope, or null instead of truncation.
  */
 export function buildPhotoDialogueEnvelope(story, content, quickReplyKind, maxBytes, locale = 'zh-CN') {

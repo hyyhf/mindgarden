@@ -355,6 +355,7 @@ export declare const zh: {
     'photo.upload': string;
     'photo.uploading': string;
     'photo.uploadHint': string;
+    'photo.upload.optimized': string;
     'photo.empty.title': string;
     'photo.empty.body': string;
     'photo.empty.action': string;
@@ -362,6 +363,11 @@ export declare const zh: {
     'photo.error': string;
     'photo.error.load': string;
     'photo.error.upload': string;
+    'photo.error.upload.size': string;
+    'photo.error.upload.dimension': string;
+    'photo.error.upload.format': string;
+    'photo.error.upload.browser': string;
+    'photo.error.upload.unavailable': string;
     'photo.error.save': string;
     'photo.error.observe': string;
     'photo.error.observe.model': string;
@@ -1204,6 +1210,7 @@ export declare const en: {
     'photo.upload': string;
     'photo.uploading': string;
     'photo.uploadHint': string;
+    'photo.upload.optimized': string;
     'photo.empty.title': string;
     'photo.empty.body': string;
     'photo.empty.action': string;
@@ -1211,6 +1218,11 @@ export declare const en: {
     'photo.error': string;
     'photo.error.load': string;
     'photo.error.upload': string;
+    'photo.error.upload.size': string;
+    'photo.error.upload.dimension': string;
+    'photo.error.upload.format': string;
+    'photo.error.upload.browser': string;
+    'photo.error.upload.unavailable': string;
     'photo.error.save': string;
     'photo.error.observe': string;
     'photo.error.observe.model': string;

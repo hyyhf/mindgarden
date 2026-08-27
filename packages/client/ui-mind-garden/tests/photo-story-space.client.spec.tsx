@@ -300,6 +300,23 @@ describe('PhotoStorySpace', () => {
     expect(view.queryByRole('alert')).toBeNull()
   })
 
+  it('explains the Host photo rejection instead of collapsing every failure to format', async () => {
+    const api = actions({
+      onCreatePhotoStory: vi.fn(() => Promise.resolve({
+        ok: false as const,
+        code: 'attachment-rejected',
+        reason: 'IMAGE_TOO_LARGE',
+      })),
+    })
+    const view = render(<PhotoStorySpace today="2026-08-19" {...api} t={t} />)
+    await view.findByText(zh['photo.empty.title'])
+    const input = view.container.querySelector('input[type="file"]') as HTMLInputElement
+    fireEvent.change(input, { target: { files: [new File(['large'], 'large.png', { type: 'image/png' })] } })
+
+    await view.findByText(zh['photo.error.upload.size'])
+    expect(view.queryByText(zh['photo.error.upload'])).toBeNull()
+  })
+
   it('discards obsolete metadata and image reads while keeping the dynamic placeholder interactive', async () => {
     const deferredList = Promise.withResolvers<Awaited<ReturnType<PhotoActions['onListPhotoStories']>>>()
     const listApi = actions({ onListPhotoStories: vi.fn(() => deferredList.promise) })

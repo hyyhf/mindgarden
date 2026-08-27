@@ -73,6 +73,7 @@ export function renderMindGardenSupportResponse(assessment) {
  * Render a safe replacement for blocked or unbounded assistant output.
  * @param reason - whether content policy or configured buffering caused replacement.
  * @param violations - matched rules when content policy caused replacement.
+ * @param locale - locale for the visible replacement copy.
  * @returns user-visible replacement text with no unsafe output quotation.
  */
 export function renderMindGardenGuardReplacement(reason, violations, locale = 'zh-CN') {

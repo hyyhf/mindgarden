@@ -326,7 +326,7 @@ export class MindGardenMediaService extends TypertRemoteService {
     ctx.effect(() => async () => {
       this.admissionOpen = false
       for (const controller of this.modelControllers) controller.abort()
-      await Promise.all([...this.modelOperations.values()].map(async operation => {
+      await Promise.all([...this.modelOperations.values()].map(async (operation) => {
         await operation.catch(() => undefined)
       }))
       await this.operationTail

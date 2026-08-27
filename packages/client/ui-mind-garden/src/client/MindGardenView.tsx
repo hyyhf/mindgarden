@@ -41,6 +41,7 @@ import { PhilosophySpace } from './spaces/PhilosophySpace.tsx'
 import { MemoryGovernance } from './spaces/MemoryGovernance.tsx'
 import { TodayPractice } from './spaces/TodayPractice.tsx'
 import { PhotoStorySpace } from './photo-story/PhotoStorySpace.tsx'
+import type { PhotoUploadLimits } from './photo-story/photo-upload.ts'
 import { GardenPortabilityPanel } from './GardenPortabilityPanel.tsx'
 import css from './MindGardenView.module.css'
 
@@ -59,6 +60,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 export interface MindGardenReviewCenterProps extends MindGardenViewActions, PropsLocale<'mindGarden'> {
   /** Undefined means projection capability loading; null means inactive. */
   projection: MindGardenSessionProjection | null | undefined
+  /** Live Host limits used to prepare photo files before Remote transport. */
+  imageLimits?: PhotoUploadLimits
   /** Selected local garden space; defaults to the reflection overview in direct component tests. */
   activeSpace?: MindGardenSpace
   /** Compact local rail preference. */
@@ -95,6 +98,7 @@ function reviewStatusKey(status: MindGardenPeriodReviewStatus): MindGardenKey {
 /** Render the inactive gateway or the active review center. */
 export function MindGardenReviewCenter({
   projection,
+  imageLimits,
   onExportBackup,
   onInspectBackup,
   onRestoreBackup,
@@ -432,6 +436,7 @@ export function MindGardenReviewCenter({
         {activeSpace === 'photo-story' ? (
           <PhotoStorySpace
             today={today}
+            {...(imageLimits === undefined ? {} : { imageLimits })}
             onListPhotoStories={onListPhotoStories}
             onCreatePhotoStory={onCreatePhotoStory}
             onReadPhotoStory={onReadPhotoStory}
@@ -762,10 +767,12 @@ export type MindGardenViewProps =
 /** Read the typed session projection and adapt it to the review center. */
 export function MindGardenView({ useProjection, useStore, actions, inputActions, ...props }: MindGardenViewProps) {
   const projection = useProjection('mind-garden')
+  const imageLimits = useProjection('imageLimits')
   const view = useStore(state => state)
   return (
     <MindGardenReviewCenter
       projection={projection}
+      {...(imageLimits === undefined ? {} : { imageLimits })}
       activeSpace={view.activeSpace}
       sidebarCollapsed={view.sidebarCollapsed}
       onSelectSpace={(space) => { actions.selectSpace(space) }}

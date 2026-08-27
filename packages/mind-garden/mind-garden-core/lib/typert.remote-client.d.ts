@@ -8,13 +8,13 @@ import type { SessionId } from '@deepseek-ai/dsh-session/types'
 
 declare module '@deepseek-ai/dsh-typert-protocol' {
   interface TypertRemoteNamespace$6d696e6447617264656e {
-    acceptModelDisclosure: (agentId: SessionId, expectedRevision: number) => Promise<RemoteResult<MindGardenSessionState>>
+    acceptModelDisclosure: (agentId: SessionId, expectedRevision: number, locale: 'zh-CN' | 'en') => Promise<RemoteResult<MindGardenSessionState>>
     activate: (agentId: SessionId, request: ActivateMindGardenRequest) => Promise<RemoteResult<MindGardenSessionState>>
     selectMode: (agentId: SessionId, expectedRevision: number, mode: MindGardenMode) => Promise<RemoteResult<MindGardenSessionState>>
     selectSupportIntent: (agentId: SessionId, expectedRevision: number, supportIntent: MindGardenSupportIntent) => Promise<RemoteResult<MindGardenSessionState>>
   }
   interface TypertRemoteMap {
-    'mindGarden/acceptModelDisclosure': (agentId: SessionId, expectedRevision: number) => Promise<RemoteResult<MindGardenSessionState>>
+    'mindGarden/acceptModelDisclosure': (agentId: SessionId, expectedRevision: number, locale: 'zh-CN' | 'en') => Promise<RemoteResult<MindGardenSessionState>>
     'mindGarden/activate': (agentId: SessionId, request: ActivateMindGardenRequest) => Promise<RemoteResult<MindGardenSessionState>>
     'mindGarden/selectMode': (agentId: SessionId, expectedRevision: number, mode: MindGardenMode) => Promise<RemoteResult<MindGardenSessionState>>
     'mindGarden/selectSupportIntent': (agentId: SessionId, expectedRevision: number, supportIntent: MindGardenSupportIntent) => Promise<RemoteResult<MindGardenSessionState>>
@@ -23,7 +23,7 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
     'mindGarden': TypertRemoteNamespace$6d696e6447617264656e
   }
   interface TypertRemoteScopeMap {
-    'agent:mindGarden/acceptModelDisclosure': (expectedRevision: number) => Promise<RemoteResult<MindGardenSessionState>>
+    'agent:mindGarden/acceptModelDisclosure': (expectedRevision: number, locale: 'zh-CN' | 'en') => Promise<RemoteResult<MindGardenSessionState>>
     'agent:mindGarden/activate': (request: ActivateMindGardenRequest) => Promise<RemoteResult<MindGardenSessionState>>
     'agent:mindGarden/selectMode': (expectedRevision: number, mode: MindGardenMode) => Promise<RemoteResult<MindGardenSessionState>>
     'agent:mindGarden/selectSupportIntent': (expectedRevision: number, supportIntent: MindGardenSupportIntent) => Promise<RemoteResult<MindGardenSessionState>>

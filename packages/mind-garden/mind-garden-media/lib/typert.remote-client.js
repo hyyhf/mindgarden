@@ -9,6 +9,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_continuePhotoStory_para
   'quickReplyKind': z.union([z.literal(""), z.literal("remember"), z.literal("detail"), z.literal("correct")]).readonly().optional(),
   'provider': z.string().readonly().optional(),
   'model': z.string().readonly().optional(),
+  'locale': z.union([z.literal("zh-CN"), z.literal("en")]).readonly().optional(),
 })
 const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_continuePhotoStory_result$schema = z.union([z.object({
   'ok': z.literal(true).readonly(),
@@ -23,6 +24,10 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_continuePhotoStory_resu
   'width': z.number(),
   'height': z.number(),
   'name': z.string().optional(),
+  'originalDimensions': z.object({
+  'width': z.number(),
+  'height': z.number(),
+}).optional(),
 }).readonly(),
   'title': z.string().readonly(),
   'note': z.string().readonly(),
@@ -133,6 +138,10 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_continuePhotoStory_resu
   'width': z.number(),
   'height': z.number(),
   'name': z.string().optional(),
+  'originalDimensions': z.object({
+  'width': z.number(),
+  'height': z.number(),
+}).optional(),
 }).readonly(),
   'title': z.string().readonly(),
   'note': z.string().readonly(),
@@ -304,6 +313,10 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_createPhotoStory_result
   'width': z.number(),
   'height': z.number(),
   'name': z.string().optional(),
+  'originalDimensions': z.object({
+  'width': z.number(),
+  'height': z.number(),
+}).optional(),
 }).readonly(),
   'title': z.string().readonly(),
   'note': z.string().readonly(),
@@ -435,6 +448,10 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_deletePhotoStory_result
   'width': z.number(),
   'height': z.number(),
   'name': z.string().optional(),
+  'originalDimensions': z.object({
+  'width': z.number(),
+  'height': z.number(),
+}).optional(),
 }).readonly(),
   'title': z.string().readonly(),
   'note': z.string().readonly(),
@@ -537,6 +554,10 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_listPhotoStories_result
   'width': z.number(),
   'height': z.number(),
   'name': z.string().optional(),
+  'originalDimensions': z.object({
+  'width': z.number(),
+  'height': z.number(),
+}).optional(),
 }).readonly(),
   'title': z.string().readonly(),
   'note': z.string().readonly(),
@@ -640,6 +661,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_observePhotoStory_param
   'ifVersion': z.intersection(z.string(), z.unknown()).readonly(),
   'provider': z.string().readonly().optional(),
   'model': z.string().readonly().optional(),
+  'locale': z.union([z.literal("zh-CN"), z.literal("en")]).readonly().optional(),
 })
 const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_observePhotoStory_result$schema = z.union([z.object({
   'ok': z.literal(true).readonly(),
@@ -654,6 +676,10 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_observePhotoStory_resul
   'width': z.number(),
   'height': z.number(),
   'name': z.string().optional(),
+  'originalDimensions': z.object({
+  'width': z.number(),
+  'height': z.number(),
+}).optional(),
 }).readonly(),
   'title': z.string().readonly(),
   'note': z.string().readonly(),
@@ -761,6 +787,10 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_observePhotoStory_resul
   'width': z.number(),
   'height': z.number(),
   'name': z.string().optional(),
+  'originalDimensions': z.object({
+  'width': z.number(),
+  'height': z.number(),
+}).optional(),
 }).readonly(),
   'title': z.string().readonly(),
   'note': z.string().readonly(),
@@ -876,6 +906,10 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_readPhotoStory_result$s
   'width': z.number(),
   'height': z.number(),
   'name': z.string().optional(),
+  'originalDimensions': z.object({
+  'width': z.number(),
+  'height': z.number(),
+}).optional(),
 }).readonly(),
   'data': z.string().readonly(),
 }).readonly(),
@@ -958,6 +992,10 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_updatePhotoStory_result
   'width': z.number(),
   'height': z.number(),
   'name': z.string().optional(),
+  'originalDimensions': z.object({
+  'width': z.number(),
+  'height': z.number(),
+}).optional(),
 }).readonly(),
   'title': z.string().readonly(),
   'note': z.string().readonly(),
@@ -1068,6 +1106,10 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_updatePhotoStory_result
   'width': z.number(),
   'height': z.number(),
   'name': z.string().optional(),
+  'originalDimensions': z.object({
+  'width': z.number(),
+  'height': z.number(),
+}).optional(),
 }).readonly(),
   'title': z.string().readonly(),
   'note': z.string().readonly(),
@@ -1194,7 +1236,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenContinuePhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_continuePhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":463,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":478,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/createPhotoStory',
@@ -1234,7 +1276,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenCreatePhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_createPhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":332,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":343,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/deletePhotoStory',
@@ -1274,7 +1316,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenDeletePhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_deletePhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":529,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":548,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/listPhotoStories',
@@ -1314,7 +1356,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenListPhotoStoriesResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_listPhotoStories_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":383,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":394,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/observePhotoStory',
@@ -1354,7 +1396,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenObservePhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_observePhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":438,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":449,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/readPhotoStory',
@@ -1394,7 +1436,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenReadPhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_readPhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":407,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":418,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/updatePhotoStory',
@@ -1434,7 +1476,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenUpdatePhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_updatePhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":488,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":507,"column":3},
     },
   ],
 }

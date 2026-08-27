@@ -162,44 +162,44 @@ export function GrowthSpace({
             <h2 id="mind-garden-growth-composer-title">{t('growth.composer.title')}</h2>
           </header>
           <form className={css.composer} onSubmit={(event) => { void submit(event) }}>
-          <label>
-            <span>{t('growth.input.title')}</span>
-            <input className={shared.input} value={title} onChange={(event) => { setTitle(event.target.value) }} />
-          </label>
-          <label>
-            <span>{t('growth.input.reviewDate')}</span>
-            <input
-              className={shared.input}
-              type="date"
-              min={today}
-              value={reviewDate}
-              onChange={(event) => { setReviewDate(event.target.value) }}
-            />
-          </label>
-          <label className={css.wide}>
-            <span>{t('growth.input.hypothesis')}</span>
-            <input
-              className={shared.input}
-              value={hypothesis}
-              placeholder={t('growth.input.hypothesisPlaceholder')}
-              onChange={(event) => { setHypothesis(event.target.value) }}
-            />
-          </label>
-          <label className={css.wide}>
-            <span>{t('growth.input.action')}</span>
-            <textarea
-              className={shared.textarea}
-              value={action}
-              placeholder={t('growth.input.actionPlaceholder')}
-              onChange={(event) => { setAction(event.target.value) }}
-            />
-          </label>
-          <div className={css.composerFooter}>
-            <span>{t('growth.composer.boundary')}</span>
-            <button className={shared.button} type="submit" disabled={pending || title.trim() === '' || action.trim() === ''}>
-              <GrowthIcon size={16} />{t('growth.create')}
-            </button>
-          </div>
+            <label>
+              <span>{t('growth.input.title')}</span>
+              <input className={shared.input} value={title} onChange={(event) => { setTitle(event.target.value) }} />
+            </label>
+            <label>
+              <span>{t('growth.input.reviewDate')}</span>
+              <input
+                className={shared.input}
+                type="date"
+                min={today}
+                value={reviewDate}
+                onChange={(event) => { setReviewDate(event.target.value) }}
+              />
+            </label>
+            <label className={css.wide}>
+              <span>{t('growth.input.hypothesis')}</span>
+              <input
+                className={shared.input}
+                value={hypothesis}
+                placeholder={t('growth.input.hypothesisPlaceholder')}
+                onChange={(event) => { setHypothesis(event.target.value) }}
+              />
+            </label>
+            <label className={css.wide}>
+              <span>{t('growth.input.action')}</span>
+              <textarea
+                className={shared.textarea}
+                value={action}
+                placeholder={t('growth.input.actionPlaceholder')}
+                onChange={(event) => { setAction(event.target.value) }}
+              />
+            </label>
+            <div className={css.composerFooter}>
+              <span>{t('growth.composer.boundary')}</span>
+              <button className={shared.button} type="submit" disabled={pending || title.trim() === '' || action.trim() === ''}>
+                <GrowthIcon size={16} />{t('growth.create')}
+              </button>
+            </div>
           </form>
         </section>
       </section>

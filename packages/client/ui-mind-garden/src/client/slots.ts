@@ -82,7 +82,7 @@ export interface MindGardenDockActions {
 /** UI-safe settled outcome after transport and reflection results are flattened. */
 export type MindGardenDataResult<T> =
   | { readonly ok: true; readonly value: T }
-  | { readonly ok: false; readonly code: string }
+  | { readonly ok: false; readonly code: string; readonly reason?: string }
 
 type WithoutMemoryIdentity<T> = T extends unknown ? Omit<T, 'id' | 'ifVersion'> : never
 

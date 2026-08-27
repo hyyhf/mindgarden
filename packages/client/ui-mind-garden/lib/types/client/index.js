@@ -24,7 +24,11 @@ async function settle(request) {
             return { ok: false, code: transport.error.code };
         return transport.value.ok
             ? { ok: true, value: transport.value.value }
-            : { ok: false, code: transport.value.error.code };
+            : {
+                ok: false,
+                code: transport.value.error.code,
+                ...transport.value.error.reason === undefined ? {} : { reason: transport.value.error.reason },
+            };
     }
     catch {
         return { ok: false, code: 'unavailable' };
@@ -151,8 +155,9 @@ function viewActions(ctx, sessionId) {
                 : result;
         },
         onCreatePhotoStory: async (file, stamp) => {
-            if (!PHOTO_MEDIA_TYPES.has(file.type))
-                return { ok: false, code: 'attachment-rejected' };
+            if (!PHOTO_MEDIA_TYPES.has(file.type)) {
+                return { ok: false, code: 'attachment-rejected', reason: 'UNSUPPORTED_MEDIA_TYPE' };
+            }
             const data = bytesToBase64(new Uint8Array(await file.arrayBuffer()));
             return await settle(ctx.remote.mindGardenMedia.createPhotoStory(sessionId, {
                 data,

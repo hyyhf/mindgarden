@@ -172,6 +172,9 @@ describe('Mind Garden media real Loader composition', () => {
       stamp: { localDate: '2026-08-19', timeZone: 'Asia/Shanghai', utcOffsetMinutes: 480 },
     })
     if (!created.ok) throw new Error('create failed')
+    const admitted = await first.ctx.mindGardenMedia.readPhotoStory(agent, { id: created.value.id })
+    if (!admitted.ok) throw new Error('admitted photo read failed')
+    const admittedData = admitted.value.data
     const observed = await first.ctx.mindGardenMedia.observePhotoStory(agent, {
       id: created.value.id, ifVersion: created.value.version,
     })
@@ -216,6 +219,6 @@ describe('Mind Garden media real Loader composition', () => {
     expect(listed.value.stories[0].turns[2]?.content).toContain('private meaning')
     await expect(restarted.ctx.mindGardenMedia.readPhotoStory(restartedAgent, {
       id: listed.value.stories[0].id,
-    })).resolves.toMatchObject({ ok: true, value: { data: PNG } })
+    })).resolves.toMatchObject({ ok: true, value: { data: admittedData } })
   })
 })

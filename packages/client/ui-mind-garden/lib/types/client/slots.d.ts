@@ -24,6 +24,7 @@ export type MindGardenDataResult<T> = {
 } | {
     readonly ok: false;
     readonly code: string;
+    readonly reason?: string;
 };
 type WithoutMemoryIdentity<T> = T extends unknown ? Omit<T, 'id' | 'ifVersion'> : never;
 /** Session-bound reflection actions used by the full Mind Garden view. */

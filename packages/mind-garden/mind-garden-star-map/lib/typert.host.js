@@ -2489,7 +2489,7 @@ export const TYPERT = {
           },
           {
             "name": "ImageAttachmentRef",
-            "declaration": "export interface ImageAttachmentRef {\n    attachmentId: AttachmentId;\n    mediaType: ImageMediaType;\n    bytes: number;\n    width: number;\n    height: number;\n    name?: string;\n}"
+            "declaration": "export interface ImageAttachmentRef {\n    attachmentId: AttachmentId;\n    mediaType: ImageMediaType;\n    bytes: number;\n    width: number;\n    height: number;\n    name?: string;\n    originalDimensions?: { width: number; height: number; };\n}"
           },
           {
             "name": "ImageBlock",
@@ -2572,6 +2572,14 @@ export const TYPERT = {
             "declaration": "export type MindGardenContinueStarCardResult = MindGardenStarSuccess<MindGardenStarCard> | MindGardenStarRejected<MindGardenStarAccessDenied | MindGardenStarVaultUnavailable | MindGardenStarInvalidField | MindGardenStarRitualRequired | MindGardenStarCardNotFound | MindGardenStarCardVersionConflict | MindGardenStarCardStateConflict | MindGardenStarDialogueLimitReached | MindGardenStarObserverModelUnavailable | MindGardenStarObserverModelFailed | MindGardenStarObserverOutputInvalid | MindGardenStarObservationInProgress | MindGardenStarObserverInputTooLarge>;"
           },
           {
+            "name": "MindGardenDisclosureAcceptance",
+            "declaration": "export interface MindGardenDisclosureAcceptance {\n    readonly acceptedAt: number;\n    readonly locale: MindGardenDisclosureLocale;\n    readonly contractVersion: number;\n}"
+          },
+          {
+            "name": "MindGardenDisclosureLocale",
+            "declaration": "export type MindGardenDisclosureLocale = 'zh-CN' | 'en';"
+          },
+          {
             "name": "MindGardenDrawStarCardRequest",
             "declaration": "export interface MindGardenDrawStarCardRequest {\n    readonly deck: MindGardenStarDeck | 'random';\n    readonly question: string;\n    readonly observedLocalDate: string;\n    readonly observerTone?: MindGardenStarObserverTone;\n    readonly provider?: string;\n    readonly model?: string;\n}"
           },
@@ -2613,7 +2621,7 @@ export const TYPERT = {
           },
           {
             "name": "MindGardenSessionStateEvent",
-            "declaration": "export interface MindGardenSessionStateEvent {\n    readonly version: 1;\n    readonly operation: MindGardenOperation;\n    readonly state: MindGardenSessionState;\n}"
+            "declaration": "export interface MindGardenSessionStateEvent {\n    readonly version: 1 | 2;\n    readonly operation: MindGardenOperation;\n    readonly state: MindGardenSessionState;\n    readonly disclosureAcceptance?: MindGardenDisclosureAcceptance | null;\n}"
           },
           {
             "name": "MindGardenStarAccessDenied",

@@ -148,6 +148,7 @@ let MindGardenService = (() => {
          * Record model/provider disclosure acceptance.
          * @param session - owning session.
          * @param expectedRevision - caller's current revision.
+         * @param locale - locale shown when the disclosure was accepted.
          * @returns current state when already accepted, otherwise the next revision.
          */
         acceptModelDisclosure(session, expectedRevision, locale = 'zh-CN') {
@@ -199,9 +200,10 @@ let MindGardenService = (() => {
          * Accept the model/provider disclosure through the generated Remote boundary.
          * @param agent - exact live Agent resolved from the wire session identity.
          * @param expectedRevision - caller's current projected revision.
+         * @param locale - locale shown when the disclosure was accepted.
          * @returns the resulting state.
          */
-        remoteExportAcceptModelDisclosure(agent, expectedRevision, locale = 'zh-CN') {
+        remoteExportAcceptModelDisclosure(agent, expectedRevision, locale) {
             this.assertLive(agent);
             return this.acceptModelDisclosure(agent.session, expectedRevision, locale);
         }

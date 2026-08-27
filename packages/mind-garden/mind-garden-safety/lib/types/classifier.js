@@ -108,7 +108,11 @@ function assessClause(clause, locale) {
     }
     return result(0, 'ordinary', [], 0, locale);
 }
-/** Infer the deterministic safety-copy locale from the entered text. */
+/**
+ * Infer the deterministic safety-copy locale from the entered text.
+ * @param text - complete entered human text.
+ * @returns locale for deterministic safety copy.
+ */
 export function detectMindGardenSafetyLocale(text) {
     const hanCount = text.match(/\p{Script=Han}/gu)?.length ?? 0;
     const latinWordCount = text.match(/\b[A-Za-z]+\b/gu)?.length ?? 0;
@@ -137,6 +141,7 @@ export function normalizeMindGardenSafetyText(text) {
 /**
  * Classify one user text without a model or network call.
  * @param text - complete entered human text.
+ * @param locale - locale for deterministic assessment copy and resources.
  * @returns a detached deterministic assessment.
  */
 export function assessMindGardenInput(text, locale = detectMindGardenSafetyLocale(text)) {

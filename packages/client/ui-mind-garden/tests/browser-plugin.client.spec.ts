@@ -35,7 +35,14 @@ import { DEFAULT_PHOTO_PARTICLE_CONFIG } from '../src/client/photo-story/presets
 
 describe('Mind Garden browser plugin', () => {
   it('registers the composer posture control and full view whose actions call the live Remote namespaces', async () => {
-    const entries: Array<{ name?: string; id?: string; order?: number; locale?: string; label?: () => string; inject?: (id: SessionId) => unknown }> = []
+    const entries: Array<{
+      name?: string
+      id?: string
+      order?: number
+      locale?: string
+      label?: () => string
+      inject?: (id: SessionId) => unknown
+    }> = []
     const calls: Array<{ method: string; args: unknown[] }> = []
     const answer = (method: string) => (...args: unknown[]) => {
       calls.push({ method, args })
@@ -326,7 +333,7 @@ describe('Mind Garden browser plugin', () => {
       type: 'text/plain', name: 'not-an-image.txt', arrayBuffer: unsupportedRead,
     } as unknown as File
     await expect(viewActions.onCreatePhotoStory(unsupported, stamp))
-      .resolves.toEqual({ ok: false, code: 'attachment-rejected' })
+      .resolves.toEqual({ ok: false, code: 'attachment-rejected', reason: 'UNSUPPORTED_MEDIA_TYPE' })
     expect(unsupportedRead).not.toHaveBeenCalled()
     const file = {
       type: 'image/png', name: 'a-frame.png', arrayBuffer: () => Promise.resolve(Uint8Array.from([1, 2, 3]).buffer),

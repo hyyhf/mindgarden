@@ -4,7 +4,7 @@
  * @module @deepseek-ai/dsh-mind-garden/safety
  */
 import z from '@deepseek-ai/schemastery';
-import { isAgentLoopRequest, } from '@deepseek-ai/dsh-llm';
+import { BlockAssembler, isAgentLoopRequest, } from '@deepseek-ai/dsh-llm';
 import { assessMindGardenInput, recoverMindGardenSafetyState } from "./classifier.js";
 import { assessMindGardenOutput, renderMindGardenGuardReplacement, renderMindGardenSupportResponse, } from "./output-guard.js";
 export { mindGardenSafetyResources, MIND_GARDEN_RESOURCE_FALLBACK, MIND_GARDEN_RESOURCE_FALLBACK_EN, } from "./resources.js";
@@ -36,6 +36,12 @@ function resolveConfig(config) {
     }
     return { maxModelOutputTokens, maxBufferedCharacters, maxBufferedChunks };
 }
+/**
+ * Retained suffix that covers every bounded output-policy expression. A match
+ * completes while its first character is still private, so rejected text
+ * cannot reach the Session log through an earlier delta.
+ */
+const OUTPUT_GUARD_LOOKBEHIND_CHARACTERS = 64;
 /** Find the step whose request is currently entering `llm/stream`. */
 function openStep(session) {
     for (let index = session.events.length - 1; index >= 0; index -= 1) {
@@ -98,25 +104,78 @@ function assessStep(session, step, messages) {
     return data;
 }
 /** Canonical successful text stream used for local and replacement responses. */
-function textStream(text, usage) {
+function textStream(text, usage, index = 0) {
     return [
-        { type: 'block-start', index: 0, blockType: 'text' },
-        { type: 'text-delta', index: 0, text },
-        { type: 'block-end', index: 0, block: { type: 'text', text } },
+        { type: 'block-start', index, blockType: 'text' },
+        { type: 'text-delta', index, text },
+        { type: 'block-end', index, block: { type: 'text', text } },
         ...usage === undefined ? [] : [{ type: 'usage', usage }],
         { type: 'finish', reason: { kind: 'stop' } },
     ];
 }
-/** Extract complete text/reasoning blocks and the provider's last usage record. */
-function bufferedResult(chunks) {
-    const text = chunks.flatMap(chunk => chunk.type === 'block-end' && (chunk.block.type === 'text' || chunk.block.type === 'reasoning')
-        ? [chunk.block.text]
-        : []).join('\n');
-    let usage;
-    for (const chunk of chunks)
-        if (chunk.type === 'usage')
-            usage = chunk.usage;
-    return { text, ...usage === undefined ? {} : { usage } };
+function guardedDeltaText(chunk) {
+    return chunk.type === 'text-delta' || chunk.type === 'reasoning-delta' ? chunk.text : undefined;
+}
+function replaceDeltaText(chunk, text) {
+    if (chunk.type === 'text-delta')
+        return { ...chunk, text };
+    if (chunk.type === 'reasoning-delta')
+        return { ...chunk, text };
+    throw new TypeError('mind-garden-safety: only text and reasoning deltas can be split');
+}
+function inspectedText(assembler) {
+    return assembler.interruptedBlocks().flatMap(block => block.type === 'text' || block.type === 'reasoning' ? [block.text] : []).join('\n');
+}
+function recordPublishedChunk(blocks, chunk) {
+    if (chunk.type === 'block-start' && (chunk.blockType === 'text' || chunk.blockType === 'reasoning')) {
+        if (!blocks.has(chunk.index))
+            blocks.set(chunk.index, { type: chunk.blockType, text: '', closed: false });
+        return;
+    }
+    if (chunk.type === 'text-delta' || chunk.type === 'reasoning-delta') {
+        const type = chunk.type === 'text-delta' ? 'text' : 'reasoning';
+        const block = blocks.get(chunk.index) ?? { type, text: '', closed: false };
+        block.text += chunk.text;
+        blocks.set(chunk.index, block);
+        return;
+    }
+    if (chunk.type === 'block-end' && (chunk.block.type === 'text' || chunk.block.type === 'reasoning')) {
+        blocks.set(chunk.index, { type: chunk.block.type, text: chunk.block.text, closed: true });
+    }
+}
+function publishablePrefix(pending, pendingGuardedCharacters) {
+    const chunks = [];
+    let guardedCharacters = pendingGuardedCharacters;
+    let releasable = Math.max(0, guardedCharacters - OUTPUT_GUARD_LOOKBEHIND_CHARACTERS);
+    while (pending.length > 0) {
+        const chunk = pending[0];
+        if (chunk === undefined)
+            break;
+        const text = guardedDeltaText(chunk);
+        if (text !== undefined) {
+            if (releasable === 0)
+                break;
+            const count = Math.min(text.length, releasable);
+            const released = text.slice(0, count);
+            const retained = text.slice(count);
+            chunks.push(replaceDeltaText(chunk, released));
+            guardedCharacters -= count;
+            releasable -= count;
+            if (retained.length === 0)
+                pending.shift();
+            else
+                pending[0] = replaceDeltaText(chunk, retained);
+            continue;
+        }
+        if (chunk.type === 'tool-call-delta'
+            || (chunk.type === 'block-start' && chunk.blockType === 'tool-call'))
+            break;
+        if (chunk.type === 'block-start' && releasable === 0)
+            break;
+        chunks.push(chunk);
+        pending.shift();
+    }
+    return { chunks, pendingGuardedCharacters: guardedCharacters };
 }
 /** Append and flush the audit event before publishing its replacement chunks. */
 async function recordOutputGuard(ctx, agent, step, reason, violations) {
@@ -130,43 +189,76 @@ async function recordOutputGuard(ctx, agent, step, reason, violations) {
     await ctx.sessions.flush(agent.session);
 }
 /**
- * Buffer one downstream stream, then publish either the original chunks or a
- * deterministic replacement. Downstream construction stays after the caller's
- * safety-assessment flush.
+ * Inspect one downstream stream while retaining a policy-sized suffix. Safe
+ * prefixes preserve provider chunk timing; a violation discards the private
+ * suffix, closes published blocks, and appends a deterministic replacement.
  */
 function guardedModelStream(ctx, agent, step, assessment, next, config, signal) {
     return (async function* () {
-        const chunks = [];
+        const pending = [];
+        const assembler = new BlockAssembler();
+        const publishedBlocks = new Map();
+        let pendingGuardedCharacters = 0;
         let characters = 0;
-        let limitExceeded = false;
+        let chunkCount = 0;
+        let maxIndex = -1;
+        let usage;
+        let guardReason;
+        let guardViolations = [];
         for await (const chunk of next()) {
             signal?.throwIfAborted();
-            chunks.push(chunk);
+            assembler.push(chunk);
+            pending.push(chunk);
+            const deltaText = guardedDeltaText(chunk);
+            if (deltaText !== undefined)
+                pendingGuardedCharacters += deltaText.length;
+            if ('index' in chunk)
+                maxIndex = Math.max(maxIndex, chunk.index);
+            if (chunk.type === 'usage')
+                usage = chunk.usage;
+            chunkCount += 1;
             characters += JSON.stringify(chunk).length;
-            if (chunks.length > config.maxBufferedChunks || characters > config.maxBufferedCharacters) {
-                limitExceeded = true;
+            if (chunkCount > config.maxBufferedChunks || characters > config.maxBufferedCharacters) {
+                guardReason = 'buffer-limit';
                 break;
+            }
+            const violations = assessMindGardenOutput(inspectedText(assembler), assessment);
+            if (violations.length > 0) {
+                guardReason = 'policy-violation';
+                guardViolations = violations;
+                break;
+            }
+            const publishable = publishablePrefix(pending, pendingGuardedCharacters);
+            pendingGuardedCharacters = publishable.pendingGuardedCharacters;
+            for (const released of publishable.chunks) {
+                recordPublishedChunk(publishedBlocks, released);
+                yield released;
             }
         }
         signal?.throwIfAborted();
-        const buffered = bufferedResult(chunks);
-        const violations = limitExceeded ? [] : assessMindGardenOutput(buffered.text, assessment);
-        if (limitExceeded || violations.length > 0) {
-            const reason = limitExceeded ? 'buffer-limit' : 'policy-violation';
-            await recordOutputGuard(ctx, agent, step, reason, violations);
+        if (guardReason !== undefined) {
+            await recordOutputGuard(ctx, agent, step, guardReason, guardViolations);
             signal?.throwIfAborted();
-            yield* textStream(renderMindGardenGuardReplacement(reason, violations, assessment?.locale), buffered.usage);
+            for (const [index, block] of publishedBlocks) {
+                if (block.closed)
+                    continue;
+                yield { type: 'block-end', index, block: { type: block.type, text: block.text } };
+            }
+            yield* textStream(renderMindGardenGuardReplacement(guardReason, guardViolations, assessment?.locale), usage, maxIndex + 1);
             return;
         }
-        yield* chunks;
+        for (const chunk of pending) {
+            recordPublishedChunk(publishedBlocks, chunk);
+            yield chunk;
+        }
     })();
 }
 /**
  * Install deterministic safety routing. Elevated entered-human input is
  * answered locally without constructing the downstream model stream. Ordinary
- * responses remain buffered until the complete output passes policy checks.
+ * responses stream after a bounded private suffix passes policy checks.
  * @param ctx - plugin context carrying live Agent, Session, LLM, and Mind Garden services.
- * @param config - pre-publication buffering limits.
+ * @param config - incremental inspection limits.
  */
 export function apply(ctx, config) {
     const resolved = resolveConfig(config);

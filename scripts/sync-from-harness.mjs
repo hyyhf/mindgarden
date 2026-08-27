@@ -34,6 +34,7 @@ const roots = [
   ['UI source', join(UI_SOURCE, 'src'), join(UI_TARGET, 'src')],
   ['UI tests', join(UI_SOURCE, 'tests'), join(UI_TARGET, 'tests')],
   ['UI asset generator', join(UI_SOURCE, 'scripts'), join(UI_TARGET, 'scripts')],
+  ['UI build artifacts', join(UI_SOURCE, 'lib'), join(UI_TARGET, 'lib')],
 ]
 
 for (const filename of ['DESIGN.md']) {
@@ -42,7 +43,7 @@ for (const filename of ['DESIGN.md']) {
 
 for (const entry of await readdir(HOST_SOURCE, { withFileTypes: true })) {
   if (!entry.isDirectory() || !entry.name.startsWith('mind-garden-')) continue
-  for (const part of ['src', 'tests', 'skills']) {
+  for (const part of ['src', 'tests', 'skills', 'lib']) {
     const source = join(HOST_SOURCE, entry.name, part)
     try {
       await access(source, constants.R_OK)
@@ -56,7 +57,14 @@ for (const entry of await readdir(HOST_SOURCE, { withFileTypes: true })) {
 function transform(buffer, filename) {
   if (!TEXT_EXTENSIONS.has(extname(filename))) return buffer
   let text = buffer.toString('utf8').replaceAll('\r\n', '\n')
-  for (const [from, to] of REPLACEMENTS) text = text.replaceAll(from, to)
+  for (const [from, to] of REPLACEMENTS) {
+    const target = filename === join(UI_SOURCE, 'lib', 'client.js')
+      && from === '@deepseek-ai/dsh-client-ui-mind-garden'
+      ? '@deepseek-ai/dsh-mind-garden'
+      : to
+    text = text.replaceAll(from, target)
+  }
+  text = text.replace(/[ \t]+$/gmu, '')
   return Buffer.from(text)
 }
 
@@ -67,7 +75,7 @@ async function files(path) {
   for (const entry of entries) {
     const child = join(path, entry.name)
     if (entry.isDirectory()) result.push(...await files(child))
-    else if (entry.isFile()) result.push(child)
+    else if (entry.isFile() && entry.name !== 'tsconfig.tsbuildinfo' && !entry.name.endsWith('.map')) result.push(child)
   }
   return result
 }

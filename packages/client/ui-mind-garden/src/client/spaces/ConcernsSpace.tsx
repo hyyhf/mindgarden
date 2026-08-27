@@ -162,8 +162,8 @@ export function ConcernsSpace({
       <section className={css.threshold} style={{ '--mg-concern-scene': `url("${CONCERN_PAPER_LATTICE_V3}")` } as CSSProperties}>
         <header className={css.intro}>
           <div>
-          <h1>{t('concern.title')}</h1>
-          <p>{t('concern.subtitle')}</p>
+            <h1>{t('concern.title')}</h1>
+            <p>{t('concern.subtitle')}</p>
           </div>
           <aside className={css.privacy}>
             <PrivateIcon size={17} />

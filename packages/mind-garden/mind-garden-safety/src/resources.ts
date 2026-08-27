@@ -36,6 +36,7 @@ const EMERGENCY_RESOURCES: readonly MindGardenSafetyResource[] = Object.freeze([
 /**
  * Return detached resources appropriate to an intervention level.
  * @param urgent - whether immediate emergency contacts are required.
+ * @param locale - locale whose verified resource registry may be returned.
  * @returns the support line plus emergency contacts when requested.
  */
 export function mindGardenSafetyResources(

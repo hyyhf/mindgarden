@@ -13,13 +13,13 @@ export { assessMindGardenOutput, renderMindGardenGuardReplacement, renderMindGar
 export declare const name = "mind-garden-safety";
 /** Services needed to resolve exact live sessions and flush safety decisions. */
 export declare const inject: string[];
-/** Deployment bounds for complete pre-publication model buffering. */
+/** Deployment bounds for incremental model-output inspection. */
 export interface Config {
     /** Maximum output tokens recorded for each activated Mind Garden conversation request. */
     maxModelOutputTokens?: number;
-    /** Maximum serialized characters retained before fail-closed replacement. */
+    /** Maximum serialized characters inspected before fail-closed replacement. */
     maxBufferedCharacters?: number;
-    /** Maximum chunks retained before fail-closed replacement. */
+    /** Maximum chunks inspected before fail-closed replacement. */
     maxBufferedChunks?: number;
 }
 /** Schemastery validation for {@link Config}. */
@@ -27,9 +27,9 @@ export declare const Config: z<Config>;
 /**
  * Install deterministic safety routing. Elevated entered-human input is
  * answered locally without constructing the downstream model stream. Ordinary
- * responses remain buffered until the complete output passes policy checks.
+ * responses stream after a bounded private suffix passes policy checks.
  * @param ctx - plugin context carrying live Agent, Session, LLM, and Mind Garden services.
- * @param config - pre-publication buffering limits.
+ * @param config - incremental inspection limits.
  */
 export declare function apply(ctx: Context, config: Config): void;
 //# sourceMappingURL=index.d.ts.map

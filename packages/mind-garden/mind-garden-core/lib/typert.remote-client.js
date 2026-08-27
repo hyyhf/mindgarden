@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 const _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_parameter_0$schema = z.intersection(z.string(), z.unknown())
 const _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_parameter_1$schema = z.number()
+const _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_parameter_2$schema = z.union([z.literal("zh-CN"), z.literal("en")])
 const _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_result$schema = z.object({
   'revision': z.number().readonly(),
   'activatedAt': z.number().readonly(),
@@ -19,6 +20,7 @@ const _deepseek_ai_dsh_mind_garden_core_mindGarden_activate_parameter_1$schema =
   'supportIntent': z.union([z.literal("auto"), z.literal("listen"), z.literal("settle"), z.literal("clarify"), z.literal("next-step")]).readonly().optional(),
   'privacy': z.union([z.literal("durable"), z.literal("ephemeral")]).readonly(),
   'modelDisclosureAccepted': z.boolean().readonly().optional(),
+  'disclosureLocale': z.union([z.literal("zh-CN"), z.literal("en")]).readonly().optional(),
 })
 const _deepseek_ai_dsh_mind_garden_core_mindGarden_activate_result$schema = z.object({
   'revision': z.number().readonly(),
@@ -93,13 +95,23 @@ export const TYPERT_REMOTE = {
             schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_parameter_1$schema,
           },
         },
+        {
+          name: 'locale',
+          wire: 'locale',
+          source: 'json',
+          codec: {
+            mode: 'strict',
+            typeSymbol: '@deepseek-ai/dsh-mind-garden/core#mindGarden/acceptModelDisclosure:locale',
+            schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_parameter_2$schema,
+          },
+        },
       ],
       result: {
         mode: 'strict',
         typeSymbol: '@deepseek-ai/dsh-mind-garden/core/client#MindGardenSessionState',
         schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":202,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":220,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/core#mindGarden/activate',
@@ -140,7 +152,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/core/client#MindGardenSessionState',
         schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_activate_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":156,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":173,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/core#mindGarden/selectMode',
@@ -191,7 +203,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/core/client#MindGardenSessionState',
         schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_selectMode_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":169,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":186,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/core#mindGarden/selectSupportIntent',
@@ -242,7 +254,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/core/client#MindGardenSessionState',
         schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_selectSupportIntent_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":186,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":203,"column":3},
     },
   ],
 }

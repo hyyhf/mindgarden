@@ -169,6 +169,22 @@
   line-height: 1.5;
 }
 
+.uploadNotice {
+  position: relative;
+  z-index: 8;
+  width: min(620px, calc(100% - 32px));
+  min-height: 42px;
+  box-sizing: border-box;
+  margin: 0 auto 16px;
+  padding: 11px 16px;
+  border-radius: 12px;
+  color: #f8e8cf;
+  background: rgb(66 70 51 / 90%);
+  box-shadow: 0 16px 44px rgb(0 0 0 / 22%);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .error {
   position: relative;
   z-index: 8;

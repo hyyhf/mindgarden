@@ -43,8 +43,25 @@ class ScriptAdapter extends LlmAdapter {
   }
 }
 
-async function harness(
-  script: StreamChunk[][],
+class GatedAdapter extends LlmAdapter {
+  readonly requests: GenerateOptions[] = []
+  readonly waiting = Promise.withResolvers<undefined>()
+  readonly release = Promise.withResolvers<undefined>()
+  private readonly text = '我会先陪你把这段感受慢慢说清楚。'.repeat(12)
+
+  override async * stream(options: GenerateOptions): AsyncIterable<StreamChunk> {
+    this.requests.push(options)
+    yield { type: 'block-start', index: 0, blockType: 'text' }
+    yield { type: 'text-delta', index: 0, text: this.text }
+    this.waiting.resolve(undefined)
+    await this.release.promise
+    yield { type: 'block-end', index: 0, block: { type: 'text', text: this.text } }
+    yield { type: 'finish', reason: { kind: 'stop' } }
+  }
+}
+
+async function compose(
+  adapter: LlmAdapter & { readonly requests: GenerateOptions[] },
   config: mindGardenSafety.Config = {},
   activate = true,
 ) {
@@ -59,7 +76,6 @@ async function harness(
   await ctx.plugin(mindGardenDialogue)
   await ctx.plugin(mindGardenSafety, config)
   await ctx.plugin(AgentLoop, { agents: [] })
-  const adapter = new ScriptAdapter(script)
   ctx.llm.registerAdapter(['mock'], adapter)
   const agent = ctx.agentLoop.create(SessionId(crypto.randomUUID()), { provider: 'mock', model: 'test' })
   if (activate) {
@@ -68,6 +84,15 @@ async function harness(
     })
   }
   return { ctx, agent, adapter }
+}
+
+async function harness(
+  script: StreamChunk[][],
+  config: mindGardenSafety.Config = {},
+  activate = true,
+) {
+  const adapter = new ScriptAdapter(script)
+  return compose(adapter, config, activate)
 }
 
 async function drain(ctx: Context, options: GenerateOptions): Promise<StreamChunk[]> {
@@ -120,7 +145,7 @@ describe('Mind Garden safety real agent composition', () => {
     await ctx.fiber.dispose()
   })
 
-  it('publishes a safe ordinary response only after the complete stream settles', async () => {
+  it('publishes a safe ordinary response without changing its assembled text', async () => {
     const { ctx, agent, adapter } = await harness([textResponse('我先听你把这份委屈说完。')])
     await send(agent, '今天工作很累。')
 
@@ -128,6 +153,40 @@ describe('Mind Garden safety real agent composition', () => {
     expect(adapter.requests[0]?.maxTokens).toBe(4_096)
     expect(assistantTexts(agent).at(-1)).toBe('我先听你把这份委屈说完。')
     expect(agent.session.events.some(event => event.type === 'mind-garden/output-guarded')).toBe(false)
+    await ctx.fiber.dispose()
+  })
+
+  it('publishes a checked prefix before the provider finishes', async () => {
+    const adapter = new GatedAdapter()
+    const { ctx, agent } = await compose(adapter)
+    agent.session.append('turn/start', { turn: 1 })
+    agent.session.append('step/start', { turn: 1, step: 1 })
+    agent.session.append('user/message', createUserMessage({
+      content: [{ type: 'text', text: '今天工作很累。' }],
+      source: { kind: 'user' },
+    }), { surfaceOp: 'append' })
+    const published = Promise.withResolvers<undefined>()
+    const chunks: StreamChunk[] = []
+    const reading = (async () => {
+      for await (const chunk of ctx.llm.stream(loopRequest(agent.session.id))) {
+        chunks.push(chunk)
+        if (chunk.type === 'text-delta') published.resolve(undefined)
+      }
+    })()
+
+    await adapter.waiting.promise
+    await Promise.race([
+      published.promise,
+      new Promise<never>((_resolve, reject) => {
+        setTimeout(() => { reject(new Error('checked prefix was not published')) }, 1_000)
+      }),
+    ])
+    expect(chunks.some(chunk => chunk.type === 'finish')).toBe(false)
+    expect(chunks.some(chunk => chunk.type === 'text-delta' && chunk.text.length > 0)).toBe(true)
+
+    adapter.release.resolve(undefined)
+    await reading
+    expect(chunks.at(-1)).toMatchObject({ type: 'finish', reason: { kind: 'stop' } })
     await ctx.fiber.dispose()
   })
 
@@ -160,8 +219,8 @@ describe('Mind Garden safety real agent composition', () => {
     await ctx.fiber.dispose()
   })
 
-  it('replaces unsafe cross-chunk output before any blocked chunk reaches the log', async () => {
-    const blocked = '只有我能理解你，不要再找家人。'
+  it('replaces unsafe cross-chunk output before any blocked phrase reaches the log', async () => {
+    const blocked = `${'我会认真听你说。'.repeat(12)}只有我能理解你，不要再找家人。`
     const { ctx, agent, adapter } = await harness([textResponse(blocked)])
     await send(agent, '我感到很孤单。')
 

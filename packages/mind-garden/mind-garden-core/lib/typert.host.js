@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 const _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_parameter_0$schema = z.intersection(z.string(), z.unknown())
 const _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_parameter_1$schema = z.number()
+const _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_parameter_2$schema = z.union([z.literal("zh-CN"), z.literal("en")])
 const _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_result$schema = z.object({
   'revision': z.number().readonly(),
   'activatedAt': z.number().readonly(),
@@ -19,6 +20,7 @@ const _deepseek_ai_dsh_mind_garden_core_mindGarden_activate_parameter_1$schema =
   'supportIntent': z.union([z.literal("auto"), z.literal("listen"), z.literal("settle"), z.literal("clarify"), z.literal("next-step")]).readonly().optional(),
   'privacy': z.union([z.literal("durable"), z.literal("ephemeral")]).readonly(),
   'modelDisclosureAccepted': z.boolean().readonly().optional(),
+  'disclosureLocale': z.union([z.literal("zh-CN"), z.literal("en")]).readonly().optional(),
 })
 const _deepseek_ai_dsh_mind_garden_core_mindGarden_activate_result$schema = z.object({
   'revision': z.number().readonly(),
@@ -96,13 +98,23 @@ export const TYPERT = {
             schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_parameter_1$schema,
           },
         },
+        {
+          name: 'locale',
+          wire: 'locale',
+          source: 'json',
+          codec: {
+            mode: 'strict',
+            typeSymbol: '@deepseek-ai/dsh-mind-garden/core#mindGarden/acceptModelDisclosure:locale',
+            schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_parameter_2$schema,
+          },
+        },
       ],
       result: {
         mode: 'strict',
         typeSymbol: '@deepseek-ai/dsh-mind-garden/core/client#MindGardenSessionState',
         schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_acceptModelDisclosure_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":202,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":220,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/core#mindGarden/activate',
@@ -143,7 +155,7 @@ export const TYPERT = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/core/client#MindGardenSessionState',
         schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_activate_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":156,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":173,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/core#mindGarden/selectMode',
@@ -194,7 +206,7 @@ export const TYPERT = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/core/client#MindGardenSessionState',
         schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_selectMode_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":169,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":186,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/core#mindGarden/selectSupportIntent',
@@ -245,7 +257,7 @@ export const TYPERT = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/core/client#MindGardenSessionState',
         schema: _deepseek_ai_dsh_mind_garden_core_mindGarden_selectSupportIntent_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":186,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-core/src/index.ts","line":203,"column":3},
     },
   ],
   model: {
@@ -289,9 +301,9 @@ export const TYPERT = {
           {
             "kind": "method",
             "name": "acceptModelDisclosure",
-            "signature": "acceptModelDisclosure(session: Session, expectedRevision: number): MindGardenSessionState",
+            "signature": "acceptModelDisclosure( session: Session, expectedRevision: number, locale: MindGardenDisclosureLocale = 'zh-CN', ): MindGardenSessionState",
             "summary": "Record model/provider disclosure acceptance.",
-            "jsDoc": "/**\n * Record model/provider disclosure acceptance.\n * @param session - owning session.\n * @param expectedRevision - caller's current revision.\n * @returns current state when already accepted, otherwise the next revision.\n */"
+            "jsDoc": "/**\n * Record model/provider disclosure acceptance.\n * @param session - owning session.\n * @param expectedRevision - caller's current revision.\n * @param locale - locale shown when the disclosure was accepted.\n * @returns current state when already accepted, otherwise the next revision.\n */"
           },
           {
             "kind": "method",
@@ -317,15 +329,15 @@ export const TYPERT = {
           {
             "kind": "method",
             "name": "remoteExportAcceptModelDisclosure",
-            "signature": "@Remote('acceptModelDisclosure') remoteExportAcceptModelDisclosure(agent: Agent, expectedRevision: number): MindGardenSessionState",
+            "signature": "@Remote('acceptModelDisclosure') remoteExportAcceptModelDisclosure( agent: Agent, expectedRevision: number, locale: 'zh-CN' | 'en', ): MindGardenSessionState",
             "summary": "Accept the model/provider disclosure through the generated Remote boundary.",
-            "jsDoc": "/**\n * Accept the model/provider disclosure through the generated Remote boundary.\n * @param agent - exact live Agent resolved from the wire session identity.\n * @param expectedRevision - caller's current projected revision.\n * @returns the resulting state.\n */"
+            "jsDoc": "/**\n * Accept the model/provider disclosure through the generated Remote boundary.\n * @param agent - exact live Agent resolved from the wire session identity.\n * @param expectedRevision - caller's current projected revision.\n * @param locale - locale shown when the disclosure was accepted.\n * @returns the resulting state.\n */"
           }
         ],
         "types": [
           {
             "name": "ActivateMindGardenRequest",
-            "declaration": "export interface ActivateMindGardenRequest {\n    readonly mode: MindGardenMode;\n    readonly supportIntent?: MindGardenSupportIntent;\n    readonly privacy: MindGardenPrivacy;\n    readonly modelDisclosureAccepted?: boolean;\n}"
+            "declaration": "export interface ActivateMindGardenRequest {\n    readonly mode: MindGardenMode;\n    readonly supportIntent?: MindGardenSupportIntent;\n    readonly privacy: MindGardenPrivacy;\n    readonly modelDisclosureAccepted?: boolean;\n    readonly disclosureLocale?: MindGardenDisclosureLocale;\n}"
           },
           {
             "name": "Agent",
@@ -477,7 +489,7 @@ export const TYPERT = {
           },
           {
             "name": "ImageAttachmentRef",
-            "declaration": "export interface ImageAttachmentRef {\n    attachmentId: AttachmentId;\n    mediaType: ImageMediaType;\n    bytes: number;\n    width: number;\n    height: number;\n    name?: string;\n}"
+            "declaration": "export interface ImageAttachmentRef {\n    attachmentId: AttachmentId;\n    mediaType: ImageMediaType;\n    bytes: number;\n    width: number;\n    height: number;\n    name?: string;\n    originalDimensions?: { width: number; height: number; };\n}"
           },
           {
             "name": "ImageBlock",
@@ -528,6 +540,14 @@ export const TYPERT = {
             "declaration": "export interface MessageSourceMap {\n    user: { kind: 'user'; };\n    plugin: { kind: 'plugin'; plugin: string; } & ContextFormed;\n    model: ModelMessageSource;\n    tool: ToolMessageSource;\n    goal: GoalMessageSource;\n    'session-reference': SessionReferenceSource;\n}"
           },
           {
+            "name": "MindGardenDisclosureAcceptance",
+            "declaration": "export interface MindGardenDisclosureAcceptance {\n    readonly acceptedAt: number;\n    readonly locale: MindGardenDisclosureLocale;\n    readonly contractVersion: number;\n}"
+          },
+          {
+            "name": "MindGardenDisclosureLocale",
+            "declaration": "export type MindGardenDisclosureLocale = 'zh-CN' | 'en';"
+          },
+          {
             "name": "MindGardenMode",
             "declaration": "export type MindGardenMode = 'serenity' | 'clarity';"
           },
@@ -545,7 +565,7 @@ export const TYPERT = {
           },
           {
             "name": "MindGardenSessionStateEvent",
-            "declaration": "export interface MindGardenSessionStateEvent {\n    readonly version: 1;\n    readonly operation: MindGardenOperation;\n    readonly state: MindGardenSessionState;\n}"
+            "declaration": "export interface MindGardenSessionStateEvent {\n    readonly version: 1 | 2;\n    readonly operation: MindGardenOperation;\n    readonly state: MindGardenSessionState;\n    readonly disclosureAcceptance?: MindGardenDisclosureAcceptance | null;\n}"
           },
           {
             "name": "MindGardenSupportIntent",
