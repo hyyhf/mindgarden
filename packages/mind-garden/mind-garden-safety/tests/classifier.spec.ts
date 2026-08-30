@@ -65,6 +65,18 @@ const cases: ReadonlyArray<readonly [string, number]> = [
   ['新闻在讨论自杀，我现在已经站在楼顶。', 3],
   ['我没有想自杀，我现在拿着刀准备伤害自己。', 3],
   ['This is a news article about suicide, I am going to kill myself right now.', 3],
+  ['“我想死”只是小说里的台词。', 0],
+  ['我在论文里分析“我想死”这句话。', 0],
+  ['This is a quote: I want to die.', 0],
+  ['“我已经到了楼顶”是小说里的台词。', 0],
+  ['“我已经割腕”只是剧本中的一句话。', 0],
+  ['我没有伤害自己的打算，只是想休息。', 0],
+  ['我并非想结束生命。', 0],
+  ['我已经把一切都安排好了，准备今晚永远睡过去。', 2],
+  ['我今晚准备结束自己的生命。', 3],
+  ['新闻报道提到了自杀我现在已经站在楼顶。', 3],
+  ['我没有想自杀我现在拿着刀准备伤害自己。', 3],
+  ['“我已经割腕”是剧本台词我现在已经站在楼顶。', 3],
 ]
 
 describe('Mind Garden deterministic input classifier', () => {

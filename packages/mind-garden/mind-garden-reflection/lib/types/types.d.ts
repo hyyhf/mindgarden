@@ -660,7 +660,8 @@ export interface MindGardenReflectionTrendValue {
 }
 /** Explicit query for only user-authorized conversation material. */
 export interface MindGardenAuthorizedContextRequest {
-    readonly localDate: string;
+    /** Browser-local date; omit to disable check-ins and same-day journal boosting. */
+    readonly localDate?: string;
     readonly query: string;
 }
 /** Bounded journal excerpt released by explicit per-entry permission. */

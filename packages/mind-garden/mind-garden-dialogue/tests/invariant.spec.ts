@@ -2,7 +2,12 @@ import { Context } from '@deepseek-ai/cordis'
 import { createUserMessage } from '@deepseek-ai/dsh-llm'
 import { foldMindGarden } from '@deepseek-ai/dsh-mind-garden/core'
 import * as DialogueInvariant from '@deepseek-ai/dsh-mind-garden/dialogue/invariant'
-import { name, renderMindGardenDialoguePolicy } from '@deepseek-ai/dsh-mind-garden/dialogue'
+import type { MindGardenAuthorizedJournalExcerpt } from '@deepseek-ai/dsh-mind-garden/reflection/types'
+import {
+  name,
+  renderAuthorizedJournalContext,
+  renderMindGardenDialoguePolicy,
+} from '@deepseek-ai/dsh-mind-garden/dialogue'
 import InvariantRegistry, { InvariantError } from '@deepseek-ai/dsh-invariants'
 import SessionStore, { SessionId, type Session } from '@deepseek-ai/dsh-session'
 import { describe, expect, it } from 'vitest'
@@ -33,7 +38,7 @@ function activate(session: Session) {
 }
 
 describe('Mind Garden dialogue invariant', () => {
-  it('accepts the exact sourced policy snapshot', async () => {
+  it('accepts exact sourced policy and authorized-journal messages', async () => {
     const ctx = await setup()
     const session = ctx.sessions.create(SessionId('dialogue-invariant-valid'))
     activate(session)
@@ -44,6 +49,24 @@ describe('Mind Garden dialogue invariant', () => {
       session.append('user/message', createUserMessage({
         content: [{ type: 'text', text }],
         source: { kind: 'plugin', plugin: name, form: 'snapshot', sections: [{ name, text }] },
+      }), { surfaceOp: 'append' })
+    }).not.toThrow()
+    const journals = [{
+      id: 'journal-1',
+      localDate: '2026-08-18',
+      title: 'After the meeting',
+      body: 'I wanted more time before answering.',
+    }] as unknown as readonly MindGardenAuthorizedJournalExcerpt[]
+    const journalText = renderAuthorizedJournalContext(journals)
+    expect(() => {
+      session.append('user/message', createUserMessage({
+        content: [{ type: 'text', text: journalText }],
+        source: {
+          kind: 'plugin',
+          plugin: name,
+          form: 'recall',
+          sections: [{ name: 'authorized-journals', text: journalText }],
+        },
       }), { surfaceOp: 'append' })
     }).not.toThrow()
     await ctx.fiber.dispose()
@@ -83,6 +106,15 @@ describe('Mind Garden dialogue invariant', () => {
     expect(() => active.append('user/message', createUserMessage({
       content: [{ type: 'text', text: exact }],
       source: { kind: 'plugin', plugin: name },
+    }), { surfaceOp: 'append' })).toThrow(expect.objectContaining<Partial<InvariantError>>({ code: 'INVARIANT' }))
+    expect(() => active.append('user/message', createUserMessage({
+      content: [{ type: 'text', text: 'counterfeit journal context' }],
+      source: {
+        kind: 'plugin',
+        plugin: name,
+        form: 'recall',
+        sections: [{ name: 'authorized-journals', text: 'counterfeit journal context' }],
+      },
     }), { surfaceOp: 'append' })).toThrow(expect.objectContaining<Partial<InvariantError>>({ code: 'INVARIANT' }))
     await ctx.fiber.dispose()
   })

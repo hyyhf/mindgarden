@@ -281,6 +281,11 @@ function actions(overrides: Partial<MindGardenViewActions> = {}): MindGardenView
       ok: true as const,
       value: [] as readonly MindGardenContemplation[],
     })),
+    onCreateContemplation: vi.fn(() => Promise.resolve({ ok: false as const, code: 'unused' })),
+    onUpdateContemplation: vi.fn(() => Promise.resolve({ ok: false as const, code: 'unused' })),
+    onConfirmContemplation: vi.fn(() => Promise.resolve({ ok: false as const, code: 'unused' })),
+    onDeleteContemplation: vi.fn(() => Promise.resolve({ ok: false as const, code: 'unused' })),
+    onProposePrinciple: vi.fn(() => Promise.resolve({ ok: false as const, code: 'unused' })),
     onListPrincipleProposals: vi.fn(() => Promise.resolve({ ok: true as const, value: [] })),
     onListPrinciples: vi.fn(() => Promise.resolve({ ok: true as const, value: [] })),
     onAcceptPrincipleProposal: vi.fn(() => Promise.resolve({ ok: true as const, value: principle() })),
@@ -313,6 +318,7 @@ describe('Mind Garden full view', () => {
     expect(loading.getByRole('button', { name: zh['entry.open'] })).toBeTruthy()
 
     const useProjection = vi.fn(() => active())
+    const useSession = vi.fn((selector: (state: { running: boolean }) => unknown) => selector({ running: false }))
     const useStore = vi.fn((selector: (state: { activeSpace: 'today'; sidebarCollapsed: false }) => unknown) => selector({
       activeSpace: 'today',
       sidebarCollapsed: false,
@@ -320,6 +326,7 @@ describe('Mind Garden full view', () => {
     const storeActions = { selectSpace: vi.fn(), toggleSidebar: vi.fn() }
     const viewProps = {
       useProjection,
+      useSession,
       useStore,
       actions: storeActions,
       inputActions: { setDraft: vi.fn() },
@@ -328,6 +335,7 @@ describe('Mind Garden full view', () => {
     } as unknown as Parameters<typeof MindGardenView>[0]
     loading.rerender(<MindGardenView {...viewProps} />)
     expect(useProjection).toHaveBeenCalledWith('mind-garden')
+    expect(useSession).toHaveBeenCalledOnce()
     expect(useStore).toHaveBeenCalledOnce()
   })
 

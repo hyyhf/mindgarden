@@ -135,12 +135,14 @@ describe('Mind Garden portability panel', () => {
     })
     const onInspectBackup = vi.fn(() => Promise.resolve({ ok: true as const, value: INSPECTED }))
     const onRestoreBackup = vi.fn(() => Promise.resolve({ ok: true as const, value: RESTORED }))
+    const onRestoreSuccess = vi.fn()
     render(<GardenPortabilityPanel
       t={t}
       onExportBackup={() => Promise.resolve({ ok: false, code: 'unused' })}
       onInspectBackup={onInspectBackup}
       onRestoreBackup={onRestoreBackup}
       onRotateVaultKey={unusedRotation}
+      onRestoreSuccess={onRestoreSuccess}
     />)
     fireEvent.change(screen.getByLabelText(zh['restore.file']), { target: { files: [file] } })
     fireEvent.change(screen.getByLabelText(zh['restore.passphrase']), {
@@ -158,6 +160,7 @@ describe('Mind Garden portability panel', () => {
       expect(onRestoreBackup).toHaveBeenCalledWith(file, 'paper lantern river stone')
       expect(screen.getByText(zh['restore.success'])).toBeTruthy()
     })
+    expect(onRestoreSuccess).toHaveBeenCalledOnce()
   })
 
   it('labels original archives as bounded private-profile conversions and accepts their legacy passphrase floor', async () => {

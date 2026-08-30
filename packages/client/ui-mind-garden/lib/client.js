@@ -126,7 +126,7 @@ window.__ModuleLoader__.load({
 		});
 		//#endregion
 		//#region \0dsh-css:E:\test code\deepseekharness_modified\deepseek-harness\packages\client\ui-mind-garden\src\client\MindGardenDock.module.css.mjs
-		const css$18 = "._1xn-PW_dock{box-sizing:border-box;color:var(--dsw-alias-label-primary);font-family:\"Noto Sans SC\", var(--dsw-font-family), \"PingFang SC\", \"Microsoft YaHei\", sans-serif;flex:none;align-items:center;display:inline-flex;position:relative}._1xn-PW_entry,._1xn-PW_activeHeader{box-sizing:border-box;height:28px;color:var(--dsw-alias-label-secondary);font:inherit;white-space:nowrap;cursor:pointer;background:0 0;border:0;border-radius:7px;align-items:center;gap:6px;padding:0 7px 0 5px;transition:color .12s,background-color .12s;display:inline-flex}._1xn-PW_entry:hover,._1xn-PW_activeHeader:hover,._1xn-PW_entry[aria-expanded=true],._1xn-PW_activeHeader[aria-expanded=true]{color:var(--dsw-alias-label-primary);background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 8%, var(--dsw-alias-interactive-bg-hover))}._1xn-PW_mark,._1xn-PW_markActive,._1xn-PW_modeIcon,._1xn-PW_optionIcon{flex:none;place-items:center;display:inline-grid}._1xn-PW_mark,._1xn-PW_markActive{width:19px;height:19px;color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 54%, var(--dsw-alias-label-primary))}._1xn-PW_entryTitle,._1xn-PW_activeTitle,._1xn-PW_modeTitle{color:currentColor;font-size:11px;font-weight:600;line-height:16px}._1xn-PW_activeTitle{letter-spacing:.01em}._1xn-PW_postureSignal{background:var(--dsw-alias-state-business-primary);width:4px;height:4px;box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-secondary) 24%, transparent);border-radius:50%}._1xn-PW_visuallyHidden{clip:rect(0, 0, 0, 0);white-space:nowrap;border:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}._1xn-PW_chevron,._1xn-PW_chevronOpen{color:var(--dsw-alias-label-tertiary);flex:none;transition:transform .16s cubic-bezier(.2,.8,.2,1)}._1xn-PW_chevronOpen{transform:rotate(180deg)}._1xn-PW_panel,._1xn-PW_controls{z-index:80;box-sizing:border-box;overscroll-behavior:contain;background:linear-gradient(145deg, color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 8%, transparent), transparent 44%), color-mix(in srgb, var(--dsw-alias-bg-layer-1,#fffdf9) 96%, #fffdf9);box-shadow:var(--dsw-shadow-lv3);--dsh-scrollbar-thumb:var(--dsw-alias-scrollbar-bg-l2);--dsh-scrollbar-thumb-hover:var(--dsw-alias-scrollbar-hover-l2);scrollbar-color:var(--dsw-alias-scrollbar-bg-l2) transparent;border:0;border-radius:11px;animation:.15s cubic-bezier(.16,1,.3,1) both _1xn-PW_posturePopoverIn;position:fixed;overflow:auto}._1xn-PW_dock:has(._1xn-PW_panel):before{z-index:79;content:\"\";background:#27201a38;position:fixed;inset:0}._1xn-PW_panel[data-positioned=false],._1xn-PW_controls[data-positioned=false]{visibility:hidden}._1xn-PW_panel{padding:18px}._1xn-PW_panelHeader,._1xn-PW_popoverHeader{align-items:flex-start;gap:14px;display:flex}._1xn-PW_panelHeader>div,._1xn-PW_popoverHeader>span{flex:1;min-width:0}._1xn-PW_title{color:var(--dsw-alias-label-primary);letter-spacing:-.015em;margin:0 0 6px;font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:18px;font-weight:520;line-height:1.4}._1xn-PW_disclosure,._1xn-PW_acceptance,._1xn-PW_error{margin:0;font-size:12px;line-height:1.65}._1xn-PW_disclosure{max-width:64ch;color:var(--dsw-alias-label-secondary)}._1xn-PW_acceptance{color:var(--dsw-alias-label-tertiary);margin-block-start:13px}._1xn-PW_close{width:36px;height:36px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:0;border-radius:6px;flex:none;place-items:center;padding:0;display:grid}._1xn-PW_close:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}._1xn-PW_contract{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 0;padding:0;list-style:none;display:grid}._1xn-PW_contract li{color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 55%, var(--dsw-alias-label-primary));grid-template-columns:18px minmax(0,1fr);align-items:start;gap:8px;display:grid}._1xn-PW_contract li>span{gap:2px;display:grid}._1xn-PW_contract strong{color:var(--dsw-alias-label-primary);font-size:12px;font-weight:650;line-height:1.5}._1xn-PW_contract small{color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:1.55}._1xn-PW_consent{color:var(--dsw-alias-label-primary);background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 8%, var(--dsw-alias-bg-layer-2));cursor:pointer;border-radius:8px;grid-template-columns:20px minmax(0,1fr);align-items:start;gap:10px;margin-block-start:16px;padding:12px;display:grid}._1xn-PW_consent input{width:18px;height:18px;accent-color:var(--dsw-alias-state-business-primary);margin:1px 0 0}._1xn-PW_consent>span{gap:3px;display:grid}._1xn-PW_consent strong{font-size:12px;font-weight:650;line-height:1.5}._1xn-PW_consent small{color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:1.55}._1xn-PW_modeGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-block-start:16px;display:grid}._1xn-PW_modeCard{min-height:70px;color:var(--dsw-alias-label-primary);background:color-mix(in srgb, var(--dsw-alias-bg-layer-2) 64%, transparent);text-align:start;cursor:pointer;border:1px solid #0000;border-radius:8px;grid-template-columns:32px minmax(0,1fr);align-items:center;gap:9px;padding:10px 11px;transition:border-color .12s,background-color .12s;display:grid}._1xn-PW_modeCard:hover{border-color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 20%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 7%, var(--dsw-alias-bg-layer-2))}._1xn-PW_modeCard:disabled{cursor:not-allowed;opacity:.48}._1xn-PW_modeCard>span:last-child{display:grid}._1xn-PW_modeIcon,._1xn-PW_optionIcon{width:28px;height:28px;color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 58%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 10%, transparent);border-radius:50%}._1xn-PW_modeDescription{color:var(--dsw-alias-label-tertiary);margin-block-start:2px;font-size:10px;line-height:1.55}._1xn-PW_activePanel{align-items:center;display:inline-flex;position:relative}._1xn-PW_controls{padding:14px}._1xn-PW_popoverHeader{align-items:center;margin-block-end:14px}._1xn-PW_popoverHeader>span{gap:2px;display:grid}._1xn-PW_popoverHeader strong{color:var(--dsw-alias-label-primary);font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:16px;font-weight:520;line-height:1.4}._1xn-PW_popoverHeader small{color:var(--dsw-alias-label-tertiary);font-size:10px;line-height:1.5}._1xn-PW_controlSection+._1xn-PW_controlSection{margin-block-start:14px}._1xn-PW_controlLabel{color:var(--dsw-alias-label-tertiary);letter-spacing:.06em;margin-block-end:7px;font-size:9px;font-weight:650;line-height:15px;display:block}._1xn-PW_segmented{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;display:grid}._1xn-PW_intentList{flex-wrap:wrap;gap:5px;display:flex}._1xn-PW_segment,._1xn-PW_segmentActive,._1xn-PW_intent,._1xn-PW_intentActive{min-height:32px;color:var(--dsw-alias-label-secondary);font:inherit;cursor:pointer;background:0 0;border:1px solid #0000;border-radius:7px;padding:5px 9px;font-size:11px;line-height:18px;transition:color .12s,border-color .12s,background-color .12s}._1xn-PW_segment,._1xn-PW_segmentActive{text-align:start;align-items:center;gap:7px;min-width:0;display:inline-flex}._1xn-PW_segment:hover,._1xn-PW_intent:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}._1xn-PW_segmentActive,._1xn-PW_intentActive{border-color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 22%, transparent);color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 72%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-business-secondary) 8%, transparent)}._1xn-PW_optionIcon{color:currentColor;background:color-mix(in srgb, currentColor 6%, transparent);width:24px;height:24px}._1xn-PW_optionCopy{text-align:start;min-width:0;display:grid}._1xn-PW_optionCopy strong{font-size:11px;font-weight:650}._1xn-PW_optionCopy small{color:var(--dsw-alias-label-tertiary);font-size:9px;line-height:1.5}._1xn-PW_storage{color:var(--dsw-alias-label-caption);align-items:center;gap:6px;margin-block-start:13px;font-size:9px;line-height:15px;display:flex}._1xn-PW_error{color:var(--dsw-alias-state-error-primary);background:color-mix(in srgb, var(--dsw-alias-state-error-secondary) 10%, transparent);border-radius:7px;margin-block-start:10px;padding:8px 9px}._1xn-PW_settingsIdentity{grid-template-columns:40px minmax(0,1fr);align-items:center;gap:12px;padding-block-end:18px;display:grid}._1xn-PW_settingsIdentity>span:last-child{gap:3px;display:grid}._1xn-PW_settingsIdentity strong{font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:22px;font-weight:520;line-height:1.35}._1xn-PW_settingsIdentity small{color:var(--dsw-alias-label-secondary);font-size:11px;line-height:1.6}._1xn-PW_dock[data-surface=settings],._1xn-PW_dock[data-surface=settings] ._1xn-PW_activePanel{width:100%;display:block}._1xn-PW_dock[data-surface=settings] ._1xn-PW_markActive{width:38px;height:38px;color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 68%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 10%, transparent);border-radius:50%}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controls{background:color-mix(in srgb, var(--dsw-alias-bg-layer-2) 46%, transparent);width:auto;max-height:none;box-shadow:none;border-radius:8px;grid-template-columns:minmax(230px,.8fr) minmax(0,1.2fr);gap:0;padding:0;animation:none;display:grid;position:static;overflow:visible}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controlSection{margin:0;padding:18px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controlSection+._1xn-PW_controlSection{border-inline-start:1px solid var(--dsw-alias-border-l2)}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controlLabel{color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 58%, var(--dsw-alias-label-primary));letter-spacing:.08em;margin-block-end:11px;font-size:9px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_segmented{grid-template-columns:1fr;gap:7px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_segment,._1xn-PW_dock[data-surface=settings] ._1xn-PW_segmentActive{border-color:var(--dsw-alias-border-l2);border-radius:6px;min-height:58px;padding:9px 10px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_segmentActive{border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 34%, var(--dsw-alias-border-l2));background:linear-gradient(90deg, color-mix(in srgb, var(--dsw-alias-state-success-secondary) 10%, transparent), transparent), color-mix(in srgb, var(--dsw-alias-bg-base) 96%, var(--dsw-alias-state-warn-secondary))}._1xn-PW_dock[data-surface=settings] ._1xn-PW_intentList{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;display:grid}._1xn-PW_dock[data-surface=settings] ._1xn-PW_intent,._1xn-PW_dock[data-surface=settings] ._1xn-PW_intentActive{text-align:start;min-height:38px;padding:7px 9px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_storage{color:var(--dsw-alias-label-tertiary);grid-column:1/-1;margin:0;padding:12px 18px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_error{grid-column:1/-1;margin:0 18px 14px}._1xn-PW_entry:focus-visible,._1xn-PW_close:focus-visible,._1xn-PW_activeHeader:focus-visible,._1xn-PW_modeCard:focus-visible,._1xn-PW_segment:focus-visible,._1xn-PW_segmentActive:focus-visible,._1xn-PW_intent:focus-visible,._1xn-PW_intentActive:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:2px}._1xn-PW_segment:disabled,._1xn-PW_segmentActive:disabled,._1xn-PW_intent:disabled,._1xn-PW_intentActive:disabled,._1xn-PW_modeCard:disabled,._1xn-PW_close:disabled{cursor:default;opacity:.5}@keyframes _1xn-PW_posturePopoverIn{0%{opacity:.01;transform:translateY(4px)scale(.992)}to{opacity:1;transform:translateY(0)scale(1)}}@container (width<=500px){._1xn-PW_entry,._1xn-PW_activeHeader{padding-inline:4px}._1xn-PW_entryTitle{text-overflow:ellipsis;max-width:76px;overflow:hidden}}@media (width<=620px){._1xn-PW_contract{grid-template-columns:1fr;gap:8px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controls{grid-template-columns:1fr;gap:6px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controlSection+._1xn-PW_controlSection{border-inline-start:0}}@media (width<=430px){._1xn-PW_dock:has(._1xn-PW_panel):before{background:#27201a5c}._1xn-PW_panel{padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));background:linear-gradient(145deg,#f5e0bf2e,#0000 44%),#fffdf9;border-radius:11px 11px 7px 7px;width:100%!important;max-height:calc(100dvh - 12px)!important;inset:auto 0 0!important}._1xn-PW_close{width:44px;height:44px}._1xn-PW_disclosure,._1xn-PW_acceptance,._1xn-PW_contract small,._1xn-PW_consent small{font-size:12px}._1xn-PW_consent strong{font-size:14px}._1xn-PW_modeCard:disabled{opacity:.7}._1xn-PW_modeDescription{font-size:12px}._1xn-PW_modeGrid,._1xn-PW_dock[data-surface=settings] ._1xn-PW_intentList{grid-template-columns:1fr}}@media (prefers-reduced-motion:reduce){._1xn-PW_panel,._1xn-PW_controls{animation:none}._1xn-PW_entry,._1xn-PW_activeHeader,._1xn-PW_chevron,._1xn-PW_chevronOpen,._1xn-PW_modeCard,._1xn-PW_segment,._1xn-PW_segmentActive,._1xn-PW_intent,._1xn-PW_intentActive{transition:none}}";
+		const css$18 = "._1xn-PW_dock{box-sizing:border-box;color:var(--dsw-alias-label-primary);font-family:\"Noto Sans SC\", var(--dsw-font-family), \"PingFang SC\", \"Microsoft YaHei\", sans-serif;flex:none;align-items:center;display:inline-flex;position:relative}._1xn-PW_entry,._1xn-PW_activeHeader{box-sizing:border-box;height:28px;color:var(--dsw-alias-label-secondary);font:inherit;white-space:nowrap;cursor:pointer;background:0 0;border:0;border-radius:7px;align-items:center;gap:6px;padding:0 7px 0 5px;transition:color .12s,background-color .12s;display:inline-flex}._1xn-PW_entry:hover,._1xn-PW_activeHeader:hover,._1xn-PW_entry[aria-expanded=true],._1xn-PW_activeHeader[aria-expanded=true]{color:var(--dsw-alias-label-primary);background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 8%, var(--dsw-alias-interactive-bg-hover))}._1xn-PW_mark,._1xn-PW_markActive,._1xn-PW_optionIcon{flex:none;place-items:center;display:inline-grid}._1xn-PW_mark,._1xn-PW_markActive{width:19px;height:19px;color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 54%, var(--dsw-alias-label-primary))}._1xn-PW_entryTitle,._1xn-PW_activeTitle{color:currentColor;font-size:11px;font-weight:600;line-height:16px}._1xn-PW_activeTitle{letter-spacing:.01em}._1xn-PW_postureSignal{background:var(--dsw-alias-state-business-primary);width:4px;height:4px;box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-secondary) 24%, transparent);border-radius:50%}._1xn-PW_visuallyHidden{clip:rect(0, 0, 0, 0);white-space:nowrap;border:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}._1xn-PW_chevron,._1xn-PW_chevronOpen{color:var(--dsw-alias-label-tertiary);flex:none;transition:transform .16s cubic-bezier(.2,.8,.2,1)}._1xn-PW_chevronOpen{transform:rotate(180deg)}._1xn-PW_panel,._1xn-PW_controls{z-index:80;box-sizing:border-box;overscroll-behavior:contain;background:linear-gradient(145deg, color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 8%, transparent), transparent 44%), color-mix(in srgb, var(--dsw-alias-bg-layer-1,#fffdf9) 96%, #fffdf9);box-shadow:var(--dsw-shadow-lv3);--dsh-scrollbar-thumb:var(--dsw-alias-scrollbar-bg-l2);--dsh-scrollbar-thumb-hover:var(--dsw-alias-scrollbar-hover-l2);scrollbar-color:var(--dsw-alias-scrollbar-bg-l2) transparent;border:0;border-radius:11px;animation:.15s cubic-bezier(.16,1,.3,1) both _1xn-PW_posturePopoverIn;position:fixed;overflow:auto}._1xn-PW_dock:has(._1xn-PW_panel):before{z-index:79;background:color-mix(in srgb, var(--dsw-alias-label-primary) 22%, transparent);content:\"\";position:fixed;inset:0}._1xn-PW_panel[data-positioned=false],._1xn-PW_controls[data-positioned=false]{visibility:hidden}._1xn-PW_panel{padding:18px}._1xn-PW_panelHeader,._1xn-PW_popoverHeader{align-items:flex-start;gap:14px;display:flex}._1xn-PW_panelHeader>div,._1xn-PW_popoverHeader>span{flex:1;min-width:0}._1xn-PW_title{color:var(--dsw-alias-label-primary);letter-spacing:-.015em;margin:0 0 6px;font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:18px;font-weight:520;line-height:1.4}._1xn-PW_disclosure,._1xn-PW_acceptance,._1xn-PW_error{margin:0;font-size:12px;line-height:1.65}._1xn-PW_disclosure{max-width:64ch;color:var(--dsw-alias-label-secondary)}._1xn-PW_acceptance{color:var(--dsw-alias-label-tertiary);margin-block-start:13px}._1xn-PW_close{width:36px;height:36px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:0;border-radius:6px;flex:none;place-items:center;padding:0;display:grid}._1xn-PW_close:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}._1xn-PW_contract{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 0;padding:0;list-style:none;display:grid}._1xn-PW_contract li{color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 55%, var(--dsw-alias-label-primary));grid-template-columns:18px minmax(0,1fr);align-items:start;gap:8px;display:grid}._1xn-PW_contract li>span{gap:2px;display:grid}._1xn-PW_contract strong{color:var(--dsw-alias-label-primary);font-size:12px;font-weight:650;line-height:1.5}._1xn-PW_contract small{color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:1.55}._1xn-PW_consent{color:var(--dsw-alias-label-primary);background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 8%, var(--dsw-alias-bg-layer-2));cursor:pointer;border-radius:8px;grid-template-columns:20px minmax(0,1fr);align-items:start;gap:10px;margin-block-start:16px;padding:12px;display:grid}._1xn-PW_consent input{width:18px;height:18px;accent-color:var(--dsw-alias-state-business-primary);margin:1px 0 0}._1xn-PW_consent>span{gap:3px;display:grid}._1xn-PW_consent strong{font-size:12px;font-weight:650;line-height:1.5}._1xn-PW_consent small{color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:1.55}._1xn-PW_activationActions{align-items:center;gap:12px;margin-block-start:16px;display:flex}._1xn-PW_activationActions>small{max-width:30ch;color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:1.55}._1xn-PW_activate{min-height:40px;color:var(--dsw-alias-label-primary-inverted,#fff);background:var(--dsw-alias-state-business-primary);font:inherit;cursor:pointer;border:0;border-radius:8px;flex:none;justify-content:center;align-items:center;gap:8px;padding:8px 16px;font-size:13px;font-weight:650;transition:background-color .12s;display:inline-flex}._1xn-PW_activate:hover{background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 88%, var(--dsw-alias-label-primary))}._1xn-PW_activate:disabled{cursor:not-allowed;opacity:.48}._1xn-PW_optionIcon{width:28px;height:28px;color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 58%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 10%, transparent);border-radius:50%}._1xn-PW_activePanel{align-items:center;display:inline-flex;position:relative}._1xn-PW_controls{padding:14px}._1xn-PW_popoverHeader{align-items:center;margin-block-end:14px}._1xn-PW_popoverHeader>span{gap:2px;display:grid}._1xn-PW_popoverHeader strong{color:var(--dsw-alias-label-primary);font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:16px;font-weight:520;line-height:1.4}._1xn-PW_popoverHeader small{color:var(--dsw-alias-label-tertiary);font-size:10px;line-height:1.5}._1xn-PW_controlSection+._1xn-PW_controlSection{margin-block-start:14px}._1xn-PW_controlLabel{color:var(--dsw-alias-label-tertiary);letter-spacing:.06em;margin-block-end:7px;font-size:9px;font-weight:650;line-height:15px;display:block}._1xn-PW_segmented{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;display:grid}._1xn-PW_intentList{flex-wrap:wrap;gap:5px;display:flex}._1xn-PW_segment,._1xn-PW_segmentActive,._1xn-PW_intent,._1xn-PW_intentActive{min-height:32px;color:var(--dsw-alias-label-secondary);font:inherit;cursor:pointer;background:0 0;border:1px solid #0000;border-radius:7px;padding:5px 9px;font-size:11px;line-height:18px;transition:color .12s,border-color .12s,background-color .12s}._1xn-PW_segment,._1xn-PW_segmentActive{text-align:start;align-items:center;gap:7px;min-width:0;display:inline-flex}._1xn-PW_segment:hover,._1xn-PW_intent:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}._1xn-PW_segmentActive,._1xn-PW_intentActive{border-color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 22%, transparent);color:color-mix(in srgb, var(--dsw-alias-state-business-primary) 72%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-business-secondary) 8%, transparent)}._1xn-PW_optionIcon{color:currentColor;background:color-mix(in srgb, currentColor 6%, transparent);width:24px;height:24px}._1xn-PW_optionCopy{text-align:start;min-width:0;display:grid}._1xn-PW_optionCopy strong{font-size:11px;font-weight:650}._1xn-PW_optionCopy small{color:var(--dsw-alias-label-tertiary);font-size:9px;line-height:1.5}._1xn-PW_storage{color:var(--dsw-alias-label-caption);align-items:center;gap:6px;margin-block-start:13px;font-size:9px;line-height:15px;display:flex}._1xn-PW_error{color:var(--dsw-alias-state-error-primary);background:color-mix(in srgb, var(--dsw-alias-state-error-secondary) 10%, transparent);border-radius:7px;margin-block-start:10px;padding:8px 9px}._1xn-PW_settingsIdentity{grid-template-columns:40px minmax(0,1fr);align-items:center;gap:12px;padding-block-end:18px;display:grid}._1xn-PW_settingsIdentity>span:last-child{gap:3px;display:grid}._1xn-PW_settingsIdentity strong{font-family:Mind Garden Display,Noto Serif SC,Songti SC,serif;font-size:22px;font-weight:520;line-height:1.35}._1xn-PW_settingsIdentity small{color:var(--dsw-alias-label-secondary);font-size:11px;line-height:1.6}._1xn-PW_dock[data-surface=settings],._1xn-PW_dock[data-surface=settings] ._1xn-PW_activePanel{width:100%;display:block}._1xn-PW_dock[data-surface=settings] ._1xn-PW_markActive{width:38px;height:38px;color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 68%, var(--dsw-alias-label-primary));background:color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 10%, transparent);border-radius:50%}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controls{background:color-mix(in srgb, var(--dsw-alias-bg-layer-2) 46%, transparent);width:auto;max-height:none;box-shadow:none;border-radius:8px;grid-template-columns:minmax(230px,.8fr) minmax(0,1.2fr);gap:0;padding:0;animation:none;display:grid;position:static;overflow:visible}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controlSection{margin:0;padding:18px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controlSection+._1xn-PW_controlSection{border-inline-start:1px solid var(--dsw-alias-border-l2)}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controlLabel{color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 58%, var(--dsw-alias-label-primary));letter-spacing:.08em;margin-block-end:11px;font-size:9px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_segmented{grid-template-columns:1fr;gap:7px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_segment,._1xn-PW_dock[data-surface=settings] ._1xn-PW_segmentActive{border-color:var(--dsw-alias-border-l2);border-radius:6px;min-height:58px;padding:9px 10px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_segmentActive{border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 34%, var(--dsw-alias-border-l2));background:linear-gradient(90deg, color-mix(in srgb, var(--dsw-alias-state-success-secondary) 10%, transparent), transparent), color-mix(in srgb, var(--dsw-alias-bg-base) 96%, var(--dsw-alias-state-warn-secondary))}._1xn-PW_dock[data-surface=settings] ._1xn-PW_intentList{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;display:grid}._1xn-PW_dock[data-surface=settings] ._1xn-PW_intent,._1xn-PW_dock[data-surface=settings] ._1xn-PW_intentActive{text-align:start;min-height:38px;padding:7px 9px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_storage{color:var(--dsw-alias-label-tertiary);grid-column:1/-1;margin:0;padding:12px 18px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_error{grid-column:1/-1;margin:0 18px 14px}._1xn-PW_entry:focus-visible,._1xn-PW_close:focus-visible,._1xn-PW_activeHeader:focus-visible,._1xn-PW_activate:focus-visible,._1xn-PW_segment:focus-visible,._1xn-PW_segmentActive:focus-visible,._1xn-PW_intent:focus-visible,._1xn-PW_intentActive:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:2px}._1xn-PW_segment:disabled,._1xn-PW_segmentActive:disabled,._1xn-PW_intent:disabled,._1xn-PW_intentActive:disabled,._1xn-PW_activate:disabled,._1xn-PW_close:disabled{cursor:default;opacity:.5}@keyframes _1xn-PW_posturePopoverIn{0%{opacity:.01;transform:translateY(4px)scale(.992)}to{opacity:1;transform:translateY(0)scale(1)}}@container (width<=500px){._1xn-PW_entry,._1xn-PW_activeHeader{padding-inline:4px}._1xn-PW_entryTitle{text-overflow:ellipsis;max-width:76px;overflow:hidden}}@media (width<=620px){._1xn-PW_contract{grid-template-columns:1fr;gap:8px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controls{grid-template-columns:1fr;gap:6px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_controlSection+._1xn-PW_controlSection{border-inline-start:0}}@media (width<=430px){._1xn-PW_dock:has(._1xn-PW_panel):before{background:color-mix(in srgb, var(--dsw-alias-label-primary) 36%, transparent)}._1xn-PW_panel{padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));background:linear-gradient(145deg, color-mix(in srgb, var(--dsw-alias-state-warn-primary) 18%, transparent), transparent 44%), var(--dsw-alias-bg-base);border-radius:11px 11px 7px 7px;width:100%!important;max-height:calc(100dvh - 12px)!important;inset:auto 0 0!important}._1xn-PW_close{width:44px;height:44px}._1xn-PW_disclosure,._1xn-PW_acceptance,._1xn-PW_contract small,._1xn-PW_consent small{font-size:12px}._1xn-PW_consent strong{font-size:14px}._1xn-PW_activate:disabled{opacity:.7}._1xn-PW_activationActions{flex-direction:column;align-items:stretch}._1xn-PW_activate{min-height:46px}._1xn-PW_dock[data-surface=settings] ._1xn-PW_intentList{grid-template-columns:1fr}}@media (prefers-reduced-motion:reduce){._1xn-PW_panel,._1xn-PW_controls{animation:none}._1xn-PW_entry,._1xn-PW_activeHeader,._1xn-PW_chevron,._1xn-PW_chevronOpen,._1xn-PW_activate,._1xn-PW_segment,._1xn-PW_segmentActive,._1xn-PW_intent,._1xn-PW_intentActive{transition:none}}";
 		const tagId$18 = "@deepseek-ai/dsh-mind-garden/MindGardenDock.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId$18) + "]") === null) {
 			const tag = document.createElement("style");
@@ -137,6 +137,8 @@ window.__ModuleLoader__.load({
 		}
 		var MindGardenDock_module_css_default = {
 			"acceptance": "_1xn-PW_acceptance",
+			"activate": "_1xn-PW_activate",
+			"activationActions": "_1xn-PW_activationActions",
 			"activeHeader": "_1xn-PW_activeHeader",
 			"activePanel": "_1xn-PW_activePanel",
 			"activeTitle": "_1xn-PW_activeTitle",
@@ -158,11 +160,6 @@ window.__ModuleLoader__.load({
 			"intentList": "_1xn-PW_intentList",
 			"mark": "_1xn-PW_mark",
 			"markActive": "_1xn-PW_markActive",
-			"modeCard": "_1xn-PW_modeCard",
-			"modeDescription": "_1xn-PW_modeDescription",
-			"modeGrid": "_1xn-PW_modeGrid",
-			"modeIcon": "_1xn-PW_modeIcon",
-			"modeTitle": "_1xn-PW_modeTitle",
 			"optionCopy": "_1xn-PW_optionCopy",
 			"optionIcon": "_1xn-PW_optionIcon",
 			"panel": "_1xn-PW_panel",
@@ -189,13 +186,14 @@ window.__ModuleLoader__.load({
 			"clarify",
 			"next-step"
 		];
+		const DEFAULT_MODE = "serenity";
 		/** Render a stable localized failure without exposing transport internals by default. */
 		function errorText(result, t) {
 			if (result.ok) return null;
 			return result.error.code === "MIND_GARDEN_SESSION_NOT_BLANK" ? t("error.notBlank") : result.error.message || t("error.generic");
 		}
 		/** The visual Mind Garden dock surface. */
-		function MindGardenPanel({ projection, onActivate, onSelectMode, onSelectSupportIntent, defaultOpen = false, t }) {
+		function MindGardenPanel({ projection, onActivate, onSelectMode, onSelectSupportIntent, defaultOpen = false, running = false, t }) {
 			const [open, setOpen] = (0, react.useState)(defaultOpen);
 			const [consentAccepted, setConsentAccepted] = (0, react.useState)(false);
 			const [pending, setPending] = (0, react.useState)(false);
@@ -324,7 +322,7 @@ window.__ModuleLoader__.load({
 			]);
 			const run = (0, react.useCallback)(async (action) => {
 				/* v8 ignore next -- React synchronously disables every action after the first click; the ref closes the smaller pre-render window. */
-				if (pendingRef.current) return;
+				if (pendingRef.current || running) return;
 				pendingRef.current = true;
 				setPending(true);
 				setError(null);
@@ -341,6 +339,7 @@ window.__ModuleLoader__.load({
 			}, [
 				closeAndRestoreFocus,
 				defaultOpen,
+				running,
 				t
 			]);
 			if (projection === void 0) return null;
@@ -434,27 +433,18 @@ window.__ModuleLoader__.load({
 								children: t("disclosure.consent.hint")
 							})] })]
 						}),
-						(0, react_jsx_runtime.jsx)("div", {
-							className: MindGardenDock_module_css_default.modeGrid,
-							children: MODES.map((mode) => (0, react_jsx_runtime.jsxs)("button", {
+						(0, react_jsx_runtime.jsxs)("div", {
+							className: MindGardenDock_module_css_default.activationActions,
+							children: [(0, react_jsx_runtime.jsxs)("button", {
 								type: "button",
-								className: MindGardenDock_module_css_default.modeCard,
+								className: MindGardenDock_module_css_default.activate,
 								disabled: pending || !consentAccepted,
 								"aria-describedby": `${consentId}-hint`,
 								onClick: () => {
-									run(() => onActivate(mode));
+									run(() => onActivate(DEFAULT_MODE));
 								},
-								children: [(0, react_jsx_runtime.jsx)("span", {
-									className: MindGardenDock_module_css_default.modeIcon,
-									children: mode === "serenity" ? (0, react_jsx_runtime.jsx)(ConcernsIcon, { size: 18 }) : (0, react_jsx_runtime.jsx)(PhilosophyIcon, { size: 18 })
-								}), (0, react_jsx_runtime.jsxs)("span", { children: [(0, react_jsx_runtime.jsx)("span", {
-									className: MindGardenDock_module_css_default.modeTitle,
-									children: t(`mode.${mode}`)
-								}), (0, react_jsx_runtime.jsx)("span", {
-									className: MindGardenDock_module_css_default.modeDescription,
-									children: t(`mode.${mode}.desc`)
-								})] })]
-							}, mode))
+								children: [(0, react_jsx_runtime.jsx)(GardenMarkIcon, { size: 17 }), (0, react_jsx_runtime.jsx)("span", { children: t(pending ? "disclosure.starting" : "disclosure.start") })]
+							}), (0, react_jsx_runtime.jsx)("small", { children: t("disclosure.default") })]
 						}),
 						error !== null && (0, react_jsx_runtime.jsx)("p", {
 							className: MindGardenDock_module_css_default.error,
@@ -488,7 +478,7 @@ window.__ModuleLoader__.load({
 						"aria-expanded": open,
 						"aria-controls": controlsId,
 						"aria-label": open ? t("garden.collapse") : t("garden.expand"),
-						title: `${t(`mode.${state.mode}`)} · ${t(`intent.${state.supportIntent}`)}`,
+						title: `${t(`intent.${state.supportIntent}`)} · ${t(`mode.${state.mode}`)}`,
 						children: [
 							(0, react_jsx_runtime.jsx)("span", {
 								className: MindGardenDock_module_css_default.markActive,
@@ -496,7 +486,7 @@ window.__ModuleLoader__.load({
 							}),
 							(0, react_jsx_runtime.jsx)("span", {
 								className: MindGardenDock_module_css_default.activeTitle,
-								children: t(`mode.${state.mode}`)
+								children: t(`intent.${state.supportIntent}`)
 							}),
 							(0, react_jsx_runtime.jsx)("span", {
 								className: MindGardenDock_module_css_default.postureSignal,
@@ -534,6 +524,24 @@ window.__ModuleLoader__.load({
 								})]
 							}),
 							(0, react_jsx_runtime.jsx)(ControlSection, {
+								label: t("section.intent"),
+								children: (0, react_jsx_runtime.jsx)("div", {
+									className: MindGardenDock_module_css_default.intentList,
+									role: "group",
+									"aria-label": t("section.intent"),
+									children: INTENTS.map((intent) => (0, react_jsx_runtime.jsx)("button", {
+										type: "button",
+										className: state.supportIntent === intent ? MindGardenDock_module_css_default.intentActive : MindGardenDock_module_css_default.intent,
+										"aria-pressed": state.supportIntent === intent,
+										disabled: pending || running,
+										onClick: () => {
+											run(() => onSelectSupportIntent(state.revision, intent));
+										},
+										children: t(`intent.${intent}`)
+									}, intent))
+								})
+							}),
+							(0, react_jsx_runtime.jsx)(ControlSection, {
 								label: t("section.mode"),
 								children: (0, react_jsx_runtime.jsx)("div", {
 									className: MindGardenDock_module_css_default.segmented,
@@ -543,7 +551,7 @@ window.__ModuleLoader__.load({
 										type: "button",
 										className: state.mode === mode ? MindGardenDock_module_css_default.segmentActive : MindGardenDock_module_css_default.segment,
 										"aria-pressed": state.mode === mode,
-										disabled: pending,
+										disabled: pending || running,
 										onClick: () => {
 											run(() => onSelectMode(state.revision, mode));
 										},
@@ -555,24 +563,6 @@ window.__ModuleLoader__.load({
 											children: [(0, react_jsx_runtime.jsx)("strong", { children: t(`mode.${mode}`) }), defaultOpen && (0, react_jsx_runtime.jsx)("small", { children: t(`mode.${mode}.desc`) })]
 										})]
 									}, mode))
-								})
-							}),
-							(0, react_jsx_runtime.jsx)(ControlSection, {
-								label: t("section.intent"),
-								children: (0, react_jsx_runtime.jsx)("div", {
-									className: MindGardenDock_module_css_default.intentList,
-									role: "group",
-									"aria-label": t("section.intent"),
-									children: INTENTS.map((intent) => (0, react_jsx_runtime.jsx)("button", {
-										type: "button",
-										className: state.supportIntent === intent ? MindGardenDock_module_css_default.intentActive : MindGardenDock_module_css_default.intent,
-										"aria-pressed": state.supportIntent === intent,
-										disabled: pending,
-										onClick: () => {
-											run(() => onSelectSupportIntent(state.revision, intent));
-										},
-										children: t(`intent.${intent}`)
-									}, intent))
 								})
 							}),
 							(0, react_jsx_runtime.jsxs)("div", {
@@ -600,9 +590,10 @@ window.__ModuleLoader__.load({
 			});
 		}
 		/** Read the typed projection and adapt it to the compact composer control. */
-		function MindGardenDock({ useProjection, ...props }) {
+		function MindGardenDock({ useProjection, useSession, ...props }) {
 			return (0, react_jsx_runtime.jsx)(MindGardenPanel, {
 				projection: useProjection("mind-garden"),
+				running: useSession((state) => state.running),
 				...props
 			});
 		}
@@ -35693,9 +35684,9 @@ void main() {
 					setSystemReducedMotion(query.matches);
 				};
 				update();
-				query.addEventListener?.("change", update);
+				query.addEventListener("change", update);
 				return () => {
-					query.removeEventListener?.("change", update);
+					query.removeEventListener("change", update);
 				};
 			}, []);
 			(0, react.useEffect)(() => {
@@ -38272,7 +38263,7 @@ void main() {
 		}
 		//#endregion
 		//#region \0dsh-css:E:\test code\deepseekharness_modified\deepseek-harness\packages\client\ui-mind-garden\src\client\spaces\PhilosophySpace.module.css.mjs
-		const css$6 = ".QqtdKa_philosophy{color:var(--mg-ink,#342d27);font-family:var(--mg-font-ui,\"Noto Sans SC\", sans-serif)}.QqtdKa_hero{background:var(--mg-philosophy-scene) center / cover no-repeat;isolation:isolate;grid-template-columns:minmax(310px,.68fr) minmax(500px,1.32fr);align-items:center;min-height:clamp(560px,57vw,700px);margin:calc(-1*clamp(28px,4vw,58px)) calc(-1*clamp(28px,4vw,58px)) 70px;padding:clamp(50px,7vw,92px);display:grid;position:relative;overflow:hidden;box-shadow:0 28px 72px #46311f24}.QqtdKa_hero:before{z-index:-1;content:\"\";background:linear-gradient(90deg,#fffbf4fa 0 29%,#fffbf4b8 44%,#0000 66%);position:absolute;inset:0}.QqtdKa_heroCopy{z-index:1;grid-column:1;justify-items:start;display:grid}.QqtdKa_heroCopy>svg{color:var(--mg-plum,#8d5a5e);margin-block-end:24px}.QqtdKa_heroCopy h1{max-width:12ch;font-family:var(--mg-font-reflection,\"Mind Garden Display\", \"Noto Serif SC\", serif);letter-spacing:-.035em;text-wrap:balance;margin:0;font-size:clamp(39px,4vw,52px);font-weight:560;line-height:1.08}.QqtdKa_heroCopy p{max-width:34ch;color:var(--mg-muted,#76695e);margin:20px 0;font-size:13px;line-height:1.8}.QqtdKa_privateLine{color:var(--mg-muted,#76695e);align-items:center;gap:6px;font-size:10px;display:inline-flex}.QqtdKa_specimen{z-index:2;margin:0;position:absolute;inset:auto clamp(36px,5vw,72px) clamp(30px,4vw,58px) auto}.QqtdKa_specimen figcaption{background:#fffbf4d1;display:flex;box-shadow:7px 14px 30px #44301f21}.QqtdKa_specimen figcaption span{min-width:116px;color:var(--mg-muted,#76695e);border-inline-start:1px solid #533e2d21;gap:2px;padding:13px 16px;font-size:10px;display:grid}.QqtdKa_specimen figcaption span:first-child{border-inline-start:0}.QqtdKa_specimen figcaption strong{color:var(--mg-ink,#342d27);font-family:var(--mg-font-reflection);font-size:22px;font-weight:560}.QqtdKa_loading{width:min(1160px,100%);color:var(--mg-muted,#76695e);border-block:1px solid #533e2d21;margin:0 auto;padding:44px 0}.QqtdKa_sections{grid-template-columns:repeat(12,minmax(0,1fr));gap:56px 34px;width:min(1160px,100%);margin:0 auto;display:grid}.QqtdKa_section{min-width:0;box-shadow:none;background:0 0;border:0;border-radius:0;padding:0}.QqtdKa_contemplationSection{grid-column:1/span 7}.QqtdKa_proposalSection{color:#fffaf2;background:#3d5779;border-radius:14px;grid-column:8/-1;align-self:start;padding:26px 28px 30px;box-shadow:9px 18px 42px #304c702e}.QqtdKa_principleSection{grid-column:1/-1}.QqtdKa_sectionHeader{border-block-end:1px solid #533e2d24;align-items:flex-start;gap:12px;margin-block-end:24px;padding-block-end:15px;display:flex}.QqtdKa_sectionHeader>span{aspect-ratio:1;width:34px;color:var(--mg-indigo,#405f87);border:1px solid #405f873b;border-radius:50%;flex:none;place-items:center;display:grid}.QqtdKa_sectionHeader h2{font-family:var(--mg-font-reflection);letter-spacing:-.025em;margin:0;font-size:27px;font-weight:560}.QqtdKa_sectionHeader p{max-width:46ch;color:var(--mg-muted,#76695e);margin:5px 0 0;font-size:10px;line-height:1.6}.QqtdKa_proposalSection .QqtdKa_sectionHeader{border-block-end-color:#fffaf22e}.QqtdKa_proposalSection .QqtdKa_sectionHeader>span{color:#d9b378;border-color:#d9b37859}.QqtdKa_proposalSection .QqtdKa_sectionHeader h2{color:#fffaf2}.QqtdKa_proposalSection .QqtdKa_sectionHeader p{color:#fffaf2a6}.QqtdKa_empty{min-height:130px;color:var(--mg-muted,#76695e);margin:0;padding:32px 0;line-height:1.7}.QqtdKa_proposalSection .QqtdKa_empty{color:#fffaf2ad}.QqtdKa_list,.QqtdKa_proposalList,.QqtdKa_principles{gap:0;margin:0;padding:0;list-style:none;display:grid}.QqtdKa_note{border-block-start:1px solid #533e2d1f;grid-template-columns:42px minmax(0,1fr);gap:16px;padding:22px 0;display:grid}.QqtdKa_list>.QqtdKa_note:first-child{border-block-start:0}.QqtdKa_sequence{color:var(--mg-brass,#a77d43);font-family:var(--mg-font-reflection);font-size:13px}.QqtdKa_note article{min-width:0}.QqtdKa_note article>header{color:var(--mg-muted,#76695e);justify-content:space-between;gap:14px;font-size:10px;display:flex}.QqtdKa_note article>header small{color:var(--mg-plum,#8d5a5e);font-weight:700}.QqtdKa_note article>p{color:var(--mg-ink,#342d27);font-family:var(--mg-font-reflection);margin:12px 0;font-size:18px;line-height:1.75}.QqtdKa_note footer{justify-content:flex-end;display:flex}.QqtdKa_proposalList{gap:14px}.QqtdKa_proposal{border-block-start:1px solid #fffaf229;padding:18px 0}.QqtdKa_proposalList>.QqtdKa_proposal:first-child{border-block-start:0}.QqtdKa_proposal>header{gap:7px;display:grid}.QqtdKa_proposal>header small{color:#d9b378;font-size:9px;font-weight:700}.QqtdKa_proposal>header strong{color:#fffaf2;font-family:var(--mg-font-reflection);font-size:18px;font-weight:560;line-height:1.55}.QqtdKa_proposalMeaning{gap:9px;margin:15px 0 0;display:grid}.QqtdKa_proposalMeaning div{grid-template-columns:78px minmax(0,1fr);gap:10px;display:grid}.QqtdKa_proposalMeaning dt{color:#fffaf280;font-size:9px}.QqtdKa_proposalMeaning dd{color:#fffaf2c2;margin:0;font-size:10px;line-height:1.55}.QqtdKa_proposalActions{flex-wrap:wrap;gap:8px;margin-block-start:16px;display:flex}.QqtdKa_proposalActions button:first-child{color:var(--mg-indigo,#405f87);background:#fff7eb}.QqtdKa_proposalActions button:last-child{color:#fff4ed;border-color:#fff4ed3d}.QqtdKa_principleSection .QqtdKa_sectionHeader{align-items:center}.QqtdKa_principles{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 28px}.QqtdKa_principle{background:linear-gradient(135deg, #fffdf8f0, #f5eadad6), var(--mg-xuan-texture);background-size:auto,440px;border:1px solid #533e2d21;border-radius:10px 14px 11px 13px;grid-template-columns:44px minmax(0,1fr);gap:18px;min-width:0;padding:24px;display:grid;position:relative;box-shadow:6px 12px 28px #46311f17}.QqtdKa_principle:after{background:var(--mg-plum,#8d5a5e);content:\"\";opacity:.78;width:6px;position:absolute;inset:0 12px 0 auto}.QqtdKa_folioNumber{color:var(--mg-brass,#a77d43);font-family:var(--mg-font-reflection);font-size:14px}.QqtdKa_principle article{min-width:0;padding-inline-end:12px}.QqtdKa_principle article>header{justify-content:space-between;align-items:start;gap:14px;display:flex}.QqtdKa_principle h3{color:var(--mg-ink,#342d27);font-family:var(--mg-font-reflection);margin:0;font-size:20px;font-weight:560;line-height:1.5}.QqtdKa_statusSelect{max-width:112px;min-height:34px;color:var(--mg-indigo,#405f87);font:inherit;background:#fffcf6b3;border:1px solid #533e2d2b;border-radius:8px;font-size:10px}.QqtdKa_meaning{gap:10px;margin:18px 0;display:grid}.QqtdKa_meaning div{grid-template-columns:82px minmax(0,1fr);gap:10px;display:grid}.QqtdKa_meaning dt{color:var(--mg-muted,#76695e);font-size:9px}.QqtdKa_meaning dd{color:var(--mg-ink,#342d27);margin:0;font-size:10px;line-height:1.55}.QqtdKa_tags{flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none;display:flex}.QqtdKa_tags li{color:var(--mg-plum,#8d5a5e);background:#8d5a5e14;border-radius:999px;padding:4px 7px;font-size:9px}.QqtdKa_versions{border-block-start:1px solid #533e2d1f;margin-block-start:16px}.QqtdKa_versions summary{color:var(--mg-indigo,#405f87);cursor:pointer;padding:12px 0;font-size:10px}.QqtdKa_versions ol{gap:9px;margin:0;padding:0;list-style:none;display:grid}.QqtdKa_versions li{color:var(--mg-muted,#76695e);grid-template-columns:84px 1fr;gap:10px;font-size:9px;display:grid}.QqtdKa_versions p{color:var(--mg-ink,#342d27);margin:0}.QqtdKa_principle footer{justify-content:flex-end;margin-block-start:15px;display:flex}@media (width<=980px){.QqtdKa_hero{background-position:65%;min-height:760px;padding:48px 34px}.QqtdKa_hero:before{background:linear-gradient(#fffbf4f7 0 34%,#fffbf473 58%,#0000 76%)}.QqtdKa_specimen{inset:auto 34px 28px}.QqtdKa_contemplationSection,.QqtdKa_proposalSection{grid-column:1/-1}}@media (width<=680px){.QqtdKa_hero{background-position:70%;min-height:820px;margin:-24px -14px 44px;padding:34px 20px}.QqtdKa_heroCopy h1{font-size:44px}.QqtdKa_specimen{width:calc(100% - 28px);inset:auto 14px 18px;overflow-x:auto}.QqtdKa_specimen figcaption span{min-width:104px;padding:11px 12px}.QqtdKa_sections{gap:42px}.QqtdKa_proposalSection{padding:23px 18px}.QqtdKa_principles{grid-template-columns:1fr}.QqtdKa_principle{grid-template-columns:32px minmax(0,1fr);padding:19px 16px}.QqtdKa_principle article>header{flex-direction:column}.QqtdKa_meaning div{grid-template-columns:1fr}}.QqtdKa_hero{background-position:57%;border-radius:18px;grid-template-columns:minmax(300px,.68fr) minmax(520px,1.32fr);min-height:clamp(350px,33vw,410px);margin-block-end:50px;padding:clamp(38px,4.8vw,62px);box-shadow:0 26px 68px #44301f21}.QqtdKa_hero:before{background:linear-gradient(90deg,#fffbf4fa 0 30%,#fffbf4b3 44%,#0000 65%)}.QqtdKa_heroCopy>svg{display:none}.QqtdKa_heroCopy h1{letter-spacing:-.03em;max-width:11ch;font-size:clamp(34px,3.2vw,43px);line-height:1.11}.QqtdKa_heroCopy p{-webkit-line-clamp:3;-webkit-box-orient:vertical;max-width:32ch;margin:14px 0;font-size:12px;line-height:1.7;display:-webkit-box;overflow:hidden}.QqtdKa_privateLine>svg{flex:0 0 14px;width:14px;height:14px;display:block}.QqtdKa_specimen{inset:auto clamp(30px,4vw,52px) clamp(24px,3vw,34px) auto}.QqtdKa_specimen figcaption{background:#fffbf4bd;border:0;border-radius:12px;box-shadow:0 12px 32px #44301f14}.QqtdKa_specimen figcaption span{min-width:104px;padding:10px 13px}.QqtdKa_specimen figcaption strong{font-size:19px}.QqtdKa_sections{gap:44px 30px}.QqtdKa_sectionHeader{border-block-end:0;gap:10px;margin-block-end:18px;padding-block-end:4px}.QqtdKa_sectionHeader>span{width:32px}.QqtdKa_sectionHeader>span>svg{width:16px;height:16px;display:block}.QqtdKa_sectionHeader h2{font-size:24px}.QqtdKa_note{padding:19px 0}.QqtdKa_proposalSection{padding:23px 24px 26px}.QqtdKa_principles{gap:18px 22px}.QqtdKa_principle{border:0;padding:21px;box-shadow:0 14px 36px #44301f14}.QqtdKa_principle:after{display:none}.QqtdKa_proposalActions button,.QqtdKa_note footer button,.QqtdKa_principle footer button{min-height:38px}.QqtdKa_proposalActions button>svg,.QqtdKa_note footer button>svg,.QqtdKa_principle footer button>svg{flex:0 0 15px;width:15px;height:15px;display:block}@container QqtdKa_mind-garden-workspace (width<=820px){.QqtdKa_hero{background-position:63%;min-height:450px;padding:32px 28px}.QqtdKa_hero:before{background:linear-gradient(#fffbf4f7 0 36%,#fffbf457 61%,#0000 78%)}.QqtdKa_specimen{inset:auto 28px 22px}.QqtdKa_contemplationSection,.QqtdKa_proposalSection{grid-column:1/-1}}@container QqtdKa_mind-garden-workspace (width<=620px){.QqtdKa_hero{background-position:68% 58%;border-radius:0 0 18px 18px;min-height:390px;margin:-20px -12px 34px;padding:26px 18px 18px}.QqtdKa_hero:before{background:linear-gradient(#fffbf4fa 0 43%,#fffbf438 68%,#fffbf4a3 100%)}.QqtdKa_heroCopy h1{max-width:12ch;font-size:clamp(31px,10vw,37px)}.QqtdKa_heroCopy p{-webkit-line-clamp:2;margin-block:10px}.QqtdKa_specimen{width:calc(100% - 24px);inset:auto 12px 12px;overflow:visible}.QqtdKa_specimen figcaption{width:100%}.QqtdKa_specimen figcaption span{flex:1;min-width:0;padding:9px 8px}.QqtdKa_sections{gap:34px}.QqtdKa_proposalSection{padding:21px 16px}.QqtdKa_principles{grid-template-columns:1fr}.QqtdKa_principle{grid-template-columns:30px minmax(0,1fr);padding:17px 15px}.QqtdKa_principle article>header{flex-direction:column}.QqtdKa_meaning div{grid-template-columns:1fr}.QqtdKa_proposalActions button,.QqtdKa_note footer button,.QqtdKa_principle footer button{min-height:42px}}@media (width<=620px){.QqtdKa_hero{background-position:70% 58%;border-radius:0 0 18px 18px;min-height:390px;margin:-20px -12px 34px;padding:26px 18px 18px}.QqtdKa_hero:before{background:linear-gradient(90deg,#fffbf4fc 0 57%,#fffbf4b8 72%,#0000 92%)}.QqtdKa_heroCopy{max-width:76%}.QqtdKa_heroCopy h1{max-width:11ch;font-size:clamp(31px,10vw,37px)}.QqtdKa_heroCopy p{-webkit-line-clamp:2;max-width:28ch;margin-block:10px}.QqtdKa_specimen{width:calc(100% - 24px);inset:auto 12px 12px;overflow:visible}.QqtdKa_specimen figcaption{width:100%}.QqtdKa_specimen figcaption span{flex:1;min-width:0;padding:9px 8px}}";
+		const css$6 = ".QqtdKa_philosophy{color:var(--mg-ink,#342d27);font-family:var(--mg-font-ui,\"Noto Sans SC\", sans-serif)}.QqtdKa_hero{background:var(--mg-philosophy-scene) center / cover no-repeat;isolation:isolate;grid-template-columns:minmax(310px,.68fr) minmax(500px,1.32fr);align-items:center;min-height:clamp(560px,57vw,700px);margin:calc(-1*clamp(28px,4vw,58px)) calc(-1*clamp(28px,4vw,58px)) 70px;padding:clamp(50px,7vw,92px);display:grid;position:relative;overflow:hidden;box-shadow:0 28px 72px #46311f24}.QqtdKa_hero:before{z-index:-1;content:\"\";background:linear-gradient(90deg,#fffbf4fa 0 29%,#fffbf4b8 44%,#0000 66%);position:absolute;inset:0}.QqtdKa_heroCopy{z-index:1;grid-column:1;justify-items:start;display:grid}.QqtdKa_heroCopy>svg{color:var(--mg-plum,#8d5a5e);margin-block-end:24px}.QqtdKa_heroCopy h1{max-width:12ch;font-family:var(--mg-font-reflection,\"Mind Garden Display\", \"Noto Serif SC\", serif);letter-spacing:-.035em;text-wrap:balance;margin:0;font-size:clamp(39px,4vw,52px);font-weight:560;line-height:1.08}.QqtdKa_heroCopy p{max-width:34ch;color:var(--mg-muted,#76695e);margin:20px 0;font-size:13px;line-height:1.8}.QqtdKa_privateLine{color:var(--mg-muted,#76695e);align-items:center;gap:6px;font-size:10px;display:inline-flex}.QqtdKa_specimen{z-index:2;margin:0;position:absolute;inset:auto clamp(36px,5vw,72px) clamp(30px,4vw,58px) auto}.QqtdKa_specimen figcaption{background:#fffbf4d1;display:flex;box-shadow:7px 14px 30px #44301f21}.QqtdKa_specimen figcaption span{min-width:116px;color:var(--mg-muted,#76695e);border-inline-start:1px solid #533e2d21;gap:2px;padding:13px 16px;font-size:10px;display:grid}.QqtdKa_specimen figcaption span:first-child{border-inline-start:0}.QqtdKa_specimen figcaption strong{color:var(--mg-ink,#342d27);font-family:var(--mg-font-reflection);font-size:22px;font-weight:560}.QqtdKa_loading{width:min(1160px,100%);color:var(--mg-muted,#76695e);border-block:1px solid #533e2d21;margin:0 auto;padding:44px 0}.QqtdKa_sections{grid-template-columns:repeat(12,minmax(0,1fr));gap:56px 34px;width:min(1160px,100%);margin:0 auto;display:grid}.QqtdKa_section{min-width:0;box-shadow:none;background:0 0;border:0;border-radius:0;padding:0}.QqtdKa_contemplationSection{grid-column:1/span 7}.QqtdKa_proposalSection{color:#fffaf2;background:#3d5779;border-radius:14px;grid-column:8/-1;align-self:start;padding:26px 28px 30px;box-shadow:9px 18px 42px #304c702e}.QqtdKa_principleSection{grid-column:1/-1}.QqtdKa_sectionHeader{border-block-end:1px solid #533e2d24;align-items:flex-start;gap:12px;margin-block-end:24px;padding-block-end:15px;display:flex}.QqtdKa_sectionHeader>span{aspect-ratio:1;width:34px;color:var(--mg-indigo,#405f87);border:1px solid #405f873b;border-radius:50%;flex:none;place-items:center;display:grid}.QqtdKa_sectionHeader h2{font-family:var(--mg-font-reflection);letter-spacing:-.025em;margin:0;font-size:27px;font-weight:560}.QqtdKa_sectionHeader p{max-width:46ch;color:var(--mg-muted,#76695e);margin:5px 0 0;font-size:10px;line-height:1.6}.QqtdKa_sectionHeader>button{flex:none;min-height:36px;margin-inline-start:auto}.QqtdKa_proposalSection .QqtdKa_sectionHeader{border-block-end-color:#fffaf22e}.QqtdKa_proposalSection .QqtdKa_sectionHeader>span{color:#d9b378;border-color:#d9b37859}.QqtdKa_proposalSection .QqtdKa_sectionHeader h2{color:#fffaf2}.QqtdKa_proposalSection .QqtdKa_sectionHeader p{color:#fffaf2a6}.QqtdKa_empty{min-height:130px;color:var(--mg-muted,#76695e);margin:0;padding:32px 0;line-height:1.7}.QqtdKa_proposalSection .QqtdKa_empty{color:#fffaf2ad}.QqtdKa_list,.QqtdKa_proposalList,.QqtdKa_principles{gap:0;margin:0;padding:0;list-style:none;display:grid}.QqtdKa_note{border-block-start:1px solid #533e2d1f;grid-template-columns:42px minmax(0,1fr);gap:16px;padding:22px 0;display:grid}.QqtdKa_list>.QqtdKa_note:first-child{border-block-start:0}.QqtdKa_sequence{color:var(--mg-brass,#a77d43);font-family:var(--mg-font-reflection);font-size:13px}.QqtdKa_note article{min-width:0}.QqtdKa_note article>header{color:var(--mg-muted,#76695e);justify-content:space-between;gap:14px;font-size:10px;display:flex}.QqtdKa_note article>header small{color:var(--mg-plum,#8d5a5e);font-weight:700}.QqtdKa_note article>p{color:var(--mg-ink,#342d27);font-family:var(--mg-font-reflection);margin:12px 0;font-size:18px;line-height:1.75}.QqtdKa_note footer{flex-wrap:wrap;justify-content:flex-end;gap:7px;display:flex}.QqtdKa_inlineComposer,.QqtdKa_principleComposer{background:#fffcf6a8;border:1px solid #533e2d21;border-radius:10px;gap:10px;margin:12px 0 18px;padding:14px;display:grid}.QqtdKa_inlineComposer label,.QqtdKa_principleComposer label{color:var(--mg-muted,#76695e);font-size:10px;line-height:1.6}.QqtdKa_inlineComposer textarea,.QqtdKa_principleComposer input{width:100%;min-width:0;color:var(--mg-ink,#342d27);font:inherit;background:#fffdf8;border:1px solid #533e2d2e;border-radius:8px;line-height:1.65}.QqtdKa_inlineComposer textarea{resize:vertical;min-height:108px;padding:10px 12px}.QqtdKa_principleComposer input{min-height:42px;padding:8px 11px}.QqtdKa_inlineComposer>div,.QqtdKa_principleComposer>div,.QqtdKa_deleteConfirmation{flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:7px;display:flex}.QqtdKa_deleteConfirmation{color:var(--mg-muted,#76695e);margin:10px 0;font-size:10px}.QqtdKa_deleteConfirmation>span{margin-inline-end:auto}.QqtdKa_proposalList{gap:14px}.QqtdKa_proposal{border-block-start:1px solid #fffaf229;padding:18px 0}.QqtdKa_proposalList>.QqtdKa_proposal:first-child{border-block-start:0}.QqtdKa_proposal>header{gap:7px;display:grid}.QqtdKa_proposal>header small{color:#d9b378;font-size:9px;font-weight:700}.QqtdKa_proposal>header strong{color:#fffaf2;font-family:var(--mg-font-reflection);font-size:18px;font-weight:560;line-height:1.55}.QqtdKa_proposalMeaning{gap:9px;margin:15px 0 0;display:grid}.QqtdKa_proposalMeaning div{grid-template-columns:78px minmax(0,1fr);gap:10px;display:grid}.QqtdKa_proposalMeaning dt{color:#fffaf280;font-size:9px}.QqtdKa_proposalMeaning dd{color:#fffaf2c2;margin:0;font-size:10px;line-height:1.55}.QqtdKa_proposalActions{flex-wrap:wrap;gap:8px;margin-block-start:16px;display:flex}.QqtdKa_proposalActions button:first-child{color:var(--mg-indigo,#405f87);background:#fff7eb}.QqtdKa_proposalActions button:last-child{color:#fff4ed;border-color:#fff4ed3d}.QqtdKa_principleSection .QqtdKa_sectionHeader{align-items:center}.QqtdKa_principles{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 28px}.QqtdKa_principle{background:linear-gradient(135deg, #fffdf8f0, #f5eadad6), var(--mg-xuan-texture);background-size:auto,440px;border:1px solid #533e2d21;border-radius:10px 14px 11px 13px;grid-template-columns:44px minmax(0,1fr);gap:18px;min-width:0;padding:24px;display:grid;position:relative;box-shadow:6px 12px 28px #46311f17}.QqtdKa_principle:after{background:var(--mg-plum,#8d5a5e);content:\"\";opacity:.78;width:6px;position:absolute;inset:0 12px 0 auto}.QqtdKa_folioNumber{color:var(--mg-brass,#a77d43);font-family:var(--mg-font-reflection);font-size:14px}.QqtdKa_principle article{min-width:0;padding-inline-end:12px}.QqtdKa_principle article>header{justify-content:space-between;align-items:start;gap:14px;display:flex}.QqtdKa_principle h3{color:var(--mg-ink,#342d27);font-family:var(--mg-font-reflection);margin:0;font-size:20px;font-weight:560;line-height:1.5}.QqtdKa_statusSelect{max-width:112px;min-height:34px;color:var(--mg-indigo,#405f87);font:inherit;background:#fffcf6b3;border:1px solid #533e2d2b;border-radius:8px;font-size:10px}.QqtdKa_meaning{gap:10px;margin:18px 0;display:grid}.QqtdKa_meaning div{grid-template-columns:82px minmax(0,1fr);gap:10px;display:grid}.QqtdKa_meaning dt{color:var(--mg-muted,#76695e);font-size:9px}.QqtdKa_meaning dd{color:var(--mg-ink,#342d27);margin:0;font-size:10px;line-height:1.55}.QqtdKa_tags{flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none;display:flex}.QqtdKa_tags li{color:var(--mg-plum,#8d5a5e);background:#8d5a5e14;border-radius:999px;padding:4px 7px;font-size:9px}.QqtdKa_versions{border-block-start:1px solid #533e2d1f;margin-block-start:16px}.QqtdKa_versions summary{color:var(--mg-indigo,#405f87);cursor:pointer;padding:12px 0;font-size:10px}.QqtdKa_versions ol{gap:9px;margin:0;padding:0;list-style:none;display:grid}.QqtdKa_versions li{color:var(--mg-muted,#76695e);grid-template-columns:84px 1fr;gap:10px;font-size:9px;display:grid}.QqtdKa_versions p{color:var(--mg-ink,#342d27);margin:0}.QqtdKa_principle footer{justify-content:flex-end;margin-block-start:15px;display:flex}@media (width<=980px){.QqtdKa_hero{background-position:65%;min-height:760px;padding:48px 34px}.QqtdKa_hero:before{background:linear-gradient(#fffbf4f7 0 34%,#fffbf473 58%,#0000 76%)}.QqtdKa_specimen{inset:auto 34px 28px}.QqtdKa_contemplationSection,.QqtdKa_proposalSection{grid-column:1/-1}}@media (width<=680px){.QqtdKa_hero{background-position:70%;min-height:820px;margin:-24px -14px 44px;padding:34px 20px}.QqtdKa_heroCopy h1{font-size:44px}.QqtdKa_specimen{width:calc(100% - 28px);inset:auto 14px 18px;overflow-x:auto}.QqtdKa_specimen figcaption span{min-width:104px;padding:11px 12px}.QqtdKa_sections{gap:42px}.QqtdKa_proposalSection{padding:23px 18px}.QqtdKa_principles{grid-template-columns:1fr}.QqtdKa_principle{grid-template-columns:32px minmax(0,1fr);padding:19px 16px}.QqtdKa_principle article>header{flex-direction:column}.QqtdKa_meaning div{grid-template-columns:1fr}}.QqtdKa_hero{background-position:57%;border-radius:18px;grid-template-columns:minmax(300px,.68fr) minmax(520px,1.32fr);min-height:clamp(350px,33vw,410px);margin-block-end:50px;padding:clamp(38px,4.8vw,62px);box-shadow:0 26px 68px #44301f21}.QqtdKa_hero:before{background:linear-gradient(90deg,#fffbf4fa 0 30%,#fffbf4b3 44%,#0000 65%)}.QqtdKa_heroCopy>svg{display:none}.QqtdKa_heroCopy h1{letter-spacing:-.03em;max-width:11ch;font-size:clamp(34px,3.2vw,43px);line-height:1.11}.QqtdKa_heroCopy p{-webkit-line-clamp:3;-webkit-box-orient:vertical;max-width:32ch;margin:14px 0;font-size:12px;line-height:1.7;display:-webkit-box;overflow:hidden}.QqtdKa_privateLine>svg{flex:0 0 14px;width:14px;height:14px;display:block}.QqtdKa_specimen{inset:auto clamp(30px,4vw,52px) clamp(24px,3vw,34px) auto}.QqtdKa_specimen figcaption{background:#fffbf4bd;border:0;border-radius:12px;box-shadow:0 12px 32px #44301f14}.QqtdKa_specimen figcaption span{min-width:104px;padding:10px 13px}.QqtdKa_specimen figcaption strong{font-size:19px}.QqtdKa_sections{gap:44px 30px}.QqtdKa_sectionHeader{border-block-end:0;gap:10px;margin-block-end:18px;padding-block-end:4px}.QqtdKa_sectionHeader>span{width:32px}.QqtdKa_sectionHeader>span>svg{width:16px;height:16px;display:block}.QqtdKa_sectionHeader h2{font-size:24px}.QqtdKa_note{padding:19px 0}.QqtdKa_proposalSection{padding:23px 24px 26px}.QqtdKa_principles{gap:18px 22px}.QqtdKa_principle{border:0;padding:21px;box-shadow:0 14px 36px #44301f14}.QqtdKa_principle:after{display:none}.QqtdKa_proposalActions button,.QqtdKa_note footer button,.QqtdKa_principle footer button{min-height:38px}.QqtdKa_proposalActions button>svg,.QqtdKa_note footer button>svg,.QqtdKa_principle footer button>svg{flex:0 0 15px;width:15px;height:15px;display:block}@container QqtdKa_mind-garden-workspace (width<=820px){.QqtdKa_hero{background-position:63%;min-height:450px;padding:32px 28px}.QqtdKa_hero:before{background:linear-gradient(#fffbf4f7 0 36%,#fffbf457 61%,#0000 78%)}.QqtdKa_specimen{inset:auto 28px 22px}.QqtdKa_contemplationSection,.QqtdKa_proposalSection{grid-column:1/-1}}@container QqtdKa_mind-garden-workspace (width<=620px){.QqtdKa_hero{background-position:68% 58%;border-radius:0 0 18px 18px;min-height:390px;margin:-20px -12px 34px;padding:26px 18px 18px}.QqtdKa_hero:before{background:linear-gradient(#fffbf4fa 0 43%,#fffbf438 68%,#fffbf4a3 100%)}.QqtdKa_heroCopy h1{max-width:12ch;font-size:clamp(31px,10vw,37px)}.QqtdKa_heroCopy p{-webkit-line-clamp:2;margin-block:10px}.QqtdKa_specimen{width:calc(100% - 24px);inset:auto 12px 12px;overflow:visible}.QqtdKa_specimen figcaption{width:100%}.QqtdKa_specimen figcaption span{flex:1;min-width:0;padding:9px 8px}.QqtdKa_sections{gap:34px}.QqtdKa_proposalSection{padding:21px 16px}.QqtdKa_principles{grid-template-columns:1fr}.QqtdKa_principle{grid-template-columns:30px minmax(0,1fr);padding:17px 15px}.QqtdKa_principle article>header{flex-direction:column}.QqtdKa_meaning div{grid-template-columns:1fr}.QqtdKa_proposalActions button,.QqtdKa_note footer button,.QqtdKa_inlineComposer button,.QqtdKa_principleComposer button,.QqtdKa_principle footer button{min-height:42px}}@media (width<=620px){.QqtdKa_hero{background-position:70% 58%;border-radius:0 0 18px 18px;min-height:390px;margin:-20px -12px 34px;padding:26px 18px 18px}.QqtdKa_hero:before{background:linear-gradient(90deg,#fffbf4fc 0 57%,#fffbf4b8 72%,#0000 92%)}.QqtdKa_heroCopy{max-width:76%}.QqtdKa_heroCopy h1{max-width:11ch;font-size:clamp(31px,10vw,37px)}.QqtdKa_heroCopy p{-webkit-line-clamp:2;max-width:28ch;margin-block:10px}.QqtdKa_specimen{width:calc(100% - 24px);inset:auto 12px 12px;overflow:visible}.QqtdKa_specimen figcaption{width:100%}.QqtdKa_specimen figcaption span{flex:1;min-width:0;padding:9px 8px}}";
 		const tagId$6 = "@deepseek-ai/dsh-mind-garden/PhilosophySpace.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId$6) + "]") === null) {
 			const tag = document.createElement("style");
@@ -38283,10 +38274,12 @@ void main() {
 		}
 		var PhilosophySpace_module_css_default = {
 			"contemplationSection": "QqtdKa_contemplationSection",
+			"deleteConfirmation": "QqtdKa_deleteConfirmation",
 			"empty": "QqtdKa_empty",
 			"folioNumber": "QqtdKa_folioNumber",
 			"hero": "QqtdKa_hero",
 			"heroCopy": "QqtdKa_heroCopy",
+			"inlineComposer": "QqtdKa_inlineComposer",
 			"list": "QqtdKa_list",
 			"loading": "QqtdKa_loading",
 			"meaning": "QqtdKa_meaning",
@@ -38294,6 +38287,7 @@ void main() {
 			"note": "QqtdKa_note",
 			"philosophy": "QqtdKa_philosophy",
 			"principle": "QqtdKa_principle",
+			"principleComposer": "QqtdKa_principleComposer",
 			"principleSection": "QqtdKa_principleSection",
 			"principles": "QqtdKa_principles",
 			"privateLine": "QqtdKa_privateLine",
@@ -38320,15 +38314,27 @@ void main() {
 			"questioning",
 			"retired"
 		];
+		const MAX_CONTEMPLATION_CHARACTERS = 3e4;
+		const MAX_PRINCIPLE_CHARACTERS = 3e3;
+		function exactQuote(markdown) {
+			return Array.from(markdown.trim()).slice(0, 1e3).join("");
+		}
 		/** Render contemplation evidence, inert proposals, and user-governed principle histories. */
-		function PhilosophySpace({ today, onListContemplations, onListPrincipleProposals, onListPrinciples, onAcceptPrincipleProposal, onRejectPrincipleProposal, onRevisePrincipleStatus, onDraftConversation = () => void 0, t }) {
+		function PhilosophySpace({ today, onListContemplations, onCreateContemplation, onUpdateContemplation, onConfirmContemplation, onDeleteContemplation, onProposePrinciple, onListPrincipleProposals, onListPrinciples, onAcceptPrincipleProposal, onRejectPrincipleProposal, onRevisePrincipleStatus, onDraftConversation = () => void 0, t }) {
 			const [contemplations, setContemplations] = (0, react.useState)([]);
 			const [proposals, setProposals] = (0, react.useState)([]);
 			const [principles, setPrinciples] = (0, react.useState)([]);
 			const [loading, setLoading] = (0, react.useState)(true);
 			const [pending, setPending] = (0, react.useState)(false);
-			const [error, setError] = (0, react.useState)(false);
+			const [error, setError] = (0, react.useState)(null);
 			const [notice, setNotice] = (0, react.useState)(null);
+			const [creating, setCreating] = (0, react.useState)(false);
+			const [newContemplation, setNewContemplation] = (0, react.useState)("");
+			const [editingId, setEditingId] = (0, react.useState)(null);
+			const [editingMarkdown, setEditingMarkdown] = (0, react.useState)("");
+			const [deletingId, setDeletingId] = (0, react.useState)(null);
+			const [proposalSourceId, setProposalSourceId] = (0, react.useState)(null);
+			const [proposalExpression, setProposalExpression] = (0, react.useState)("");
 			const requestRef = (0, react.useRef)(0);
 			const refresh = (0, react.useCallback)(async () => {
 				const request = ++requestRef.current;
@@ -38339,14 +38345,14 @@ void main() {
 				]);
 				if (request !== requestRef.current) return;
 				if (!contemplationResult.ok || !proposalResult.ok || !principleResult.ok) {
-					setError(true);
+					setError("philosophy.error");
 					setLoading(false);
 					return;
 				}
 				setContemplations(contemplationResult.value);
 				setProposals(proposalResult.value);
 				setPrinciples(principleResult.value);
-				setError(false);
+				setError(null);
 				setLoading(false);
 			}, [
 				onListContemplations,
@@ -38361,16 +38367,71 @@ void main() {
 			}, [refresh]);
 			async function mutate(action, success) {
 				setPending(true);
-				setError(false);
+				setError(null);
 				setNotice(null);
-				const result = await action();
+				let result;
+				try {
+					result = await action();
+				} catch {
+					setPending(false);
+					setError("philosophy.error");
+					return false;
+				}
 				setPending(false);
 				if (!result.ok) {
-					setError(true);
-					return;
+					setError(result.code === "contemplation-source-unavailable" ? "philosophy.sourceUnavailable" : "philosophy.error");
+					return false;
 				}
 				setNotice(success);
 				await refresh();
+				return true;
+			}
+			async function createContemplation() {
+				const markdown = newContemplation.trim();
+				if (markdown === "") return;
+				if (await mutate(async () => await onCreateContemplation(markdown), "philosophy.notice.created")) {
+					setNewContemplation("");
+					setCreating(false);
+				}
+			}
+			async function updateContemplation(item) {
+				const markdown = editingMarkdown.trim();
+				if (markdown === "") return;
+				if (await mutate(async () => await onUpdateContemplation(item, markdown), "philosophy.notice.updated")) {
+					setEditingId(null);
+					setEditingMarkdown("");
+				}
+			}
+			async function confirmContemplation(item) {
+				if (await mutate(async () => await onConfirmContemplation(item), "philosophy.notice.confirmed")) {
+					setEditingId(null);
+					setDeletingId(null);
+				}
+			}
+			async function deleteContemplation(item) {
+				if (await mutate(async () => await onDeleteContemplation(item), "philosophy.notice.deleted")) {
+					setEditingId(null);
+					setDeletingId(null);
+				}
+			}
+			async function proposePrinciple(item) {
+				const expression = proposalExpression.trim();
+				if (expression === "") return;
+				const content = {
+					expression,
+					formationContext: t("philosophy.formation.manual"),
+					userQuote: exactQuote(item.markdown),
+					supportingExperiences: [],
+					counterexample: "",
+					appliesTo: [],
+					notAppliesTo: [],
+					lastChallenged: today,
+					status: "trying"
+				};
+				if (await mutate(async () => await onProposePrinciple(item, content), "philosophy.notice.proposed")) {
+					setProposalSourceId(null);
+					setProposalExpression("");
+				}
 			}
 			function reviseStatus(principle, status) {
 				mutate(async () => await onRevisePrincipleStatus(principle, status, calendarStamp(today)), "philosophy.notice.revised");
@@ -38419,10 +38480,10 @@ void main() {
 						role: "status",
 						children: t(notice)
 					}),
-					error && (0, react_jsx_runtime.jsx)("p", {
+					error !== null && (0, react_jsx_runtime.jsx)("p", {
 						className: GardenSpace_module_css_default.error,
 						role: "alert",
-						children: t("philosophy.error")
+						children: t(error)
 					}),
 					loading ? (0, react_jsx_runtime.jsx)("p", {
 						className: PhilosophySpace_module_css_default.loading,
@@ -38434,38 +38495,233 @@ void main() {
 							(0, react_jsx_runtime.jsxs)("section", {
 								className: `${PhilosophySpace_module_css_default.section} ${PhilosophySpace_module_css_default.contemplationSection}`,
 								"aria-labelledby": "garden-contemplations",
-								children: [(0, react_jsx_runtime.jsxs)("div", {
-									className: PhilosophySpace_module_css_default.sectionHeader,
-									children: [(0, react_jsx_runtime.jsx)("span", { children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSparkle16, {}) }), (0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("h2", {
-										id: "garden-contemplations",
-										children: t("philosophy.contemplations")
-									}), (0, react_jsx_runtime.jsx)("p", { children: t("philosophy.contemplationsHint") })] })]
-								}), contemplations.length === 0 ? (0, react_jsx_runtime.jsx)("p", {
-									className: PhilosophySpace_module_css_default.empty,
-									children: t("philosophy.emptyContemplations")
-								}) : (0, react_jsx_runtime.jsx)("ol", {
-									className: PhilosophySpace_module_css_default.list,
-									children: contemplations.map((item, index) => (0, react_jsx_runtime.jsxs)("li", {
-										className: PhilosophySpace_module_css_default.note,
-										"data-status": item.status,
-										children: [(0, react_jsx_runtime.jsx)("span", {
-											className: PhilosophySpace_module_css_default.sequence,
-											"aria-hidden": "true",
-											children: String(index + 1).padStart(2, "0")
-										}), (0, react_jsx_runtime.jsxs)("article", { children: [
-											(0, react_jsx_runtime.jsxs)("header", { children: [(0, react_jsx_runtime.jsx)("small", { children: t(`philosophy.contemplation.${item.status}`) }), (0, react_jsx_runtime.jsx)("time", { children: new Date(item.updatedAt).toLocaleDateString() })] }),
-											(0, react_jsx_runtime.jsx)("p", { children: item.markdown }),
-											item.status === "confirmed" && (0, react_jsx_runtime.jsx)("footer", { children: (0, react_jsx_runtime.jsxs)("button", {
+								children: [
+									(0, react_jsx_runtime.jsxs)("div", {
+										className: PhilosophySpace_module_css_default.sectionHeader,
+										children: [
+											(0, react_jsx_runtime.jsx)("span", { children: (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSparkle16, {}) }),
+											(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("h2", {
+												id: "garden-contemplations",
+												children: t("philosophy.contemplations")
+											}), (0, react_jsx_runtime.jsx)("p", { children: t("philosophy.contemplationsHint") })] }),
+											(0, react_jsx_runtime.jsx)("button", {
 												className: GardenSpace_module_css_default.quietButton,
 												type: "button",
+												"aria-expanded": creating,
+												disabled: pending,
 												onClick: () => {
-													draftContemplation(item);
+													setCreating((value) => !value);
+													setEditingId(null);
+													setDeletingId(null);
 												},
-												children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSendOutline14, {}), t("philosophy.continue")]
-											}) })
-										] })]
-									}, String(item.id)))
-								})]
+												children: t("philosophy.add")
+											})
+										]
+									}),
+									creating && (0, react_jsx_runtime.jsxs)("form", {
+										className: PhilosophySpace_module_css_default.inlineComposer,
+										onSubmit: (event) => {
+											event.preventDefault();
+											createContemplation();
+										},
+										children: [
+											(0, react_jsx_runtime.jsx)("label", {
+												htmlFor: "garden-new-contemplation",
+												children: t("philosophy.addLabel")
+											}),
+											(0, react_jsx_runtime.jsx)("textarea", {
+												id: "garden-new-contemplation",
+												value: newContemplation,
+												maxLength: MAX_CONTEMPLATION_CHARACTERS,
+												autoFocus: true,
+												onChange: (event) => {
+													setNewContemplation(event.target.value);
+												}
+											}),
+											(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("button", {
+												className: GardenSpace_module_css_default.button,
+												type: "submit",
+												disabled: pending || newContemplation.trim() === "",
+												children: t("philosophy.saveDraft")
+											}), (0, react_jsx_runtime.jsx)("button", {
+												className: GardenSpace_module_css_default.quietButton,
+												type: "button",
+												disabled: pending,
+												onClick: () => {
+													setCreating(false);
+													setNewContemplation("");
+												},
+												children: t("philosophy.cancel")
+											})] })
+										]
+									}),
+									contemplations.length === 0 ? (0, react_jsx_runtime.jsx)("p", {
+										className: PhilosophySpace_module_css_default.empty,
+										children: t("philosophy.emptyContemplations")
+									}) : (0, react_jsx_runtime.jsx)("ol", {
+										className: PhilosophySpace_module_css_default.list,
+										children: contemplations.map((item, index) => (0, react_jsx_runtime.jsxs)("li", {
+											className: PhilosophySpace_module_css_default.note,
+											"data-status": item.status,
+											children: [(0, react_jsx_runtime.jsx)("span", {
+												className: PhilosophySpace_module_css_default.sequence,
+												"aria-hidden": "true",
+												children: String(index + 1).padStart(2, "0")
+											}), (0, react_jsx_runtime.jsxs)("article", { children: [
+												(0, react_jsx_runtime.jsxs)("header", { children: [(0, react_jsx_runtime.jsx)("small", { children: t(`philosophy.contemplation.${item.status}`) }), (0, react_jsx_runtime.jsx)("time", { children: new Date(item.updatedAt).toLocaleDateString() })] }),
+												(0, react_jsx_runtime.jsx)("p", { children: item.markdown }),
+												editingId === String(item.id) && (0, react_jsx_runtime.jsxs)("form", {
+													className: PhilosophySpace_module_css_default.inlineComposer,
+													onSubmit: (event) => {
+														event.preventDefault();
+														updateContemplation(item);
+													},
+													children: [
+														(0, react_jsx_runtime.jsx)("label", {
+															htmlFor: `garden-edit-${String(item.id)}`,
+															children: t("philosophy.editLabel")
+														}),
+														(0, react_jsx_runtime.jsx)("textarea", {
+															id: `garden-edit-${String(item.id)}`,
+															value: editingMarkdown,
+															maxLength: MAX_CONTEMPLATION_CHARACTERS,
+															autoFocus: true,
+															onChange: (event) => {
+																setEditingMarkdown(event.target.value);
+															}
+														}),
+														(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("button", {
+															className: GardenSpace_module_css_default.button,
+															type: "submit",
+															disabled: pending || editingMarkdown.trim() === "",
+															children: t("philosophy.save")
+														}), (0, react_jsx_runtime.jsx)("button", {
+															className: GardenSpace_module_css_default.quietButton,
+															type: "button",
+															disabled: pending,
+															onClick: () => {
+																setEditingId(null);
+																setEditingMarkdown("");
+															},
+															children: t("philosophy.cancel")
+														})] })
+													]
+												}),
+												proposalSourceId === String(item.id) && (0, react_jsx_runtime.jsxs)("form", {
+													className: PhilosophySpace_module_css_default.principleComposer,
+													onSubmit: (event) => {
+														event.preventDefault();
+														proposePrinciple(item);
+													},
+													children: [
+														(0, react_jsx_runtime.jsx)("label", {
+															htmlFor: `garden-principle-${String(item.id)}`,
+															children: t("philosophy.extractLabel")
+														}),
+														(0, react_jsx_runtime.jsx)("input", {
+															id: `garden-principle-${String(item.id)}`,
+															value: proposalExpression,
+															maxLength: MAX_PRINCIPLE_CHARACTERS,
+															autoFocus: true,
+															onChange: (event) => {
+																setProposalExpression(event.target.value);
+															}
+														}),
+														(0, react_jsx_runtime.jsxs)("div", { children: [(0, react_jsx_runtime.jsx)("button", {
+															className: GardenSpace_module_css_default.button,
+															type: "submit",
+															disabled: pending || proposalExpression.trim() === "",
+															children: t("philosophy.propose")
+														}), (0, react_jsx_runtime.jsx)("button", {
+															className: GardenSpace_module_css_default.quietButton,
+															type: "button",
+															disabled: pending,
+															onClick: () => {
+																setProposalSourceId(null);
+																setProposalExpression("");
+															},
+															children: t("philosophy.cancel")
+														})] })
+													]
+												}),
+												deletingId === String(item.id) && (0, react_jsx_runtime.jsxs)("div", {
+													className: PhilosophySpace_module_css_default.deleteConfirmation,
+													role: "group",
+													"aria-label": t("philosophy.deleteQuestion"),
+													children: [
+														(0, react_jsx_runtime.jsx)("span", { children: t("philosophy.deleteQuestion") }),
+														(0, react_jsx_runtime.jsx)("button", {
+															className: GardenSpace_module_css_default.dangerButton,
+															type: "button",
+															disabled: pending,
+															onClick: () => {
+																deleteContemplation(item);
+															},
+															children: t("philosophy.deleteConfirm")
+														}),
+														(0, react_jsx_runtime.jsx)("button", {
+															className: GardenSpace_module_css_default.quietButton,
+															type: "button",
+															disabled: pending,
+															onClick: () => {
+																setDeletingId(null);
+															},
+															children: t("philosophy.cancel")
+														})
+													]
+												}),
+												(0, react_jsx_runtime.jsx)("footer", { children: item.status === "draft" ? (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+													(0, react_jsx_runtime.jsx)("button", {
+														className: GardenSpace_module_css_default.quietButton,
+														type: "button",
+														disabled: pending,
+														onClick: () => {
+															setEditingId(String(item.id));
+															setEditingMarkdown(item.markdown);
+															setDeletingId(null);
+														},
+														children: t("philosophy.edit")
+													}),
+													(0, react_jsx_runtime.jsxs)("button", {
+														className: GardenSpace_module_css_default.button,
+														type: "button",
+														disabled: pending,
+														onClick: () => {
+															confirmContemplation(item);
+														},
+														children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconCheckOutline16, {}), t("philosophy.confirm")]
+													}),
+													(0, react_jsx_runtime.jsx)("button", {
+														className: GardenSpace_module_css_default.quietButton,
+														type: "button",
+														disabled: pending,
+														onClick: () => {
+															setDeletingId(String(item.id));
+															setEditingId(null);
+														},
+														children: t("philosophy.delete")
+													})
+												] }) : (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [!proposals.some((proposal) => proposal.sourceContemplationId === item.id && proposal.status === "proposed") && (0, react_jsx_runtime.jsx)("button", {
+													className: GardenSpace_module_css_default.quietButton,
+													type: "button",
+													disabled: pending,
+													onClick: () => {
+														setProposalSourceId(String(item.id));
+														setProposalExpression("");
+													},
+													children: t("philosophy.extract")
+												}), (0, react_jsx_runtime.jsxs)("button", {
+													className: GardenSpace_module_css_default.quietButton,
+													type: "button",
+													onClick: () => {
+														draftContemplation(item);
+													},
+													children: [(0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconSendOutline14, {}), t("philosophy.continue")]
+												})] }) })
+											] })]
+										}, String(item.id)))
+									})
+								]
 							}),
 							(0, react_jsx_runtime.jsxs)("section", {
 								className: `${PhilosophySpace_module_css_default.section} ${PhilosophySpace_module_css_default.proposalSection}`,
@@ -41936,7 +42192,7 @@ void main() {
 			return counts.memories + counts.reflections + counts.media + counts.stars;
 		}
 		/** Render the passphrase ceremony and whole-profile encrypted download. */
-		function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onRestoreBackup, onRotateVaultKey }) {
+		function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onRestoreBackup, onRotateVaultKey, onRestoreSuccess = () => void 0 }) {
 			const [passphrase, setPassphrase] = (0, react.useState)("");
 			const [confirmation, setConfirmation] = (0, react.useState)("");
 			const [state, setState] = (0, react.useState)({ kind: "idle" });
@@ -42022,6 +42278,7 @@ void main() {
 					kind: "success",
 					value: result.value
 				});
+				onRestoreSuccess();
 			};
 			const cancelRestore = () => {
 				setRestore({ kind: "idle" });
@@ -42392,14 +42649,6 @@ void main() {
 			"month",
 			"year"
 		];
-		const DIRECTION_CONTRACT = `<!-- IMPECCABLE 9e22e091
-THESIS: A lived-in morning courtyard turns private reflection into a tactile passage; it refuses the repeated heading, explanation, container, list template.
-OWN-WORLD: Luminous xuan paper, pale-ash joinery, honed limestone, matte porcelain, physical brass paths, deep indigo actions, muted plum bindings, grounded shadows, and Noto Sans SC operational type.
-STORY: Five clear garden regions lead to nine fully preserved tools, while each destination becomes its own recognizable room with truthful records and explicit control.
-FIRST VIEWPORT: A slim five-region header opens directly onto a 38/62 practical entry and full-depth B+C courtyard corridor; three semantic stations sit over a generated physical scene and lead into complete tools below.
-FORM: B paper-corridor spatial depth fused with C morning architecture, top navigation, and quick-action hierarchy, approved by the user, seed 9e22e091.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
--->`;
 		const ignoreSpaceSelection = (_space) => void 0;
 		const ignoreSidebarToggle = () => void 0;
 		const ignoreConversationDraft = (_draft) => void 0;
@@ -42416,7 +42665,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			return `review.status.${status}`;
 		}
 		/** Render the inactive gateway or the active review center. */
-		function MindGardenReviewCenter({ projection, imageLimits, onExportBackup, onInspectBackup, onRestoreBackup, onRotateVaultKey, onStarMapOverview, onSaveStarRitual, onCompleteStarRitual, onUpdateStarProfile, onUpdateStarTrait, onDrawStarCard, onCalibrateStarCard, onFinalizeStarCard, onContinueStarCard, onApplyStarCardRevision, onListMemories, onProposeMemory, onConfirmMemory, onUpdateMemory, onRejectMemory, onResolveMemoryRelationship, onListMemoryRevisions, onExtractMemories, onLatestMemoryExtraction, onMemoryAutomationPolicy, onSetMemoryAutomationPolicy, onDeleteMemory, onLatestMemoryAudit, onListOpenQuestions, onCreateOpenQuestion, onUpdateOpenQuestion, onPeriodReviewMaterial, onCreatePeriodReview, onListPeriodReviews, onUpdatePeriodReview, onListConcerns, onCreateConcern, onUpdateConcern, onCompleteConcern, onConvertConcern, onCalendarMonth, onCalendarDay, onCreateCheckin, onCreateJournal, onUpdateJournal, onDeleteJournal, onReflectionTrend, onListExperiments, onCreateExperiment, onStartExperiment, onObserveExperiment, onStopExperiment, onListContemplations, onListPrincipleProposals, onListPrinciples, onAcceptPrincipleProposal, onRejectPrincipleProposal, onRevisePrincipleStatus, onListPhotoStories, onCreatePhotoStory, onReadPhotoStory, onObservePhotoStory, onContinuePhotoStory, onUpdatePhotoStory, onDeletePhotoStory, activeSpace = "today", sidebarCollapsed = false, onSelectSpace = ignoreSpaceSelection, onToggleSidebar = ignoreSidebarToggle, onDraftConversation = ignoreConversationDraft, t, ...dockActions }) {
+		function MindGardenReviewCenter({ projection, imageLimits, onExportBackup, onInspectBackup, onRestoreBackup, onRotateVaultKey, onStarMapOverview, onSaveStarRitual, onCompleteStarRitual, onUpdateStarProfile, onUpdateStarTrait, onDrawStarCard, onCalibrateStarCard, onFinalizeStarCard, onContinueStarCard, onApplyStarCardRevision, onListMemories, onProposeMemory, onConfirmMemory, onUpdateMemory, onRejectMemory, onResolveMemoryRelationship, onListMemoryRevisions, onExtractMemories, onLatestMemoryExtraction, onMemoryAutomationPolicy, onSetMemoryAutomationPolicy, onDeleteMemory, onLatestMemoryAudit, onListOpenQuestions, onCreateOpenQuestion, onUpdateOpenQuestion, onPeriodReviewMaterial, onCreatePeriodReview, onListPeriodReviews, onUpdatePeriodReview, onListConcerns, onCreateConcern, onUpdateConcern, onCompleteConcern, onConvertConcern, onCalendarMonth, onCalendarDay, onCreateCheckin, onCreateJournal, onUpdateJournal, onDeleteJournal, onReflectionTrend, onListExperiments, onCreateExperiment, onStartExperiment, onObserveExperiment, onStopExperiment, onListContemplations, onCreateContemplation, onUpdateContemplation, onConfirmContemplation, onDeleteContemplation, onProposePrinciple, onListPrincipleProposals, onListPrinciples, onAcceptPrincipleProposal, onRejectPrincipleProposal, onRevisePrincipleStatus, onListPhotoStories, onCreatePhotoStory, onReadPhotoStory, onObservePhotoStory, onContinuePhotoStory, onUpdatePhotoStory, onDeletePhotoStory, activeSpace = "today", sidebarCollapsed = false, onSelectSpace = ignoreSpaceSelection, onToggleSidebar = ignoreSidebarToggle, onDraftConversation = ignoreConversationDraft, running = false, t, ...dockActions }) {
 			const today = localDate(/* @__PURE__ */ new Date());
 			const initialPeriod = (0, react.useMemo)(() => currentPeriod("week"), []);
 			const [questions, setQuestions] = (0, react.useState)([]);
@@ -42434,6 +42683,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			const [reviewContent, setReviewContent] = (0, react.useState)("");
 			const [starSidebar, setStarSidebar] = (0, react.useState)(null);
 			const [settingsOpen, setSettingsOpen] = (0, react.useState)(false);
+			const [profileRevision, setProfileRevision] = (0, react.useState)(0);
 			const requestRef = (0, react.useRef)(0);
 			const pendingRef = (0, react.useRef)(false);
 			const starSidebarLoadedRef = (0, react.useRef)(false);
@@ -42483,7 +42733,11 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 				return () => {
 					disposed = true;
 				};
-			}, [activeSpace, onStarMapOverview]);
+			}, [
+				activeSpace,
+				onStarMapOverview,
+				profileRevision
+			]);
 			const refresh = (0, react.useCallback)(async (showLoading = false) => {
 				const request = ++requestRef.current;
 				if (showLoading) setLoading(true);
@@ -42512,6 +42766,11 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 					requestRef.current++;
 				};
 			}, [projection, refresh]);
+			const handleRestoreSuccess = (0, react.useCallback)(() => {
+				starSidebarLoadedRef.current = false;
+				setProfileRevision((value) => value + 1);
+				refresh(true);
+			}, [refresh]);
 			const mutate = (0, react.useCallback)(async (action, success) => {
 				/* v8 ignore next -- disabled controls close the ordinary render window; the ref closes same-tick activation. */
 				if (pendingRef.current) return null;
@@ -42634,7 +42893,6 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 				"data-mind-garden-view": "active",
 				"data-active-space": activeSpace,
 				children: [
-					(0, react_jsx_runtime.jsx)("template", { dangerouslySetInnerHTML: { __html: DIRECTION_CONTRACT } }),
 					(0, react_jsx_runtime.jsx)(GardenSidebar, {
 						activeSpace,
 						collapsed: sidebarCollapsed,
@@ -42707,6 +42965,11 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 						}) : activeSpace === "philosophy" ? (0, react_jsx_runtime.jsx)(PhilosophySpace, {
 							today,
 							onListContemplations,
+							onCreateContemplation,
+							onUpdateContemplation,
+							onConfirmContemplation,
+							onDeleteContemplation,
+							onProposePrinciple,
 							onListPrincipleProposals,
 							onListPrinciples,
 							onAcceptPrincipleProposal,
@@ -43113,7 +43376,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 								})
 							]
 						})
-					}),
+					}, profileRevision),
 					settingsOpen && (0, react_jsx_runtime.jsx)("div", {
 						className: MindGardenView_module_css_default.settingsScrim,
 						role: "dialog",
@@ -43173,6 +43436,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 									}), (0, react_jsx_runtime.jsx)(MindGardenPanel, {
 										projection,
 										defaultOpen: true,
+										running,
 										...dockActions,
 										t
 									})]
@@ -43186,6 +43450,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 										onInspectBackup,
 										onRestoreBackup,
 										onRotateVaultKey,
+										onRestoreSuccess: handleRestoreSuccess,
 										t
 									})]
 								})]
@@ -43202,12 +43467,14 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			});
 		}
 		/** Read the typed session projection and adapt it to the review center. */
-		function MindGardenView({ useProjection, useStore, actions, inputActions, ...props }) {
+		function MindGardenView({ useProjection, useSession, useStore, actions, inputActions, ...props }) {
 			const projection = useProjection("mind-garden");
 			const imageLimits = useProjection("imageLimits");
+			const running = useSession((state) => state.running);
 			const view = useStore((state) => state);
 			return (0, react_jsx_runtime.jsx)(MindGardenReviewCenter, {
 				projection,
+				running,
 				...imageLimits === void 0 ? {} : { imageLimits },
 				activeSpace: view.activeSpace,
 				sidebarCollapsed: view.sidebarCollapsed,
@@ -43257,7 +43524,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"entry.close": "暂不进入",
 			"disclosure.title": "先约定我们的边界",
 			"disclosure.body": "这里由 AI 模型回应，不是人类、心理治疗或紧急服务。对话会按当前部署的持久化与模型提供方配置处理。若你正处于紧急危险，请优先联系当地紧急服务与可信任的人。",
-			"disclosure.accept": "确认边界后，再选择一种对话姿态",
+			"disclosure.accept": "确认边界后即可开始，不需要先选择对话模式",
 			"disclosure.consent": "我已阅读并理解上述 AI、数据处理与紧急支持边界",
 			"disclosure.consent.hint": "这项确认只用于开启心智庭院，不会自动授权长期记忆或额外的模型整理。",
 			"disclosure.contract": "进入心智庭院前的三项边界",
@@ -43267,6 +43534,9 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"disclosure.model.body": "提供方与普通对话一致；额外资料只通过明确授权的边界进入。",
 			"disclosure.authority.title": "解释权与确认权始终属于你",
 			"disclosure.authority.body": "候选记忆、特质和原则不会因为 AI 提议就自动生效。",
+			"disclosure.start": "开始陪伴",
+			"disclosure.starting": "正在开启……",
+			"disclosure.default": "默认随你当下；想纠偏时，直接说“先听我说”。",
 			"mode.serenity": "观心",
 			"mode.serenity.desc": "先听见感受，慢一点，不急着解决",
 			"mode.clarity": "玄思",
@@ -43351,8 +43621,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"rotation.error.credentials": "主钥匙或临时钥匙位置当前不可写；私人数据没有失去恢复路径。",
 			"rotation.error.vault": "私人存储当前未解锁，或上次换钥需要先恢复。",
 			"rotation.error.generic": "换钥未完成；安全日志会保留恢复路径，请稍后重试。",
-			"section.mode": "此刻的对话姿态",
-			"section.intent": "你现在更需要",
+			"section.mode": "整体对话倾向",
+			"section.intent": "此刻怎么陪你",
 			"intent.auto": "随我当下",
 			"intent.listen": "只听我说",
 			"intent.settle": "先安顿下来",
@@ -43831,6 +44101,21 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"philosophy.contemplations": "对话后沉思",
 			"philosophy.contemplationsHint": "草稿不会进入模型上下文",
 			"philosophy.emptyContemplations": "还没有沉思手记。",
+			"philosophy.add": "记下一段",
+			"philosophy.addLabel": "写下这轮对话后，你真正想留下的一段理解",
+			"philosophy.saveDraft": "保存为草稿",
+			"philosophy.edit": "修改",
+			"philosophy.editLabel": "修正这篇沉思草稿",
+			"philosophy.save": "保存",
+			"philosophy.confirm": "确认是我的理解",
+			"philosophy.delete": "删除草稿",
+			"philosophy.deleteQuestion": "这篇草稿将被永久删除。",
+			"philosophy.deleteConfirm": "确认删除",
+			"philosophy.cancel": "取消",
+			"philosophy.extract": "提炼一句原则",
+			"philosophy.extractLabel": "用一句自己的话，写下这篇沉思可能支持的生活原则",
+			"philosophy.propose": "形成待决定提案",
+			"philosophy.formation.manual": "由你从一篇已确认的沉思中提炼",
 			"philosophy.contemplation.draft": "待你确认",
 			"philosophy.contemplation.confirmed": "已确认",
 			"philosophy.proposals": "原则提案",
@@ -43861,6 +44146,12 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"philosophy.notice.rejected": "这份提案已被拒绝，不会成为你的原则。",
 			"philosophy.notice.revised": "原则状态已修正，上一个版本仍完整保留。",
 			"philosophy.notice.drafted": "这段哲思已放入 Harness 对话输入框，尚未发送。",
+			"philosophy.notice.created": "沉思草稿已保存，确认前不会成为你的定论。",
+			"philosophy.notice.updated": "沉思草稿已修正。",
+			"philosophy.notice.confirmed": "这篇沉思已由你确认。",
+			"philosophy.notice.deleted": "沉思草稿已删除。",
+			"philosophy.notice.proposed": "原则提案已形成；在你采纳前不会生效。",
+			"philosophy.sourceUnavailable": "完成一轮安宁对话后，就可以在这里留下沉思。当前内容没有被保存。",
 			"star.sidebar.eyebrow": "{count} 颗星尘等待被看见",
 			"star.sidebar.title": "进入我的星图",
 			"star.sidebar.detail": "{count} 段回望已经点亮",
@@ -44110,7 +44401,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"entry.close": "Not now",
 			"disclosure.title": "A clear boundary first",
 			"disclosure.body": "Replies here come from an AI model, not a human, therapist, or emergency service. The conversation is processed under this deployment’s durable storage and model-provider configuration. If you are in immediate danger, contact local emergency help and someone you trust.",
-			"disclosure.accept": "Confirm the boundary, then choose a dialogue posture",
+			"disclosure.accept": "Confirm the boundary to begin; no dialogue-mode choice is required",
 			"disclosure.consent": "I have read and understand the AI, data-processing, and emergency-support boundaries above",
 			"disclosure.consent.hint": "This confirmation only activates Mind Garden. It does not enable long-term memory or extra model review.",
 			"disclosure.contract": "Three boundaries before entering Mind Garden",
@@ -44120,6 +44411,9 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"disclosure.model.body": "The provider matches ordinary conversation; extra material crosses only explicit authorization seams.",
 			"disclosure.authority.title": "Interpretation and confirmation remain yours",
 			"disclosure.authority.body": "Candidate memories, traits, and principles never become active just because AI proposed them.",
+			"disclosure.start": "Start the conversation",
+			"disclosure.starting": "Starting…",
+			"disclosure.default": "Follows your lead by default; say “just listen” whenever needed.",
 			"mode.serenity": "Serenity",
 			"mode.serenity.desc": "Hear the feeling first; slow down without rushing to solve",
 			"mode.clarity": "Clarity",
@@ -44204,8 +44498,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"rotation.error.credentials": "The primary or staging credential is not writable. Private data still has a recovery path.",
 			"rotation.error.vault": "Private storage is locked, or an earlier rotation must recover first.",
 			"rotation.error.generic": "Rotation did not finish. Its durable journal retains the recovery path; try again later.",
-			"section.mode": "Dialogue posture",
-			"section.intent": "What would help now",
+			"section.mode": "Overall dialogue tendency",
+			"section.intent": "How to support you now",
 			"intent.auto": "Follow my lead",
 			"intent.listen": "Just listen",
 			"intent.settle": "Help me settle",
@@ -44684,6 +44978,21 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"philosophy.contemplations": "Post-conversation contemplation",
 			"philosophy.contemplationsHint": "Drafts never enter model context",
 			"philosophy.emptyContemplations": "There are no contemplation notes yet.",
+			"philosophy.add": "Leave a note",
+			"philosophy.addLabel": "Write the understanding you genuinely want to keep from this conversation",
+			"philosophy.saveDraft": "Save as draft",
+			"philosophy.edit": "Edit",
+			"philosophy.editLabel": "Revise this contemplation draft",
+			"philosophy.save": "Save",
+			"philosophy.confirm": "Confirm as mine",
+			"philosophy.delete": "Delete draft",
+			"philosophy.deleteQuestion": "This draft will be permanently deleted.",
+			"philosophy.deleteConfirm": "Delete permanently",
+			"philosophy.cancel": "Cancel",
+			"philosophy.extract": "Distill one principle",
+			"philosophy.extractLabel": "In your own words, write one life principle this contemplation may support",
+			"philosophy.propose": "Create proposal",
+			"philosophy.formation.manual": "Distilled by you from a confirmed contemplation",
 			"philosophy.contemplation.draft": "Needs your confirmation",
 			"philosophy.contemplation.confirmed": "Confirmed",
 			"philosophy.proposals": "Principle proposals",
@@ -44714,6 +45023,12 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			"philosophy.notice.rejected": "This proposal was rejected and will not become your principle.",
 			"philosophy.notice.revised": "The principle status changed and its previous version remains intact.",
 			"philosophy.notice.drafted": "This thought is in the Harness conversation composer and has not been sent.",
+			"philosophy.notice.created": "The contemplation draft is saved and remains tentative until you confirm it.",
+			"philosophy.notice.updated": "The contemplation draft was revised.",
+			"philosophy.notice.confirmed": "You confirmed this contemplation.",
+			"philosophy.notice.deleted": "The contemplation draft was deleted.",
+			"philosophy.notice.proposed": "The principle proposal exists and remains inert until you adopt it.",
+			"philosophy.sourceUnavailable": "Finish a Serenity conversation before leaving a contemplation here. Nothing was saved.",
 			"star.sidebar.eyebrow": "{count} motes waiting to be seen",
 			"star.sidebar.title": "Enter my constellation",
 			"star.sidebar.detail": "{count} reviews already shine",
@@ -45303,6 +45618,30 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 						value: result.value.contemplations
 					} : result;
 				},
+				onCreateContemplation: async (markdown) => await settle(ctx.remote.mindGardenReflection.createContemplation(sessionId, { markdown })),
+				onUpdateContemplation: async (contemplation, markdown) => await settle(ctx.remote.mindGardenReflection.updateContemplation(sessionId, {
+					id: contemplation.id,
+					ifVersion: contemplation.version,
+					markdown
+				})),
+				onConfirmContemplation: async (contemplation) => await settle(ctx.remote.mindGardenReflection.confirmContemplation(sessionId, {
+					id: contemplation.id,
+					ifVersion: contemplation.version
+				})),
+				onDeleteContemplation: async (contemplation) => {
+					const result = await settle(ctx.remote.mindGardenReflection.deleteContemplation(sessionId, {
+						id: contemplation.id,
+						ifVersion: contemplation.version
+					}));
+					return result.ok ? {
+						ok: true,
+						value: true
+					} : result;
+				},
+				onProposePrinciple: async (contemplation, content) => await settle(ctx.remote.mindGardenReflection.proposePrinciple(sessionId, {
+					sourceContemplationId: contemplation.id,
+					content
+				})),
 				onListPrincipleProposals: async () => {
 					const result = await settle(ctx.remote.mindGardenReflection.listPrincipleProposals(sessionId, { includeClosed: true }));
 					return result.ok ? {

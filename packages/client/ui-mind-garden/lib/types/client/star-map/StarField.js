@@ -567,8 +567,8 @@ export function StarField({ model, fallback, reducedMotion = false, selectedId =
         const query = window.matchMedia('(prefers-reduced-motion: reduce)');
         const update = () => { setSystemReducedMotion(query.matches); };
         update();
-        query.addEventListener?.('change', update);
-        return () => { query.removeEventListener?.('change', update); };
+        query.addEventListener('change', update);
+        return () => { query.removeEventListener('change', update); };
     }, []);
     useEffect(() => {
         if (host === null)

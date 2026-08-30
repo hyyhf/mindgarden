@@ -28,7 +28,7 @@ export interface Config {
     maxObserverMessageBytes?: number;
     /** Maximum complete UTF-8 bytes sent in one photo auxiliary request. */
     maxObserverInputBytes?: number;
-    /** Maximum provider output tokens accepted by one photo auxiliary request. */
+    /** Optional deployment-owned output cap for one photo auxiliary request. */
     maxObserverOutputTokens?: number;
     /** Global bound for simultaneous photo-model calls; each story still admits only one. */
     maxConcurrentObserverRequests?: number;
@@ -120,6 +120,8 @@ export declare class MindGardenMediaService extends TypertRemoteService {
     private failedRunRecord;
     private failModelRun;
     private accessFailure;
+    /** Require recorded provider disclosure only for operations that contact a model. */
+    private modelAccessFailure;
     private imageInput;
     private validateStamp;
     private text;

@@ -5,7 +5,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_automationPolicy_para
 const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_automationPolicy_result$schema = z.union([z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -69,7 +69,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_confirm_result$schema
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -151,7 +151,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_delete_result$schema 
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -250,7 +250,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_extract_result$schema
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -273,7 +273,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_latestAudit_parameter
 const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_latestAudit_result$schema = z.union([z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -297,7 +297,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_latestExtraction_para
 const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_latestExtraction_result$schema = z.union([z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -361,7 +361,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_list_result$schema = 
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -396,7 +396,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_listRevisions_result$
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -455,7 +455,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_propose_result$schema
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -516,7 +516,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_reject_result$schema 
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -659,7 +659,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_resolveRelationship_r
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -778,7 +778,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_setAutomationPolicy_r
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -843,7 +843,7 @@ const _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_update_result$schema 
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -939,7 +939,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryAutomationPolicyResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_automationPolicy_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":884,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1317,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/confirm',
@@ -979,7 +979,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryConfirmResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_confirm_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":568,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1041,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/delete',
@@ -1019,7 +1019,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryDeleteResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_delete_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1026,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1459,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/extract',
@@ -1059,7 +1059,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryExtractResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_extract_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":959,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1392,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/latestAudit',
@@ -1089,7 +1089,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryLatestAuditResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_latestAudit_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1094,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1527,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/latestExtraction',
@@ -1119,7 +1119,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryLatestExtractionResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_latestExtraction_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1002,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1435,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/list',
@@ -1149,7 +1149,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryListResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_list_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":500,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":973,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/listRevisions',
@@ -1189,7 +1189,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryListRevisionsResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_listRevisions_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":860,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1293,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/propose',
@@ -1229,7 +1229,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryProposeResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_propose_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":523,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":996,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/reject',
@@ -1269,7 +1269,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryRejectResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_reject_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":692,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1165,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/resolveRelationship',
@@ -1309,7 +1309,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryResolveRelationshipResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_resolveRelationship_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":735,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1208,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/setAutomationPolicy',
@@ -1349,7 +1349,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemorySetAutomationPolicyResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_setAutomationPolicy_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":904,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1337,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/memory#mindGardenMemory/update',
@@ -1389,7 +1389,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/memory/types#MindGardenMemoryUpdateResult',
         schema: _deepseek_ai_dsh_mind_garden_memory_mindGardenMemory_update_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":629,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-memory/src/index.ts","line":1102,"column":3},
     },
   ],
 }

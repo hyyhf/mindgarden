@@ -38,6 +38,7 @@ import type {
   MindGardenPeriodReviewMaterialValue,
   MindGardenPeriodReviewStatus,
   MindGardenPrinciple,
+  MindGardenPrincipleContent,
   MindGardenPrincipleProposal,
   MindGardenPrincipleStatus,
   MindGardenReflectionTrendValue,
@@ -293,6 +294,24 @@ export interface MindGardenViewActions extends MindGardenDockActions {
   onStopExperiment: (experiment: MindGardenExperiment) => Promise<MindGardenDataResult<MindGardenExperiment>>
   /** Read post-conversation contemplations, including unconfirmed drafts. */
   onListContemplations: () => Promise<MindGardenDataResult<readonly MindGardenContemplation[]>>
+  /** Keep one user-authored draft for the current completed serenity Session. */
+  onCreateContemplation: (markdown: string) => Promise<MindGardenDataResult<MindGardenContemplation>>
+  /** Replace one rendered, unconfirmed contemplation draft. */
+  onUpdateContemplation: (
+    contemplation: MindGardenContemplation,
+    markdown: string,
+  ) => Promise<MindGardenDataResult<MindGardenContemplation>>
+  /** Confirm one rendered contemplation without making it model-visible. */
+  onConfirmContemplation: (
+    contemplation: MindGardenContemplation,
+  ) => Promise<MindGardenDataResult<MindGardenContemplation>>
+  /** Delete one rendered contemplation draft. */
+  onDeleteContemplation: (contemplation: MindGardenContemplation) => Promise<MindGardenDataResult<true>>
+  /** Create an inert principle proposal from one confirmed contemplation. */
+  onProposePrinciple: (
+    contemplation: MindGardenContemplation,
+    content: MindGardenPrincipleContent,
+  ) => Promise<MindGardenDataResult<MindGardenPrincipleProposal>>
   /** Read principle proposals, including decided records. */
   onListPrincipleProposals: () => Promise<MindGardenDataResult<readonly MindGardenPrincipleProposal[]>>
   /** Read life principles with their complete version histories. */

@@ -43,7 +43,7 @@ export interface Config {
     readonly maxExtractionInputBytes?: number;
     /** Maximum complete serialized active-memory bytes sent for relationship suggestions. */
     readonly maxExtractionMemoryBytes?: number;
-    /** Maximum output tokens for one auxiliary extraction request. */
+    /** Optional deployment-owned output cap for one auxiliary extraction request. */
     readonly maxExtractionOutputTokens?: number;
     /** Optional default extraction provider; configure together with `extractionModel`. */
     readonly extractionProvider?: string;
@@ -66,12 +66,31 @@ export declare class MindGardenMemoryService extends TypertRemoteService {
     private readonly extractionOperations;
     private readonly extractionControllers;
     private readonly automationOperations;
+    private readonly pendingRecallAudits;
     /**
      * Install the Remote service and first-step recall listener.
      * @param ctx - Host context carrying live Agents, Mind Garden state, and the encrypted vault.
      * @param config - Complete text, retrieval, audit, and temporary-memory limits.
      */
     constructor(ctx: Context, config: Config);
+    /** Execute the conversation-only correction flow under direct-human authority. */
+    private executeCorrectionTool;
+    /** Authenticate one tool call and return direct human messages in its open root turn. */
+    private correctionExecution;
+    /** Resolve exact evidence from the current direct human turn. */
+    private currentEvidence;
+    /** Store one pending correction against a memory that reached this Session's model history. */
+    private proposeCorrection;
+    /** Replace the target only after a later direct human turn confirms the pending proposal. */
+    private confirmCorrection;
+    /** Reject one pending correction when the user declines it. */
+    private cancelCorrection;
+    /** Read and authenticate one exact pending human correction proposal. */
+    private requireCorrectionCandidate;
+    /** Require one logged assistant question that exposed the complete candidate before confirmation. */
+    private assertCorrectionProposalPresented;
+    /** Throw one stable, model-readable correction-tool failure. */
+    private rejectCorrection;
     /**
      * List every encrypted profile memory through one activated durable Session.
      * @param agent - Exact live Agent resolved by the Remote boundary.
@@ -183,6 +202,8 @@ export declare class MindGardenMemoryService extends TypertRemoteService {
     private userMessageIdsForTurns;
     /** Require the exact registry-owned Agent, then project the memory access policy. */
     private accessFailure;
+    /** Add disclosure acceptance for operations that send profile data to a model or accept model authority. */
+    private modelAccessFailure;
     /** Read, authenticate, decode, and cross-check every record in one vault snapshot. */
     private readRecords;
     /** Validate once more, then commit through the ciphertext-only vault API. */
@@ -193,6 +214,8 @@ export declare class MindGardenMemoryService extends TypertRemoteService {
     private appendRevision;
     /** Confirm one related candidate while recording the explicit coexist decision. */
     private acceptCandidate;
+    /** Replace one related target and settle its candidate after both encrypted writes commit. */
+    private replaceRelatedCandidate;
     /** Validate the optional whole-day lifetime shared by confirmation paths. */
     private assertTemporaryDays;
     /** Merge exact provenance tuples without losing target history. */
@@ -233,8 +256,10 @@ export declare class MindGardenMemoryService extends TypertRemoteService {
     private normalizedCandidateContent;
     /** Reject diagnostic or hidden-cause claims from the candidate queue. */
     private forbiddenInference;
-    /** Select a bounded recall and persist its audit before releasing plaintext to the loop. */
+    /** Select a bounded recall; matched audits remain pending until model dispatch. */
     private prepareRecall;
+    /** Commit matched retrieval audits immediately before the provider chain is entered. */
+    private commitRecallAudits;
     /** Keep the newest configured number of audits without counting memory records. */
     private pruneAudits;
     /** Keep the newest settled extraction audits without deleting live recovery state. */

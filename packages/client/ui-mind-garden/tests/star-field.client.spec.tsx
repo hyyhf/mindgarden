@@ -140,7 +140,11 @@ describe('mountGardenStarField', () => {
   })
 
   it('mounts through React with the user motion preference and tears down on unmount', async () => {
-    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true })))
+    vi.stubGlobal('matchMedia', vi.fn(() => ({
+      matches: true,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })))
     const view = render(<StarField model={model} fallback="fallback" />)
     await waitFor(() => { expect(rendererState.renderers).toHaveLength(1) })
     expect(view.container.querySelector('[data-render-state="ready"]')).toBeTruthy()

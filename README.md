@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-real-today.png" alt="Mind Garden Today after a real user saved an open question" width="100%">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-header.png" alt="Mind Garden, a private long-term companion inside DeepSeek Harness" width="100%">
 </p>
 
 <h1 align="center">Mind Garden</h1>
 
 <p align="center">
-  <strong>A warm, private place to reflect inside DeepSeek Harness.</strong><br>
-  Real companion dialogue, user-governed memory, cinematic photo particles, and a living 3D constellation—without giving the model ownership of your story.
+  <strong>A long-term companion that can understand you accurately—and let you correct it.</strong><br>
+  Ordinary conversation, user-governed memory, cinematic photo particles, and a living 3D constellation—without giving the model ownership of your story.
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 <p align="center">English · <a href="README.zh.md">简体中文</a></p>
 
-Mind Garden is an installable companion and private-reflection workspace for the DeepSeek Harness Web profile. Ordinary conversation remains a Harness Session while the garden adds encrypted personal records, governed memory, original Fun Garden migration, nine connected reflection spaces, and expressive 3D and photo-particle scenes.
+Mind Garden is an installable long-term companion and private-reflection workspace for the DeepSeek Harness Web profile. It is designed to stay with ordinary conversation, preserve continuity without turning guesses into facts, and accept correction without making the user manage another complicated system. The garden adds encrypted personal records, governed memory, original Fun Garden migration, nine connected reflection spaces, and expressive 3D and photo-particle scenes.
 
 It reuses Harness providers, credentials, storage, attachments, Remotes, and plugin lifecycle. It does not fork or copy the DeepSeek Harness application.
 
@@ -35,18 +35,20 @@ Requires DeepSeek Harness `0.1.1-rc.1` or newer, `pnpm` on `PATH`, and a configu
 
 ## A real journey, not a mockup
 
-The sequence below comes from one fresh Harness Web session. A user enters Mind Garden, sends a reflective message to `deepseek-v4-flash`, saves an open question, completes the constellation ritual, switches to the compact layout, admits a photograph, asks `deepseek-v4-flash-vision-exp` to observe it, and opens the verified original from the particle toolbar. The tests assert the provider and model recorded in the durable events before saving these screenshots.
+The refreshed real-provider suite carries one relationship concern across four independent `deepseek-v4-flash` turns: the user changes the desired posture, corrects an over-strong interpretation, and finally asks the companion to stop analyzing. The same run exercises confirmation-gated memory extraction, a Star Observer draw and correction dialogue, local urgent-message handling, a `deepseek-v4-flash-vision-exp` photo observation, and the verified original-image path before saving these screenshots.
 
-| Proof captured on 2026-08-25 | Result |
+| Proof captured on 2026-08-31 | Result |
 |---|---|
 | Production composition | Canonical `ui-mind-garden`; the QA fork is not installed by the gallery or live-provider tests. |
 | Simulated user history | Nine spaces populated through real Host APIs: check-in, journal, concern, question, experiment and observation, confirmed memory, contemplation and principle, period review, photo story, and constellation profile. |
-| Live model provenance | `deepseek-official` / `deepseek-v4-flash` for companion dialogue and `deepseek-official` / `deepseek-v4-flash-vision-exp` for the grounded photo observation. |
-| Browser evidence | 18 desktop states + 18 compact states + 6 live-provider states = **42 freshly recorded screenshots**. |
+| Live companion evidence | Four independent `deepseek-official` / `deepseek-v4-flash` turns are checked for listening, clarification, repair, and a quiet stop without another question or exercise. |
+| Governed model paths | Real memory extraction, Star Observer draw and correction, local urgent-message handling, and `deepseek-v4-flash-vision-exp` photo observation all complete through their production seams. |
+| Output budget | Mind Garden adds no application-owned `maxTokens` by default; the selected provider and model govern output length. |
+| Browser evidence | Six live-provider screenshots were refreshed in this run; the broader desktop and compact gallery remains generated from records accepted by the real Host services. |
 
 <table>
   <tr>
-    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-real-companion.png" alt="A real DeepSeek V4 Flash companion reply"><br><strong>1 · A real companion turn</strong><br>The response passes through the shipped dialogue and safety plugins, then appears in the ordinary Harness conversation.</td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-real-companion.png" alt="The final reply in a four-turn DeepSeek V4 Flash companion journey"><br><strong>1 · A companion that can stop with you</strong><br>After listening, clarification, and correction, the final reply respects the request to pause without adding another interpretation, question, or exercise.</td>
     <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-real-today.png" alt="The real saved question shown on Today"><br><strong>2 · The result becomes useful</strong><br>The user saves a question through the UI and sees it become a truthful station in the morning courtyard.</td>
   </tr>
   <tr>
@@ -80,7 +82,7 @@ Posture and support intent apply only to the current Session. A successful chang
 
 Mind Garden is for conversations that benefit from patience, continuity, and user authority rather than another task dashboard. Its design follows four rules:
 
-- **Companion, not clinician** — the agent can listen, reflect, and ask one useful question, but does not diagnose or impersonate professional care.
+- **Companion, not clinician** — the agent listens from the user's latest words, preserves requested distinctions, repairs misunderstandings, and can leave space without diagnosing or impersonating professional care.
 - **The user owns every conclusion** — extracted memories, inferred traits, Star Observer cards, principle revisions, and relationship conflicts stay provisional until the user decides.
 - **Private records stay structurally private** — memories, reflections, star data, and story metadata are authenticated ciphertext at rest; model calls receive only the bounded material authorized for that exact action.
 - **A real Harness plugin** — the bundle is a manifest-declared Web-profile add-on. It reuses Harness agents, Sessions, providers, credentials, attachments, Remotes, loader rows, and the official client shell.
@@ -360,7 +362,7 @@ npm test
 npm run check
 ```
 
-For this revision, release qualification also packed the 216-file runtime bundle, installed it into an empty directory, resolved all 47 executable public exports, imported all 12 Host faces, passed 461 focused Harness tests and 2 bundle-composition tests, typechecked all production packages, and built the UI plus 9 Host bundles. Eight production-Web E2E cases then passed across the complete replay workflow, desktop and 390 × 844 galleries, and a fresh live-provider journey. The run recaptured all 42 README screenshots, asserted stored provider/model provenance, uploaded and observed a real image through Harness attachments, opened its verified original, completed the constellation ritual, and rejected browser errors and warnings. These are recorded release checks rather than claims about coverage already enforced by GitHub Actions; see the [improvement execution plan](MIND_GARDEN_IMPROVEMENT_PLAN.md).
+For this revision, upstream qualification passed 448 focused Mind Garden tests across 53 files, six replayed production-Web cases, the real-provider journey and safety route, all 37 static gates, lint, Host and Client builds, and 239 compiled-package Loader checks. The real run refreshed the six provider-backed screenshots above, asserted stored provider/model provenance, exercised governed memory and Star Observer calls, uploaded and observed an admitted image, opened its verified original, and rejected browser errors and warnings. The standalone projection is then checked again for source alignment, installable layout, exports, tests, and package integrity. These are recorded release checks rather than claims about coverage already enforced by GitHub Actions; see the [improvement execution plan](MIND_GARDEN_IMPROVEMENT_PLAN.md).
 
 ## Provider and safety behavior
 
@@ -371,12 +373,12 @@ Mind Garden does not make a model request for every UI action.
 | Ordinary companion message | One normal Harness dialogue turn with stable Mind Garden policy, bounded authorized recall, and pre-publication safety review. |
 | Elevated local-safety input | No provider call; a deterministic local response is published and audited. |
 | Check-in, journal, concern, calendar, experiment, principle, question, review storage | No provider call. |
-| Manual or authorized automatic memory review | One bounded auxiliary call; every proposal still requires user review. |
-| Star Observer draw or card follow-up | One bounded auxiliary call scoped to the card and explicitly authorized evidence. |
-| Photo observation or photo-owned follow-up | One bounded auxiliary call through `deepseek-official` / `deepseek-v4-flash-vision-exp`, scoped to the verified story; it is not appended to ordinary Session history. |
+| Manual or authorized automatic memory review | One scoped auxiliary call; every proposal still requires user review. |
+| Star Observer draw or card follow-up | One scoped auxiliary call containing only the card and explicitly authorized evidence. |
+| Photo observation or photo-owned follow-up | One scoped auxiliary call through `deepseek-official` / `deepseek-v4-flash-vision-exp`, belonging only to the verified story; it is not appended to ordinary Session history. |
 | Backup, restore, migration or key rotation | No provider call. |
 
-Activated Mind Garden dialogue caps model output at 4,096 tokens unless the caller already requested less. This keeps the complete answer inside the deterministic publication buffer even when a provider adapter has a much larger deployment default. Other Harness agents and Mind Garden auxiliary calls retain their own limits.
+Mind Garden sets no application-owned `maxTokens` by default for ordinary dialogue, memory extraction, Star Observer, or photo observation. The selected provider and model govern output length. A deployment can still opt into an explicit cap for its own operational policy.
 
 Safety resources currently target mainland China and use a versioned local registry for `12356`, `110`, and `120`. Chinese high-risk input receives those clearly regional resources; English input receives generic English safety guidance without mainland-China numbers. The plugin does not claim verified emergency coverage for other regions and does not present itself as professional care.
 

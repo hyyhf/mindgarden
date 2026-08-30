@@ -58,6 +58,20 @@ function props(overrides: Record<string, unknown> = {}) {
       ok: true as const,
       value: [contemplation('draft'), contemplation('confirmed')],
     })),
+    onCreateContemplation: vi.fn((markdown: string) => Promise.resolve({
+      ok: true as const,
+      value: { ...contemplation('draft'), markdown },
+    })),
+    onUpdateContemplation: vi.fn((item: MindGardenContemplation, markdown: string) => Promise.resolve({
+      ok: true as const,
+      value: { ...item, markdown },
+    })),
+    onConfirmContemplation: vi.fn((item: MindGardenContemplation) => Promise.resolve({
+      ok: true as const,
+      value: { ...item, status: 'confirmed' as const },
+    })),
+    onDeleteContemplation: vi.fn(() => Promise.resolve({ ok: true as const, value: true as const })),
+    onProposePrinciple: vi.fn(() => Promise.resolve({ ok: true as const, value: proposal('proposed') })),
     onListPrincipleProposals: vi.fn(() => Promise.resolve({
       ok: true as const,
       value: [proposal('proposed'), proposal('accepted'), proposal('rejected')],
@@ -122,6 +136,66 @@ describe('PhilosophySpace', () => {
     expect(await view.findByText(zh['philosophy.emptyContemplations'])).toBeTruthy()
     expect(view.getByText(zh['philosophy.emptyProposals'])).toBeTruthy()
     expect(view.getByText(zh['philosophy.emptyPrinciples'])).toBeTruthy()
+  })
+
+  it('closes the user-governed path from contemplation draft to inert principle proposal', async () => {
+    const actions = props({
+      onListPrincipleProposals: vi.fn(() => Promise.resolve({ ok: true as const, value: [] })),
+    })
+    const view = render(<PhilosophySpace {...actions} />)
+    await view.findByText('draft contemplation')
+
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.add'] }))
+    fireEvent.change(view.getByLabelText(zh['philosophy.addLabel']), { target: { value: 'A thought worth keeping.' } })
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.saveDraft'] }))
+    await waitFor(() => { expect(actions.onCreateContemplation).toHaveBeenCalledWith('A thought worth keeping.') })
+
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.edit'] }))
+    fireEvent.change(view.getByLabelText(zh['philosophy.editLabel']), { target: { value: 'A corrected thought.' } })
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.save'] }))
+    await waitFor(() => { expect(actions.onUpdateContemplation).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'draft' }),
+      'A corrected thought.',
+    ) })
+
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.confirm'] }))
+    await waitFor(() => { expect(actions.onConfirmContemplation).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'draft' }),
+    ) })
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.delete'] }))
+    expect(view.getByText(zh['philosophy.deleteQuestion'])).toBeTruthy()
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.deleteConfirm'] }))
+    await waitFor(() => { expect(actions.onDeleteContemplation).toHaveBeenCalled() })
+
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.extract'] }))
+    fireEvent.change(view.getByLabelText(zh['philosophy.extractLabel']), {
+      target: { value: 'Keep one honest thought open to revision.' },
+    })
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.propose'] }))
+    await waitFor(() => { expect(actions.onProposePrinciple).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'confirmed' }),
+      expect.objectContaining({
+        expression: 'Keep one honest thought open to revision.',
+        userQuote: 'confirmed contemplation',
+        status: 'trying',
+      }),
+    ) })
+  })
+
+  it('explains when the current conversation is not ready for a contemplation', async () => {
+    const actions = props({
+      onCreateContemplation: vi.fn(() => Promise.resolve({
+        ok: false as const,
+        code: 'contemplation-source-unavailable',
+        reason: 'no-completed-turn',
+      })),
+    })
+    const view = render(<PhilosophySpace {...actions} />)
+    await view.findByText('draft contemplation')
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.add'] }))
+    fireEvent.change(view.getByLabelText(zh['philosophy.addLabel']), { target: { value: 'Not ready yet.' } })
+    fireEvent.click(view.getByRole('button', { name: zh['philosophy.saveDraft'] }))
+    expect((await view.findByRole('alert')).textContent).toBe(zh['philosophy.sourceUnavailable'])
   })
 
   it('reports each list boundary and failed decisions', async () => {

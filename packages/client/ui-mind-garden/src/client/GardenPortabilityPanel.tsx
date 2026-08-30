@@ -35,6 +35,8 @@ interface GardenPortabilityPanelProps {
     passphrase: string,
   ) => Promise<MindGardenDataResult<MindGardenBackupRestoreValue>>
   readonly onRotateVaultKey: () => Promise<MindGardenDataResult<MindGardenKeyRotationValue>>
+  /** Invalidate mounted profile projections after a successful merge. */
+  readonly onRestoreSuccess?: () => void
 }
 
 type ArchiveState =
@@ -121,6 +123,7 @@ export function GardenPortabilityPanel({
   onInspectBackup,
   onRestoreBackup,
   onRotateVaultKey,
+  onRestoreSuccess = () => undefined,
 }: GardenPortabilityPanelProps) {
   const [passphrase, setPassphrase] = useState('')
   const [confirmation, setConfirmation] = useState('')
@@ -183,6 +186,7 @@ export function GardenPortabilityPanel({
     setRestoreFile(null)
     if (restoreInputRef.current !== null) restoreInputRef.current.value = ''
     setRestore({ kind: 'success', value: result.value })
+    onRestoreSuccess()
   }
 
   const cancelRestore = () => {

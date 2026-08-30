@@ -240,7 +240,7 @@ export interface MindGardenMemoryListValue {
 export interface MindGardenMemoryRecallMatch {
     readonly memoryId: MindGardenMemoryId;
     readonly reason: 'always' | 'relevant';
-    /** Deterministic overlap count; zero is reserved for `always`. */
+    /** Deterministic relevance score; zero is reserved for `always`. */
     readonly score: number;
 }
 /** Latest encrypted retrieval audit for the addressed Session. */
@@ -255,9 +255,9 @@ export interface MindGardenMemoryRetrievalAudit {
 export interface MindGardenMemoryLatestAuditValue {
     readonly audit: MindGardenMemoryRetrievalAudit | null;
 }
-/** The operation requires an activated durable Mind Garden Session. */
+/** The operation requires an activated durable Session and model disclosure when it can reach a model. */
 export interface MindGardenMemoryAccessDenied {
-    readonly code: 'mind-garden-not-active' | 'durable-session-required';
+    readonly code: 'mind-garden-not-active' | 'durable-session-required' | 'model-disclosure-required';
 }
 /** Encrypted storage could not be authenticated with the configured credential. */
 export interface MindGardenMemoryVaultUnavailable {

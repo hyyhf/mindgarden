@@ -290,9 +290,9 @@ export interface MindGardenApplyStarCardRevisionRequest {
   readonly revisionId: MindGardenStarCardRevisionId
 }
 
-/** The operation requires an activated durable Mind Garden Session. */
+/** The operation requires an activated durable Mind Garden Session and, for model calls, accepted disclosure. */
 export interface MindGardenStarAccessDenied {
-  readonly code: 'mind-garden-not-active' | 'durable-session-required'
+  readonly code: 'mind-garden-not-active' | 'durable-session-required' | 'model-disclosure-required'
 }
 
 /** Encrypted Star Map state could not be authenticated. */

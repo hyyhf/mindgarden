@@ -1,6 +1,7 @@
 /** Pure deterministic input classifier and follow-up state transition. */
 
 import { mindGardenSafetyResources } from './resources.ts'
+import { extractMindGardenSafetySignals } from './safety-signals.ts'
 import type {
   MindGardenSafetyAssessment,
   MindGardenSafetyCategory,
@@ -115,6 +116,25 @@ function assessClause(
   clause: string,
   locale: MindGardenSafetyLocale,
 ): MindGardenSafetyAssessment {
+  const signals = extractMindGardenSafetySignals(clause)
+  const concreteDanger = signals.actionTaken
+    || signals.dangerousLocation
+    || ((signals.activeSelfHarm || signals.activeOtherHarm)
+      && (signals.immediateIntent || signals.meansAccess))
+  if (signals.protectedContext) return result(0, 'ordinary', [], 0, locale)
+  if (concreteDanger) return result(3, 'urgent', ['immediate-danger'], 0, locale)
+  if (signals.substanceDanger) {
+    return result(3, 'substance-emergency', ['overdose-or-withdrawal'], 0, locale)
+  }
+  if (signals.abuseDanger) return result(2, 'abuse-danger', ['abuse-or-child-safety'], 0, locale)
+  if (signals.realityOrSleepDanger) {
+    return result(2, 'reality-or-sleep-danger', ['mania-or-psychosis-danger'], 0, locale)
+  }
+  if (signals.benignContext || signals.negatedRisk) return result(0, 'ordinary', [], 0, locale)
+  if (signals.activeSelfHarm || signals.activeOtherHarm || signals.passiveDeathWish) {
+    return result(2, 'high-risk', ['self-or-other-harm'], 0, locale)
+  }
+  if (signals.vulnerable) return result(1, 'vulnerable', ['severe-distress'], 0, locale)
   if (clause.includes('不想活在')
     || matches(NEGATED_RISK_PATTERNS, clause)
     || matches(BENIGN_CONTEXT_PATTERNS, clause)) return result(0, 'ordinary', [], 0, locale)

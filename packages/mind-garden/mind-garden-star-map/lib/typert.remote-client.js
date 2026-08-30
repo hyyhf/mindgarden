@@ -76,7 +76,7 @@ const _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_applyCardRevision_
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -298,7 +298,7 @@ const _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_calibrateCard_resu
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -586,7 +586,7 @@ const _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_completeRitual_res
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -705,7 +705,7 @@ const _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_continueCard_resul
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -882,7 +882,7 @@ const _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_drawCard_result$sc
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -1052,7 +1052,7 @@ const _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_finalizeCard_resul
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -1311,7 +1311,7 @@ const _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_overview_result$sc
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -1518,7 +1518,7 @@ const _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_saveRitualProgress
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -1761,7 +1761,7 @@ const _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_updateProfile_resu
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -1829,7 +1829,7 @@ const _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_updateTrait_result
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -1901,7 +1901,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/star-map/types#MindGardenApplyStarCardRevisionResult',
         schema: _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_applyCardRevision_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":729,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":732,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/star-map#mindGardenStarMap/calibrateCard',
@@ -1941,7 +1941,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/star-map/types#MindGardenCalibrateStarCardResult',
         schema: _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_calibrateCard_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":799,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":802,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/star-map#mindGardenStarMap/completeRitual',
@@ -1981,7 +1981,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/star-map/types#MindGardenCompleteStarRitualResult',
         schema: _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_completeRitual_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":555,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":558,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/star-map#mindGardenStarMap/continueCard',
@@ -2021,7 +2021,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/star-map/types#MindGardenContinueStarCardResult',
         schema: _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_continueCard_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":705,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":708,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/star-map#mindGardenStarMap/drawCard',
@@ -2061,7 +2061,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/star-map/types#MindGardenDrawStarCardResult',
         schema: _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_drawCard_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":681,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":684,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/star-map#mindGardenStarMap/finalizeCard',
@@ -2101,7 +2101,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/star-map/types#MindGardenFinalizeStarCardResult',
         schema: _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_finalizeCard_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":894,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":897,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/star-map#mindGardenStarMap/overview',
@@ -2131,7 +2131,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/star-map/types#MindGardenStarMapOverviewResult',
         schema: _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_overview_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":496,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":499,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/star-map#mindGardenStarMap/saveRitualProgress',
@@ -2171,7 +2171,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/star-map/types#MindGardenSaveStarRitualResult',
         schema: _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_saveRitualProgress_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":515,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":518,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/star-map#mindGardenStarMap/updateProfile',
@@ -2211,7 +2211,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/star-map/types#MindGardenUpdateStarProfileResult',
         schema: _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_updateProfile_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":600,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":603,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/star-map#mindGardenStarMap/updateTrait',
@@ -2251,7 +2251,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/star-map/types#MindGardenUpdateStarTraitResult',
         schema: _deepseek_ai_dsh_mind_garden_star_map_mindGardenStarMap_updateTrait_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":631,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-star-map/src/index.ts","line":634,"column":3},
     },
   ],
 }

@@ -195,7 +195,7 @@ const _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_acceptPrincip
 })])
 const _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_authorizedContext_parameter_0$schema = z.intersection(z.string(), z.unknown())
 const _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_authorizedContext_parameter_1$schema = z.object({
-  'localDate': z.string().readonly(),
+  'localDate': z.string().readonly().optional(),
   'query': z.string().readonly(),
 })
 const _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_authorizedContext_result$schema = z.union([z.object({
@@ -3290,7 +3290,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenAcceptPrincipleProposalResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_acceptPrincipleProposal_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1630,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1650,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/authorizedContext',
@@ -3330,7 +3330,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenAuthorizedContextResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_authorizedContext_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2663,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2683,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/completeConcern',
@@ -3370,7 +3370,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenCompleteConcernResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_completeConcern_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1273,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1293,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/confirmContemplation',
@@ -3410,7 +3410,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenConfirmContemplationResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_confirmContemplation_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1480,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1500,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/convertConcern',
@@ -3450,7 +3450,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenConvertConcernResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_convertConcern_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1306,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1326,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/createCheckin',
@@ -3490,7 +3490,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenCreateCheckinResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_createCheckin_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1044,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1064,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/createConcern',
@@ -3530,7 +3530,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenCreateConcernResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_createConcern_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1174,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1194,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/createContemplation',
@@ -3570,7 +3570,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenCreateContemplationResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_createContemplation_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1370,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1390,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/createExperiment',
@@ -3610,7 +3610,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenCreateExperimentResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_createExperiment_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1803,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1823,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/createJournal',
@@ -3650,7 +3650,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenCreateJournalResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_createJournal_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1079,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1099,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/createOpenQuestion',
@@ -3690,7 +3690,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenCreateOpenQuestionResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_createOpenQuestion_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2152,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2172,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/createPeriodReview',
@@ -3730,7 +3730,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenCreatePeriodReviewResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_createPeriodReview_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2361,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2381,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/day',
@@ -3770,7 +3770,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenCalendarDayResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_day_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2602,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2622,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/deleteContemplation',
@@ -3810,7 +3810,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenDeleteContemplationResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_deleteContemplation_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1514,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1534,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/deleteJournal',
@@ -3850,7 +3850,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenDeleteJournalResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_deleteJournal_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1148,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1168,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/listConcerns',
@@ -3890,7 +3890,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenListConcernsResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_listConcerns_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1213,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1233,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/listContemplations',
@@ -3930,7 +3930,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenListContemplationsResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_listContemplations_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1413,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1433,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/listExperiments',
@@ -3970,7 +3970,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenListExperimentsResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_listExperiments_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1877,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1897,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/listOpenQuestions',
@@ -4010,7 +4010,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenListOpenQuestionsResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_listOpenQuestions_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2206,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2226,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/listPeriodReviews',
@@ -4050,7 +4050,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenListPeriodReviewsResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_listPeriodReviews_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2452,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2472,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/listPrincipleProposals',
@@ -4090,7 +4090,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenListPrincipleProposalsResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_listPrincipleProposals_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1598,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1618,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/listPrinciples',
@@ -4130,7 +4130,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenListPrinciplesResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_listPrinciples_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1726,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1746,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/month',
@@ -4170,7 +4170,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenCalendarMonthResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_month_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2538,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2558,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/observeExperiment',
@@ -4210,7 +4210,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenObserveExperimentResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_observeExperiment_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1961,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1981,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/openQuestionContext',
@@ -4250,7 +4250,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenOpenQuestionContextResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_openQuestionContext_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2300,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2320,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/periodReviewMaterial',
@@ -4290,7 +4290,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenPeriodReviewMaterialResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_periodReviewMaterial_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2337,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2357,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/proposePrinciple',
@@ -4330,7 +4330,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenProposePrincipleResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_proposePrinciple_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1543,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1563,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/rejectPrincipleProposal',
@@ -4370,7 +4370,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenRejectPrincipleProposalResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_rejectPrincipleProposal_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1688,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1708,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/reviseExperiment',
@@ -4410,7 +4410,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenReviseExperimentResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_reviseExperiment_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2035,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2055,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/revisePrinciple',
@@ -4450,7 +4450,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenRevisePrincipleResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_revisePrinciple_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1757,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1777,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/scheduleExperiment',
@@ -4490,7 +4490,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenScheduleExperimentResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_scheduleExperiment_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2083,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2103,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/startExperiment',
@@ -4530,7 +4530,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenStartExperimentResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_startExperiment_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1919,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1939,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/stopExperiment',
@@ -4570,7 +4570,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenStopExperimentResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_stopExperiment_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2117,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2137,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/trend',
@@ -4610,7 +4610,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenReflectionTrendResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_trend_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2629,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2649,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/updateConcern',
@@ -4650,7 +4650,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenUpdateConcernResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_updateConcern_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1239,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1259,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/updateContemplation',
@@ -4690,7 +4690,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenUpdateContemplationResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_updateContemplation_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1447,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1467,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/updateJournal',
@@ -4730,7 +4730,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenUpdateJournalResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_updateJournal_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1116,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":1136,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/updateOpenQuestion',
@@ -4770,7 +4770,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenUpdateOpenQuestionResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_updateOpenQuestion_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2238,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2258,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/reflection#mindGardenReflection/updatePeriodReview',
@@ -4810,7 +4810,7 @@ export const TYPERT_REMOTE = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/reflection/types#MindGardenUpdatePeriodReviewResult',
         schema: _deepseek_ai_dsh_mind_garden_reflection_mindGardenReflection_updatePeriodReview_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2490,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-reflection/src/index.ts","line":2510,"column":3},
     },
   ],
 }

@@ -29,6 +29,7 @@ import css from './MindGardenDock.module.css'
 
 const MODES = ['serenity', 'clarity'] as const satisfies readonly MindGardenMode[]
 const INTENTS = ['auto', 'listen', 'settle', 'clarify', 'next-step'] as const satisfies readonly MindGardenSupportIntent[]
+const DEFAULT_MODE: MindGardenMode = 'serenity'
 
 /** Props for the stateful visual surface. */
 export interface MindGardenPanelProps extends MindGardenDockActions {
@@ -36,6 +37,8 @@ export interface MindGardenPanelProps extends MindGardenDockActions {
   projection: MindGardenSessionProjection | null | undefined
   /** Expand controls immediately when mounted in a dedicated settings surface. */
   defaultOpen?: boolean
+  /** True while the current Agent is producing a response. */
+  running?: boolean
 }
 
 /** Render a stable localized failure without exposing transport internals by default. */
@@ -53,6 +56,7 @@ export function MindGardenPanel({
   onSelectMode,
   onSelectSupportIntent,
   defaultOpen = false,
+  running = false,
   t,
 }: MindGardenPanelProps & PropsLocale<'mindGarden'>) {
   const [open, setOpen] = useState(defaultOpen)
@@ -164,7 +168,7 @@ export function MindGardenPanel({
 
   const run = useCallback(async (action: () => Promise<MindGardenActionResult>) => {
     /* v8 ignore next -- React synchronously disables every action after the first click; the ref closes the smaller pre-render window. */
-    if (pendingRef.current) return
+    if (pendingRef.current || running) return
     pendingRef.current = true
     setPending(true)
     setError(null)
@@ -178,7 +182,7 @@ export function MindGardenPanel({
       pendingRef.current = false
       setPending(false)
     }
-  }, [closeAndRestoreFocus, defaultOpen, t])
+  }, [closeAndRestoreFocus, defaultOpen, running, t])
 
   if (projection === undefined) return null
 
@@ -250,23 +254,18 @@ export function MindGardenPanel({
                 <small id={`${consentId}-hint`}>{t('disclosure.consent.hint')}</small>
               </span>
             </label>
-            <div className={css.modeGrid}>
-              {MODES.map(mode => (
-                <button
-                  key={mode}
-                  type="button"
-                  className={css.modeCard}
-                  disabled={pending || !consentAccepted}
-                  aria-describedby={`${consentId}-hint`}
-                  onClick={() => { void run(() => onActivate(mode)) }}
-                >
-                  <span className={css.modeIcon}>{mode === 'serenity' ? <ConcernsIcon size={18} /> : <PhilosophyIcon size={18} />}</span>
-                  <span>
-                    <span className={css.modeTitle}>{t(`mode.${mode}`)}</span>
-                    <span className={css.modeDescription}>{t(`mode.${mode}.desc`)}</span>
-                  </span>
-                </button>
-              ))}
+            <div className={css.activationActions}>
+              <button
+                type="button"
+                className={css.activate}
+                disabled={pending || !consentAccepted}
+                aria-describedby={`${consentId}-hint`}
+                onClick={() => { void run(() => onActivate(DEFAULT_MODE)) }}
+              >
+                <GardenMarkIcon size={17} />
+                <span>{t(pending ? 'disclosure.starting' : 'disclosure.start')}</span>
+              </button>
+              <small>{t('disclosure.default')}</small>
             </div>
             {error !== null && <p className={css.error} role="alert">{error}</p>}
           </section>
@@ -293,10 +292,10 @@ export function MindGardenPanel({
             aria-expanded={open}
             aria-controls={controlsId}
             aria-label={open ? t('garden.collapse') : t('garden.expand')}
-            title={`${t(`mode.${state.mode}`)} · ${t(`intent.${state.supportIntent}`)}`}
+            title={`${t(`intent.${state.supportIntent}`)} · ${t(`mode.${state.mode}`)}`}
           >
             <span className={css.markActive}><GardenMarkIcon size={15} /></span>
-            <span className={css.activeTitle}>{t(`mode.${state.mode}`)}</span>
+            <span className={css.activeTitle}>{t(`intent.${state.supportIntent}`)}</span>
             <span className={css.postureSignal} aria-hidden="true" />
             <span className={css.visuallyHidden}>{t('garden.title')} · {t(`intent.${state.supportIntent}`)}</span>
             <IconChevronDownOutline14 className={open ? css.chevronOpen : css.chevron} />
@@ -320,26 +319,6 @@ export function MindGardenPanel({
                 </button>
               </div>
             )}
-            <ControlSection label={t('section.mode')}>
-              <div className={css.segmented} role="group" aria-label={t('section.mode')}>
-                {MODES.map(mode => (
-                  <button
-                    key={mode}
-                    type="button"
-                    className={state.mode === mode ? css.segmentActive : css.segment}
-                    aria-pressed={state.mode === mode}
-                    disabled={pending}
-                    onClick={() => { void run(() => onSelectMode(state.revision, mode)) }}
-                  >
-                    <span className={css.optionIcon}>{mode === 'serenity' ? <ConcernsIcon size={17} /> : <PhilosophyIcon size={17} />}</span>
-                    <span className={css.optionCopy}>
-                      <strong>{t(`mode.${mode}`)}</strong>
-                      {defaultOpen && <small>{t(`mode.${mode}.desc`)}</small>}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </ControlSection>
             <ControlSection label={t('section.intent')}>
               <div className={css.intentList} role="group" aria-label={t('section.intent')}>
                 {INTENTS.map(intent => (
@@ -348,10 +327,30 @@ export function MindGardenPanel({
                     type="button"
                     className={state.supportIntent === intent ? css.intentActive : css.intent}
                     aria-pressed={state.supportIntent === intent}
-                    disabled={pending}
+                    disabled={pending || running}
                     onClick={() => { void run(() => onSelectSupportIntent(state.revision, intent)) }}
                   >
                     {t(`intent.${intent}`)}
+                  </button>
+                ))}
+              </div>
+            </ControlSection>
+            <ControlSection label={t('section.mode')}>
+              <div className={css.segmented} role="group" aria-label={t('section.mode')}>
+                {MODES.map(mode => (
+                  <button
+                    key={mode}
+                    type="button"
+                    className={state.mode === mode ? css.segmentActive : css.segment}
+                    aria-pressed={state.mode === mode}
+                    disabled={pending || running}
+                    onClick={() => { void run(() => onSelectMode(state.revision, mode)) }}
+                  >
+                    <span className={css.optionIcon}>{mode === 'serenity' ? <ConcernsIcon size={17} /> : <PhilosophyIcon size={17} />}</span>
+                    <span className={css.optionCopy}>
+                      <strong>{t(`mode.${mode}`)}</strong>
+                      {defaultOpen && <small>{t(`mode.${mode}.desc`)}</small>}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -381,7 +380,8 @@ export type MindGardenDockProps = import('@deepseek-ai/dsh-client-ui-slots').Pro
   & PropsLocale<'mindGarden'>
 
 /** Read the typed projection and adapt it to the compact composer control. */
-export function MindGardenDock({ useProjection, ...props }: MindGardenDockProps) {
+export function MindGardenDock({ useProjection, useSession, ...props }: MindGardenDockProps) {
   const projection = useProjection('mind-garden')
-  return <MindGardenPanel projection={projection} {...props} />
+  const running = useSession(state => state.running)
+  return <MindGardenPanel projection={projection} running={running} {...props} />
 }

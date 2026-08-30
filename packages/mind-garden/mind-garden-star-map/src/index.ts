@@ -8,7 +8,7 @@ import { randomUUID } from 'node:crypto'
 import { Context } from '@deepseek-ai/cordis'
 import s from '@deepseek-ai/schemastery'
 import type { Agent } from '@deepseek-ai/dsh-agent'
-import { BlockAssembler, createUserMessage } from '@deepseek-ai/dsh-llm'
+import { BlockAssembler, createUserMessage, ReasoningEffortId } from '@deepseek-ai/dsh-llm'
 import type { FinishReason, GenerateOptions } from '@deepseek-ai/dsh-llm'
 import type {} from '@deepseek-ai/dsh-mind-garden/core'
 import type {} from '@deepseek-ai/dsh-mind-garden/memory'
@@ -117,7 +117,6 @@ const DEFAULT_MAX_SELF_WORDS = 5
 const DEFAULT_MAX_OBSERVER_QUESTION_BYTES = 4096
 const DEFAULT_MAX_OBSERVER_MESSAGE_BYTES = 4096
 const DEFAULT_MAX_OBSERVER_INPUT_BYTES = 32 * 1024
-const DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS = 2048
 const DEFAULT_MAX_OBSERVER_SOURCE_BYTES = 1200
 const DEFAULT_MAX_OBSERVER_SOURCES = 12
 const MAX_STORED_TRAITS = 64
@@ -142,7 +141,7 @@ export interface Config {
   maxObserverMessageBytes?: number
   /** Maximum complete UTF-8 bytes sent in one Star Observer request. */
   maxObserverInputBytes?: number
-  /** Maximum provider output tokens accepted for one Star Observer request. */
+  /** Optional deployment-owned output cap for one Star Observer request. */
   maxObserverOutputTokens?: number
   /** Maximum UTF-8 bytes retained from each authorized evidence source. */
   maxObserverSourceBytes?: number
@@ -163,7 +162,7 @@ interface ResolvedConfig {
   readonly maxObserverQuestionBytes: number
   readonly maxObserverMessageBytes: number
   readonly maxObserverInputBytes: number
-  readonly maxObserverOutputTokens: number
+  readonly maxObserverOutputTokens?: number
   readonly maxObserverSourceBytes: number
   readonly maxObserverSources: number
   readonly observerProvider: string
@@ -254,11 +253,15 @@ function resolveConfig(config: Config): ResolvedConfig {
       DEFAULT_MAX_OBSERVER_INPUT_BYTES,
       'maxObserverInputBytes',
     ),
-    maxObserverOutputTokens: positiveSafeInteger(
-      config.maxObserverOutputTokens,
-      DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS,
-      'maxObserverOutputTokens',
-    ),
+    ...(config.maxObserverOutputTokens === undefined
+      ? {}
+      : {
+        maxObserverOutputTokens: positiveSafeInteger(
+          config.maxObserverOutputTokens,
+          config.maxObserverOutputTokens,
+          'maxObserverOutputTokens',
+        ),
+      }),
     maxObserverSourceBytes: positiveSafeInteger(
       config.maxObserverSourceBytes,
       DEFAULT_MAX_OBSERVER_SOURCE_BYTES,
@@ -462,7 +465,7 @@ export class MindGardenStarMapService extends TypertRemoteService {
     maxObserverQuestionBytes: s.number().default(DEFAULT_MAX_OBSERVER_QUESTION_BYTES),
     maxObserverMessageBytes: s.number().default(DEFAULT_MAX_OBSERVER_MESSAGE_BYTES),
     maxObserverInputBytes: s.number().default(DEFAULT_MAX_OBSERVER_INPUT_BYTES),
-    maxObserverOutputTokens: s.number().default(DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS),
+    maxObserverOutputTokens: s.number(),
     maxObserverSourceBytes: s.number().default(DEFAULT_MAX_OBSERVER_SOURCE_BYTES),
     maxObserverSources: s.number().default(DEFAULT_MAX_OBSERVER_SOURCES),
     observerProvider: s.string(),
@@ -680,7 +683,7 @@ export class MindGardenStarMapService extends TypertRemoteService {
   @Remote('drawCard')
   drawCard(agent: Agent, request: MindGardenDrawStarCardRequest): Promise<MindGardenDrawStarCardResult> {
     if (!this.admissionOpen) return Promise.reject(new Error('mind-garden-star-map: service is disposing'))
-    const access = this.accessFailure(agent)
+    const access = this.modelAccessFailure(agent)
     if (access !== null) return Promise.resolve(rejected(access))
     if (this.observerOperation !== null) {
       return Promise.resolve(rejected({ code: 'star-observation-in-progress' }))
@@ -704,7 +707,7 @@ export class MindGardenStarMapService extends TypertRemoteService {
   @Remote('continueCard')
   continueCard(agent: Agent, request: MindGardenContinueStarCardRequest): Promise<MindGardenContinueStarCardResult> {
     if (!this.admissionOpen) return Promise.reject(new Error('mind-garden-star-map: service is disposing'))
-    const access = this.accessFailure(agent)
+    const access = this.modelAccessFailure(agent)
     if (access !== null) return Promise.resolve(rejected(access))
     if (this.observerOperation !== null) {
       return Promise.resolve(rejected({ code: 'star-observation-in-progress' }))
@@ -1411,13 +1414,18 @@ export class MindGardenStarMapService extends TypertRemoteService {
     const options: GenerateOptions = {
       provider: prepared.run.provider,
       model: prepared.run.model,
+      ...(prepared.run.provider === 'deepseek-official' && prepared.run.model === 'deepseek-v4-flash'
+        ? { reasoningEffort: ReasoningEffortId('off') }
+        : {}),
       system: prepared.envelope.system,
       messages: [createUserMessage({
         content: [{ type: 'text', text: prepared.envelope.prompt }],
         source: { kind: 'plugin', plugin: name },
       })],
       temperature: prepared.tone === 'direct' ? 0.25 : prepared.tone === 'mystic' ? 0.55 : 0.4,
-      maxTokens: this.options.maxObserverOutputTokens,
+      ...(this.options.maxObserverOutputTokens === undefined
+        ? {}
+        : { maxTokens: this.options.maxObserverOutputTokens }),
       sessionId: agent.session.id,
       purpose: 'mind-garden-star-observer-draw',
       signal,
@@ -1444,13 +1452,18 @@ export class MindGardenStarMapService extends TypertRemoteService {
     const options: GenerateOptions = {
       provider: prepared.run.provider,
       model: prepared.run.model,
+      ...(prepared.run.provider === 'deepseek-official' && prepared.run.model === 'deepseek-v4-flash'
+        ? { reasoningEffort: ReasoningEffortId('off') }
+        : {}),
       system: prepared.envelope.system,
       messages: [createUserMessage({
         content: [{ type: 'text', text: prepared.envelope.prompt }],
         source: { kind: 'plugin', plugin: name },
       })],
       temperature: prepared.tone === 'direct' ? 0.25 : prepared.tone === 'mystic' ? 0.55 : 0.4,
-      maxTokens: this.options.maxObserverOutputTokens,
+      ...(this.options.maxObserverOutputTokens === undefined
+        ? {}
+        : { maxTokens: this.options.maxObserverOutputTokens }),
       sessionId: agent.session.id,
       purpose: 'mind-garden-star-observer-dialogue',
       signal,
@@ -1572,6 +1585,15 @@ export class MindGardenStarMapService extends TypertRemoteService {
     const state = this.ctx.mindGarden.current(agent.session)
     if (state === null) return { code: 'mind-garden-not-active' }
     if (state.privacy !== 'durable') return { code: 'durable-session-required' }
+    return null
+  }
+
+  /** Require recorded provider disclosure only for operations that contact a model. */
+  private modelAccessFailure(agent: Agent): MindGardenStarAccessDenied | null {
+    const access = this.accessFailure(agent)
+    if (access !== null) return access
+    const state = this.ctx.mindGarden.current(agent.session)
+    if (state?.modelDisclosureAccepted !== true) return { code: 'model-disclosure-required' }
     return null
   }
 

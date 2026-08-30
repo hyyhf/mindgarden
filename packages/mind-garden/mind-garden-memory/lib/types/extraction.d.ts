@@ -48,9 +48,10 @@ export declare const EXTRACTION_SYSTEM_PROMPT: string;
  * @param memories - Active memories already allowed to enter model requests.
  * @param maxTranscriptBytes - Maximum serialized transcript bytes.
  * @param maxMemoryBytes - Maximum serialized comparison-memory bytes.
+ * @param maxCandidates - Maximum proposals the caller can retain from this run.
  * @returns Exact request envelope; `hadHumanText` distinguishes absence from a too-small bound.
  */
-export declare function buildExtractionEnvelope(messages: readonly Message[], memories: readonly ExtractionComparableMemory[], maxTranscriptBytes: number, maxMemoryBytes: number): ExtractionEnvelope;
+export declare function buildExtractionEnvelope(messages: readonly Message[], memories: readonly ExtractionComparableMemory[], maxTranscriptBytes: number, maxMemoryBytes: number, maxCandidates: number): ExtractionEnvelope;
 /**
  * Decode an exact JSON or single fenced-JSON response while dropping malformed individual proposals.
  * @param raw - Complete text assembled from the auxiliary model response.

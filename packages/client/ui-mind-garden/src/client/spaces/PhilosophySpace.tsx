@@ -11,6 +11,7 @@ import {
 import type {
   MindGardenContemplation,
   MindGardenPrinciple,
+  MindGardenPrincipleContent,
   MindGardenPrincipleProposal,
   MindGardenPrincipleStatus,
 } from '@deepseek-ai/dsh-mind-garden/reflection/types'
@@ -25,6 +26,11 @@ import css from './PhilosophySpace.module.css'
 type PhilosophyActions = Pick<
   MindGardenViewActions,
   | 'onListContemplations'
+  | 'onCreateContemplation'
+  | 'onUpdateContemplation'
+  | 'onConfirmContemplation'
+  | 'onDeleteContemplation'
+  | 'onProposePrinciple'
   | 'onListPrincipleProposals'
   | 'onListPrinciples'
   | 'onAcceptPrincipleProposal'
@@ -33,6 +39,12 @@ type PhilosophyActions = Pick<
 >
 
 const PRINCIPLE_STATUSES = ['trying', 'adopted', 'questioning', 'retired'] as const
+const MAX_CONTEMPLATION_CHARACTERS = 30_000
+const MAX_PRINCIPLE_CHARACTERS = 3_000
+
+function exactQuote(markdown: string): string {
+  return Array.from(markdown.trim()).slice(0, 1_000).join('')
+}
 
 /** Plain props for the philosophy space. */
 export interface PhilosophySpaceProps extends PhilosophyActions {
@@ -45,6 +57,11 @@ export interface PhilosophySpaceProps extends PhilosophyActions {
 export function PhilosophySpace({
   today,
   onListContemplations,
+  onCreateContemplation,
+  onUpdateContemplation,
+  onConfirmContemplation,
+  onDeleteContemplation,
+  onProposePrinciple,
   onListPrincipleProposals,
   onListPrinciples,
   onAcceptPrincipleProposal,
@@ -58,8 +75,15 @@ export function PhilosophySpace({
   const [principles, setPrinciples] = useState<readonly MindGardenPrinciple[]>([])
   const [loading, setLoading] = useState(true)
   const [pending, setPending] = useState(false)
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<MindGardenKey | null>(null)
   const [notice, setNotice] = useState<MindGardenKey | null>(null)
+  const [creating, setCreating] = useState(false)
+  const [newContemplation, setNewContemplation] = useState('')
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editingMarkdown, setEditingMarkdown] = useState('')
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [proposalSourceId, setProposalSourceId] = useState<string | null>(null)
+  const [proposalExpression, setProposalExpression] = useState('')
   const requestRef = useRef(0)
 
   const refresh = useCallback(async () => {
@@ -71,14 +95,14 @@ export function PhilosophySpace({
     ])
     if (request !== requestRef.current) return
     if (!contemplationResult.ok || !proposalResult.ok || !principleResult.ok) {
-      setError(true)
+      setError('philosophy.error')
       setLoading(false)
       return
     }
     setContemplations(contemplationResult.value)
     setProposals(proposalResult.value)
     setPrinciples(principleResult.value)
-    setError(false)
+    setError(null)
     setLoading(false)
   }, [onListContemplations, onListPrincipleProposals, onListPrinciples])
 
@@ -90,18 +114,95 @@ export function PhilosophySpace({
   async function mutate(
     action: () => Promise<MindGardenDataResult<unknown>>,
     success: MindGardenKey,
-  ) {
+  ): Promise<boolean> {
     setPending(true)
-    setError(false)
+    setError(null)
     setNotice(null)
-    const result = await action()
+    let result: MindGardenDataResult<unknown>
+    try {
+      result = await action()
+    } catch {
+      setPending(false)
+      setError('philosophy.error')
+      return false
+    }
     setPending(false)
     if (!result.ok) {
-      setError(true)
-      return
+      setError(result.code === 'contemplation-source-unavailable'
+        ? 'philosophy.sourceUnavailable'
+        : 'philosophy.error')
+      return false
     }
     setNotice(success)
     await refresh()
+    return true
+  }
+
+  async function createContemplation() {
+    const markdown = newContemplation.trim()
+    if (markdown === '') return
+    if (await mutate(
+      async () => await onCreateContemplation(markdown),
+      'philosophy.notice.created',
+    )) {
+      setNewContemplation('')
+      setCreating(false)
+    }
+  }
+
+  async function updateContemplation(item: MindGardenContemplation) {
+    const markdown = editingMarkdown.trim()
+    if (markdown === '') return
+    if (await mutate(
+      async () => await onUpdateContemplation(item, markdown),
+      'philosophy.notice.updated',
+    )) {
+      setEditingId(null)
+      setEditingMarkdown('')
+    }
+  }
+
+  async function confirmContemplation(item: MindGardenContemplation) {
+    if (await mutate(
+      async () => await onConfirmContemplation(item),
+      'philosophy.notice.confirmed',
+    )) {
+      setEditingId(null)
+      setDeletingId(null)
+    }
+  }
+
+  async function deleteContemplation(item: MindGardenContemplation) {
+    if (await mutate(
+      async () => await onDeleteContemplation(item),
+      'philosophy.notice.deleted',
+    )) {
+      setEditingId(null)
+      setDeletingId(null)
+    }
+  }
+
+  async function proposePrinciple(item: MindGardenContemplation) {
+    const expression = proposalExpression.trim()
+    if (expression === '') return
+    const content: MindGardenPrincipleContent = {
+      expression,
+      formationContext: t('philosophy.formation.manual'),
+      userQuote: exactQuote(item.markdown),
+      supportingExperiences: [],
+      counterexample: '',
+      appliesTo: [],
+      notAppliesTo: [],
+      lastChallenged: today,
+      status: 'trying',
+    }
+    if (await mutate(
+      async () => await onProposePrinciple(item, content),
+      'philosophy.notice.proposed',
+    )) {
+      setProposalSourceId(null)
+      setProposalExpression('')
+    }
   }
 
   function reviseStatus(principle: MindGardenPrinciple, status: MindGardenPrincipleStatus) {
@@ -146,14 +247,43 @@ export function PhilosophySpace({
       </header>
 
       {notice !== null && <p className={shared.notice} role="status">{t(notice)}</p>}
-      {error && <p className={shared.error} role="alert">{t('philosophy.error')}</p>}
+      {error !== null && <p className={shared.error} role="alert">{t(error)}</p>}
       {loading ? <p className={css.loading} role="status">{t('philosophy.loading')}</p> : (
         <div className={css.sections}>
           <section className={`${css.section} ${css.contemplationSection}`} aria-labelledby="garden-contemplations">
             <div className={css.sectionHeader}>
               <span><IconSparkle16 /></span>
               <div><h2 id="garden-contemplations">{t('philosophy.contemplations')}</h2><p>{t('philosophy.contemplationsHint')}</p></div>
+              <button
+                className={shared.quietButton}
+                type="button"
+                aria-expanded={creating}
+                disabled={pending}
+                onClick={() => {
+                  setCreating(value => !value)
+                  setEditingId(null)
+                  setDeletingId(null)
+                }}
+              >
+                {t('philosophy.add')}
+              </button>
             </div>
+            {creating && (
+              <form className={css.inlineComposer} onSubmit={(event) => { event.preventDefault(); void createContemplation() }}>
+                <label htmlFor="garden-new-contemplation">{t('philosophy.addLabel')}</label>
+                <textarea
+                  id="garden-new-contemplation"
+                  value={newContemplation}
+                  maxLength={MAX_CONTEMPLATION_CHARACTERS}
+                  autoFocus
+                  onChange={(event) => { setNewContemplation(event.target.value) }}
+                />
+                <div>
+                  <button className={shared.button} type="submit" disabled={pending || newContemplation.trim() === ''}>{t('philosophy.saveDraft')}</button>
+                  <button className={shared.quietButton} type="button" disabled={pending} onClick={() => { setCreating(false); setNewContemplation('') }}>{t('philosophy.cancel')}</button>
+                </div>
+              </form>
+            )}
             {contemplations.length === 0 ? <p className={css.empty}>{t('philosophy.emptyContemplations')}</p> : (
               <ol className={css.list}>
                 {contemplations.map((item, index) => (
@@ -165,9 +295,73 @@ export function PhilosophySpace({
                         <time>{new Date(item.updatedAt).toLocaleDateString()}</time>
                       </header>
                       <p>{item.markdown}</p>
-                      {item.status === 'confirmed' && (
-                        <footer><button className={shared.quietButton} type="button" onClick={() => { draftContemplation(item) }}><IconSendOutline14 />{t('philosophy.continue')}</button></footer>
+                      {editingId === String(item.id) && (
+                        <form
+                          className={css.inlineComposer}
+                          onSubmit={(event) => { event.preventDefault(); void updateContemplation(item) }}
+                        >
+                          <label htmlFor={`garden-edit-${String(item.id)}`}>{t('philosophy.editLabel')}</label>
+                          <textarea
+                            id={`garden-edit-${String(item.id)}`}
+                            value={editingMarkdown}
+                            maxLength={MAX_CONTEMPLATION_CHARACTERS}
+                            autoFocus
+                            onChange={(event) => { setEditingMarkdown(event.target.value) }}
+                          />
+                          <div>
+                            <button className={shared.button} type="submit" disabled={pending || editingMarkdown.trim() === ''}>{t('philosophy.save')}</button>
+                            <button className={shared.quietButton} type="button" disabled={pending} onClick={() => { setEditingId(null); setEditingMarkdown('') }}>{t('philosophy.cancel')}</button>
+                          </div>
+                        </form>
                       )}
+                      {proposalSourceId === String(item.id) && (
+                        <form
+                          className={css.principleComposer}
+                          onSubmit={(event) => { event.preventDefault(); void proposePrinciple(item) }}
+                        >
+                          <label htmlFor={`garden-principle-${String(item.id)}`}>{t('philosophy.extractLabel')}</label>
+                          <input
+                            id={`garden-principle-${String(item.id)}`}
+                            value={proposalExpression}
+                            maxLength={MAX_PRINCIPLE_CHARACTERS}
+                            autoFocus
+                            onChange={(event) => { setProposalExpression(event.target.value) }}
+                          />
+                          <div>
+                            <button className={shared.button} type="submit" disabled={pending || proposalExpression.trim() === ''}>{t('philosophy.propose')}</button>
+                            <button className={shared.quietButton} type="button" disabled={pending} onClick={() => { setProposalSourceId(null); setProposalExpression('') }}>{t('philosophy.cancel')}</button>
+                          </div>
+                        </form>
+                      )}
+                      {deletingId === String(item.id) && (
+                        <div className={css.deleteConfirmation} role="group" aria-label={t('philosophy.deleteQuestion')}>
+                          <span>{t('philosophy.deleteQuestion')}</span>
+                          <button className={shared.dangerButton} type="button" disabled={pending} onClick={() => { void deleteContemplation(item) }}>{t('philosophy.deleteConfirm')}</button>
+                          <button className={shared.quietButton} type="button" disabled={pending} onClick={() => { setDeletingId(null) }}>{t('philosophy.cancel')}</button>
+                        </div>
+                      )}
+                      <footer>
+                        {item.status === 'draft' ? (
+                          <>
+                            <button className={shared.quietButton} type="button" disabled={pending} onClick={() => {
+                              setEditingId(String(item.id)); setEditingMarkdown(item.markdown); setDeletingId(null)
+                            }}>{t('philosophy.edit')}</button>
+                            <button className={shared.button} type="button" disabled={pending} onClick={() => { void confirmContemplation(item) }}><IconCheckOutline16 />{t('philosophy.confirm')}</button>
+                            <button className={shared.quietButton} type="button" disabled={pending} onClick={() => {
+                              setDeletingId(String(item.id)); setEditingId(null)
+                            }}>{t('philosophy.delete')}</button>
+                          </>
+                        ) : (
+                          <>
+                            {!proposals.some(proposal => proposal.sourceContemplationId === item.id && proposal.status === 'proposed') && (
+                              <button className={shared.quietButton} type="button" disabled={pending} onClick={() => {
+                                setProposalSourceId(String(item.id)); setProposalExpression('')
+                              }}>{t('philosophy.extract')}</button>
+                            )}
+                            <button className={shared.quietButton} type="button" onClick={() => { draftContemplation(item) }}><IconSendOutline14 />{t('philosophy.continue')}</button>
+                          </>
+                        )}
+                      </footer>
                     </article>
                   </li>
                 ))}

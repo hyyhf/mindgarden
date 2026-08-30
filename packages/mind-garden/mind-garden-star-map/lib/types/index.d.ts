@@ -30,7 +30,7 @@ export interface Config {
     maxObserverMessageBytes?: number;
     /** Maximum complete UTF-8 bytes sent in one Star Observer request. */
     maxObserverInputBytes?: number;
-    /** Maximum provider output tokens accepted for one Star Observer request. */
+    /** Optional deployment-owned output cap for one Star Observer request. */
     maxObserverOutputTokens?: number;
     /** Maximum UTF-8 bytes retained from each authorized evidence source. */
     maxObserverSourceBytes?: number;
@@ -150,6 +150,8 @@ export declare class MindGardenStarMapService extends TypertRemoteService {
     private validateLocalDate;
     private assertTraitCapacity;
     private accessFailure;
+    /** Require recorded provider disclosure only for operations that contact a model. */
+    private modelAccessFailure;
     private resolveProfile;
     private resolveMbti;
     private resolveSelfWords;

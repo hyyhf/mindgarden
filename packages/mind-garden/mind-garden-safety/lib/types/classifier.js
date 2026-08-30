@@ -1,5 +1,6 @@
 /** Pure deterministic input classifier and follow-up state transition. */
 import { mindGardenSafetyResources } from "./resources.js";
+import { extractMindGardenSafetySignals } from "./safety-signals.js";
 const URGENT_PATTERNS = [
     /(?:我)?(?:现在|马上|今晚|已经).{0,10}(?:想|要|准备|打算)(?:自杀|轻生|跳楼|割腕|上吊|伤害自己|紫砂)/iu,
     /(?:现在|马上|今晚|已经).{0,12}(?:拿着|握着).{0,6}(?:刀|药|绳).{0,12}(?:准备|要|打算).{0,6}(?:伤害自己|自杀|轻生)/iu,
@@ -85,6 +86,30 @@ function splitSafetyClauses(text) {
         .filter(Boolean);
 }
 function assessClause(clause, locale) {
+    const signals = extractMindGardenSafetySignals(clause);
+    const concreteDanger = signals.actionTaken
+        || signals.dangerousLocation
+        || ((signals.activeSelfHarm || signals.activeOtherHarm)
+            && (signals.immediateIntent || signals.meansAccess));
+    if (signals.protectedContext)
+        return result(0, 'ordinary', [], 0, locale);
+    if (concreteDanger)
+        return result(3, 'urgent', ['immediate-danger'], 0, locale);
+    if (signals.substanceDanger) {
+        return result(3, 'substance-emergency', ['overdose-or-withdrawal'], 0, locale);
+    }
+    if (signals.abuseDanger)
+        return result(2, 'abuse-danger', ['abuse-or-child-safety'], 0, locale);
+    if (signals.realityOrSleepDanger) {
+        return result(2, 'reality-or-sleep-danger', ['mania-or-psychosis-danger'], 0, locale);
+    }
+    if (signals.benignContext || signals.negatedRisk)
+        return result(0, 'ordinary', [], 0, locale);
+    if (signals.activeSelfHarm || signals.activeOtherHarm || signals.passiveDeathWish) {
+        return result(2, 'high-risk', ['self-or-other-harm'], 0, locale);
+    }
+    if (signals.vulnerable)
+        return result(1, 'vulnerable', ['severe-distress'], 0, locale);
     if (clause.includes('不想活在')
         || matches(NEGATED_RISK_PATTERNS, clause)
         || matches(BENIGN_CONTEXT_PATTERNS, clause))

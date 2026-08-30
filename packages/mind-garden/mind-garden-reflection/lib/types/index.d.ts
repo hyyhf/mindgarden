@@ -356,8 +356,8 @@ export declare class MindGardenReflectionService extends TypertRemoteService {
     /**
      * Select bounded reflection context without sending it to a model.
      * @param agent - Exact live Agent authorizing durable profile access.
-     * @param request - Browser-local date and current conversation query.
-     * @returns The latest same-day check-in and only explicitly retrievable journal excerpts.
+     * @param request - Current conversation query and optional browser-local date.
+     * @returns The latest same-day check-in when requested and only explicitly retrievable journal excerpts.
      */
     authorizedContext(agent: Agent, request: MindGardenAuthorizedContextRequest): Promise<MindGardenAuthorizedContextResult>;
     private accessFailure;

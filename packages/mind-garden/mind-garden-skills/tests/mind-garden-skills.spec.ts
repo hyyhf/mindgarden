@@ -51,6 +51,13 @@ describe('Mind Garden bundled skills', () => {
 
     expect((await ctx.skills.get('mind-garden-course-planner'))?.content).toContain('wang_yangming_knowledge_action')
     expect((await ctx.skills.get('mind-garden-curriculum'))?.content).toContain('sunzi_conditions_before_action')
+    expect((await ctx.skills.get('mind-garden-companion'))?.content).toContain('整条回应最多包含一个问句')
+    expect((await ctx.skills.get('mind-garden-companion'))?.content).toContain('关系困扰或需要被理解本身不构成安全风险')
+    expect((await ctx.skills.get('mind-garden-companion'))?.content).toContain('从用户这一轮新增、加重、放松或修正的内容接起')
+    expect((await ctx.skills.get('mind-garden-companion'))?.content).toContain('不得承诺治愈、康复或情绪转变')
+    expect((await ctx.skills.get('mind-garden-guanxin'))?.content).toContain('用户回答了前一个问题时，先回应答案本身')
+    expect(summaries.find(skill => skill.name === 'mind-garden-guanxin')?.description)
+      .toContain('普通安宁模式对话不要加载')
 
     await fiber.dispose()
     expect(await ctx.skills.list()).toEqual([])

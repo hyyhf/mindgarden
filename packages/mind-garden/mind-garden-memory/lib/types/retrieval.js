@@ -56,7 +56,7 @@ export function relevanceScore(queryTerms, memory) {
     return score;
 }
 function lineFor(memory) {
-    return `- [${memory.kind}] ${memory.content}${memory.scope === undefined ? '' : ` (scope: ${memory.scope})`}`;
+    return `- [memory-id:${memory.id}] [${memory.kind}] ${memory.content}${memory.scope === undefined ? '' : ` (scope: ${memory.scope})`}`;
 }
 /**
  * Select eligible records in stable relevance order and fit complete entries
@@ -77,6 +77,9 @@ export function retrieveMemories(options) {
         if (memory.recallPolicy === 'always')
             return [{ memory, reason: 'always', score: 0 }];
         const score = relevanceScore(terms, memory);
+        if (score === 0 && memory.kind === 'support-preference' && memory.scope === undefined) {
+            return [{ memory, reason: 'relevant', score: 1 }];
+        }
         return score === 0 ? [] : [{ memory, reason: 'relevant', score }];
     }).sort((left, right) => {
         const policy = Number(right.reason === 'always') - Number(left.reason === 'always');

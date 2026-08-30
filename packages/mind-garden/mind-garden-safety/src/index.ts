@@ -6,7 +6,7 @@
 
 import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
-import type { Agent } from '@deepseek-ai/dsh-agent'
+import type { Agent, PreStepDecision } from '@deepseek-ai/dsh-agent'
 import {
   BlockAssembler,
   isAgentLoopRequest,
@@ -19,6 +19,7 @@ import type {} from '@deepseek-ai/dsh-mind-garden/core'
 import { assessMindGardenInput, recoverMindGardenSafetyState } from './classifier.ts'
 import {
   assessMindGardenOutput,
+  MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS,
   renderMindGardenGuardReplacement,
   renderMindGardenSupportResponse,
 } from './output-guard.ts'
@@ -55,7 +56,7 @@ export const inject = ['agents', 'llm', 'mindGarden', 'sessions']
 
 /** Deployment bounds for incremental model-output inspection. */
 export interface Config {
-  /** Maximum output tokens recorded for each activated Mind Garden conversation request. */
+  /** Optional deployment-owned output cap for each activated Mind Garden conversation request. */
   maxModelOutputTokens?: number
   /** Maximum serialized characters inspected before fail-closed replacement. */
   maxBufferedCharacters?: number
@@ -65,23 +66,24 @@ export interface Config {
 
 /** Schemastery validation for {@link Config}. */
 export const Config: z<Config> = z.object({
-  maxModelOutputTokens: z.number().default(4_096),
+  maxModelOutputTokens: z.number(),
   maxBufferedCharacters: z.number().default(524_288),
   maxBufferedChunks: z.number().default(16_384),
 })
 
 interface ResolvedConfig {
-  maxModelOutputTokens: number
+  maxModelOutputTokens?: number
   maxBufferedCharacters: number
   maxBufferedChunks: number
 }
 
 /** Resolve defaults and reject programmatic callers that bypass the schema. */
 function resolveConfig(config: Config): ResolvedConfig {
-  const maxModelOutputTokens = config.maxModelOutputTokens ?? 4_096
+  const maxModelOutputTokens = config.maxModelOutputTokens
   const maxBufferedCharacters = config.maxBufferedCharacters ?? 524_288
   const maxBufferedChunks = config.maxBufferedChunks ?? 16_384
-  if (!Number.isSafeInteger(maxModelOutputTokens) || maxModelOutputTokens < 1) {
+  if (maxModelOutputTokens !== undefined
+    && (!Number.isSafeInteger(maxModelOutputTokens) || maxModelOutputTokens < 1)) {
     throw new Error('mind-garden-safety: maxModelOutputTokens must be a positive safe integer')
   }
   if (!Number.isSafeInteger(maxBufferedCharacters) || maxBufferedCharacters < 1) {
@@ -90,7 +92,11 @@ function resolveConfig(config: Config): ResolvedConfig {
   if (!Number.isSafeInteger(maxBufferedChunks) || maxBufferedChunks < 1) {
     throw new Error('mind-garden-safety: maxBufferedChunks must be a positive safe integer')
   }
-  return { maxModelOutputTokens, maxBufferedCharacters, maxBufferedChunks }
+  return {
+    ...(maxModelOutputTokens === undefined ? {} : { maxModelOutputTokens }),
+    maxBufferedCharacters,
+    maxBufferedChunks,
+  }
 }
 
 interface OpenStep {
@@ -98,13 +104,6 @@ interface OpenStep {
   step: number
   startSeq: number
 }
-
-/**
- * Retained suffix that covers every bounded output-policy expression. A match
- * completes while its first character is still private, so rejected text
- * cannot reach the Session log through an earlier delta.
- */
-const OUTPUT_GUARD_LOOKBEHIND_CHARACTERS = 64
 
 /** Find the step whose request is currently entering `llm/stream`. */
 function openStep(session: Session): OpenStep | undefined {
@@ -199,7 +198,7 @@ function replaceDeltaText(chunk: StreamChunk, text: string): StreamChunk {
 
 function inspectedText(assembler: BlockAssembler): string {
   return assembler.interruptedBlocks().flatMap(block =>
-    block.type === 'text' || block.type === 'reasoning' ? [block.text] : []).join('\n')
+    block.type === 'text' ? [block.text] : []).join('\n')
 }
 
 interface PublishedBlock {
@@ -231,7 +230,10 @@ function publishablePrefix(
 ): { readonly chunks: StreamChunk[]; readonly pendingGuardedCharacters: number } {
   const chunks: StreamChunk[] = []
   let guardedCharacters = pendingGuardedCharacters
-  let releasable = Math.max(0, guardedCharacters - OUTPUT_GUARD_LOOKBEHIND_CHARACTERS)
+  let releasable = Math.max(
+    0,
+    guardedCharacters - MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS,
+  )
   while (pending.length > 0) {
     const chunk = pending[0]
     if (chunk === undefined) break
@@ -358,9 +360,23 @@ function guardedModelStream(
  */
 export function apply(ctx: Context, config: Config): void {
   const resolved = resolveConfig(config)
+  ctx.on('agent/pre-step', async (
+    { agent, messages, signal },
+    next,
+  ): Promise<PreStepDecision> => {
+    if (ctx.mindGarden.current(agent.session) === null || signal.aborted) return next()
+    const humanMessages = messages.filter(message => message.source.kind === 'user')
+    if (humanMessages.length === 0) return next()
+    const text = humanText(humanMessages)
+    const previous = latestAssessment(agent.session.events)?.assessment
+    const assessment = recoverMindGardenSafetyState(assessMindGardenInput(text), previous, text)
+    if (assessment.level > 0) return { kind: 'enter', messages }
+    return next()
+  }, { prepend: true })
   ctx.on('agent/request', async ({ agent }, next) => {
     const request = await next()
     if (ctx.mindGarden.current(agent.session) === null) return request
+    if (resolved.maxModelOutputTokens === undefined) return request
     const maxTokens = request.maxTokens === undefined
       ? resolved.maxModelOutputTokens
       : Math.min(request.maxTokens, resolved.maxModelOutputTokens)

@@ -65,7 +65,7 @@ function totalRecords(counts) {
     return counts.memories + counts.reflections + counts.media + counts.stars;
 }
 /** Render the passphrase ceremony and whole-profile encrypted download. */
-export function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onRestoreBackup, onRotateVaultKey, }) {
+export function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onRestoreBackup, onRotateVaultKey, onRestoreSuccess = () => undefined, }) {
     const [passphrase, setPassphrase] = useState('');
     const [confirmation, setConfirmation] = useState('');
     const [state, setState] = useState({ kind: 'idle' });
@@ -128,6 +128,7 @@ export function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onR
         if (restoreInputRef.current !== null)
             restoreInputRef.current.value = '';
         setRestore({ kind: 'success', value: result.value });
+        onRestoreSuccess();
     };
     const cancelRestore = () => {
         setRestore({ kind: 'idle' });

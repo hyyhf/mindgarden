@@ -399,6 +399,18 @@ describe('Mind Garden reflection service', () => {
       },
     })
     await expect(ctx.mindGardenReflection.authorizedContext(agent, {
+      query: '会议后没有表达清楚',
+    })).resolves.toMatchObject({
+      ok: true,
+      value: {
+        todayCheckin: null,
+        retrievableJournals: [
+          { id: publicJournal.ok ? publicJournal.value.id : undefined, title: '会议之后' },
+          { title: '项目会议' },
+        ],
+      },
+    })
+    await expect(ctx.mindGardenReflection.authorizedContext(agent, {
       localDate: '2026-08-13', query: '浇花',
     })).resolves.toMatchObject({
       ok: true,

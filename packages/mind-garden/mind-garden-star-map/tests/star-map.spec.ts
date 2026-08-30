@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import LlmRuntime, {
   LlmAdapter,
+  ReasoningEffortId,
   type GenerateOptions,
   type StreamChunk,
 } from '@deepseek-ai/dsh-llm'
@@ -28,7 +29,10 @@ import {
 } from '../../../storage/storage-domain/tests/helpers/memory-backend.ts'
 import { apply as invariantApply } from '../src/invariant.ts'
 
-function activeState(privacy: MindGardenSessionState['privacy'] = 'durable'): MindGardenSessionState {
+function activeState(
+  privacy: MindGardenSessionState['privacy'] = 'durable',
+  modelDisclosureAccepted = true,
+): MindGardenSessionState {
   return {
     revision: 1,
     activatedAt: 1,
@@ -37,7 +41,7 @@ function activeState(privacy: MindGardenSessionState['privacy'] = 'durable'): Mi
     supportIntent: 'listen',
     privacy,
     contractVersion: 1,
-    modelDisclosureAccepted: true,
+    modelDisclosureAccepted,
   }
 }
 
@@ -340,8 +344,8 @@ describe('Mind Garden Star Map service', () => {
     expect(adapter.requests[0]).toMatchObject({
       purpose: 'mind-garden-star-observer-draw',
       sessionId: agent.session.id,
-      maxTokens: 2048,
     })
+    expect(adapter.requests[0]?.maxTokens).toBeUndefined()
     await expect(ctx.mindGardenStarMap.drawCard(agent, {
       deck: 'random',
       question: '',
@@ -416,6 +420,79 @@ describe('Mind Garden Star Map service', () => {
     const persisted = JSON.stringify(pool.media.get('mind_garden_vault'))
     expect(persisted).not.toContain('A reversible pause')
     expect(persisted).not.toContain('I need a real example before deciding.')
+  })
+
+  it('disables DeepSeek reasoning without adding Observer output caps', async () => {
+    const { ctx, makeAgent } = await harness()
+    const adapter = new ObserverAdapter([observerResponse(), dialogueResponse()])
+    vi.spyOn(adapter, 'resolveModel').mockResolvedValue({
+      provider: 'deepseek-official',
+      id: 'deepseek-v4-flash',
+      name: 'DeepSeek-V4-Flash',
+      reasoning: {
+        efforts: [
+          { id: ReasoningEffortId('off'), name: 'Off' },
+          { id: ReasoningEffortId('high'), name: 'High' },
+        ],
+        defaultEffort: ReasoningEffortId('high'),
+      },
+    })
+    ctx.llm.registerAdapter(['deepseek-official'], adapter)
+    const agent = makeAgent('deepseek-observer-budget')
+    await ctx.mindGardenStarMap.completeRitual(agent, { ...profileInput(), ifVersion: null })
+    const drawn = await ctx.mindGardenStarMap.drawCard(agent, {
+      deck: 'current-self',
+      question: '',
+      observedLocalDate: '2026-08-31',
+      provider: 'deepseek-official',
+      model: 'deepseek-v4-flash',
+    })
+    if (!drawn.ok) throw new Error('draw failed')
+    const calibrated = await ctx.mindGardenStarMap.calibrateCard(agent, {
+      id: drawn.value.id,
+      ifVersion: drawn.value.version,
+      verdict: 'resonates',
+    })
+    if (!calibrated.ok) throw new Error('calibration failed')
+    const saved = await ctx.mindGardenStarMap.finalizeCard(agent, {
+      id: calibrated.value.id,
+      ifVersion: calibrated.value.version,
+      action: 'save',
+    })
+    if (!saved.ok) throw new Error('save failed')
+    await expect(ctx.mindGardenStarMap.continueCard(agent, {
+      id: saved.value.id,
+      ifVersion: saved.value.version,
+      content: 'Keep this as a possibility, not a verdict.',
+      provider: 'deepseek-official',
+      model: 'deepseek-v4-flash',
+    })).resolves.toMatchObject({ ok: true })
+
+    expect(adapter.requests).toHaveLength(2)
+    expect(adapter.requests.every(request => request.reasoningEffort === 'off')).toBe(true)
+    expect(adapter.requests.every(request => request.maxTokens === undefined)).toBe(true)
+  })
+
+  it('keeps the local profile available while blocking Observer calls before disclosure', async () => {
+    const { ctx, makeAgent } = await harness()
+    const adapter = new ObserverAdapter([observerResponse({ confidence: 0.9 })])
+    ctx.llm.registerAdapter(['observer'], adapter)
+    const agent = makeAgent('star-disclosure-pending', activeState('durable', false))
+    const completed = await ctx.mindGardenStarMap.completeRitual(agent, {
+      ...profileInput(),
+      ifVersion: null,
+    })
+    if (!completed.ok) throw new Error('completion failed')
+
+    await expect(ctx.mindGardenStarMap.drawCard(agent, {
+      deck: 'current-self',
+      question: 'What am I overlooking?',
+      observedLocalDate: '2026-08-19',
+      provider: 'observer',
+      model: 'observer-v1',
+    })).resolves.toEqual({ ok: false, error: { code: 'model-disclosure-required' } })
+    expect(adapter.requests).toEqual([])
+    await expect(ctx.mindGardenStarMap.overview(agent)).resolves.toMatchObject({ ok: true })
   })
 
   it('rejects invalid observer output without fabricating a fallback card', async () => {

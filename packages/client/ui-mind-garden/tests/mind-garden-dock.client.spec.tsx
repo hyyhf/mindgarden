@@ -49,12 +49,15 @@ describe('MindGardenPanel', () => {
     expect(view.getByText(zh['disclosure.profile.title'])).toBeTruthy()
     expect(view.getByText(zh['disclosure.model.title'])).toBeTruthy()
     expect(view.getByText(zh['disclosure.authority.title'])).toBeTruthy()
-    const serenity = view.getByRole('button', { name: new RegExp(zh['mode.serenity']) })
-    expect(serenity).toHaveProperty('disabled', true)
+    expect(view.getByText(zh['disclosure.default'])).toBeTruthy()
+    expect(view.queryByRole('button', { name: new RegExp(zh['mode.serenity']) })).toBeNull()
+    expect(view.queryByRole('button', { name: new RegExp(zh['mode.clarity']) })).toBeNull()
+    const start = view.getByRole('button', { name: zh['disclosure.start'] })
+    expect(start).toHaveProperty('disabled', true)
     fireEvent.click(view.getByRole('checkbox', { name: zh['disclosure.consent'] }))
-    expect(serenity).toHaveProperty('disabled', false)
-    fireEvent.click(serenity)
-    fireEvent.click(serenity)
+    expect(start).toHaveProperty('disabled', false)
+    fireEvent.click(start)
+    fireEvent.click(start)
     expect(onActivate).toHaveBeenCalledTimes(1)
     expect(onActivate).toHaveBeenCalledWith('serenity')
     deferred.resolve({ ok: true, value: undefined })
@@ -69,7 +72,7 @@ describe('MindGardenPanel', () => {
     const view = render(<MindGardenPanel projection={null} {...actions({ onActivate })} t={t} />)
     fireEvent.click(view.getByRole('button', { name: zh['entry.open'] }))
     fireEvent.click(view.getByRole('checkbox', { name: zh['disclosure.consent'] }))
-    fireEvent.click(view.getByRole('button', { name: new RegExp(zh['mode.clarity']) }))
+    fireEvent.click(view.getByRole('button', { name: zh['disclosure.start'] }))
     expect((await view.findByRole('alert')).textContent).toBe(zh['error.notBlank'])
     fireEvent.click(view.getByRole('button', { name: zh['entry.close'] }))
     expect(view.queryByText(zh['disclosure.title'])).toBeNull()
@@ -100,7 +103,7 @@ describe('MindGardenPanel', () => {
     const view = render(<MindGardenPanel projection={null} {...actions({ onActivate })} t={t} />)
     fireEvent.click(view.getByRole('button', { name: zh['entry.open'] }))
     fireEvent.click(view.getByRole('checkbox', { name: zh['disclosure.consent'] }))
-    fireEvent.click(view.getByRole('button', { name: new RegExp(zh['mode.serenity']) }))
+    fireEvent.click(view.getByRole('button', { name: zh['disclosure.start'] }))
     expect((await view.findByRole('alert')).textContent).toBe(zh['error.generic'])
   })
 
@@ -116,8 +119,8 @@ describe('MindGardenPanel', () => {
       t={t}
     />)
     const trigger = view.getByRole('button', { name: zh['garden.expand'] })
-    expect(trigger.getAttribute('title')).toBe(`${zh['mode.serenity']} · ${zh['intent.auto']}`)
-    expect(view.getByText(zh['mode.serenity'])).toBeTruthy()
+    expect(trigger.getAttribute('title')).toBe(`${zh['intent.auto']} · ${zh['mode.serenity']}`)
+    expect(view.getByText(zh['intent.auto'])).toBeTruthy()
     fireEvent.click(trigger)
     fireEvent.click(view.getByRole('button', { name: zh['mode.clarity'] }))
     await waitFor(() => { expect(onSelectMode).toHaveBeenCalledWith(7, 'clarity') })
@@ -164,15 +167,38 @@ describe('MindGardenPanel', () => {
     expect(view.getByRole('group', { name: zh['section.mode'] })).toBeTruthy()
     expect(view.queryByRole('button', { name: zh['garden.expand'] })).toBeNull()
   })
+
+  it('holds posture controls stable while a response is running', () => {
+    const onSelectMode = vi.fn(() => Promise.resolve({ ok: true as const, value: undefined }))
+    const onSelectSupportIntent = vi.fn(() => Promise.resolve({ ok: true as const, value: undefined }))
+    const view = render(<MindGardenPanel
+      projection={active(9)}
+      defaultOpen
+      running
+      {...actions({ onSelectMode, onSelectSupportIntent })}
+      t={t}
+    />)
+
+    const mode = view.getByRole('button', { name: new RegExp(zh['mode.clarity']) }) as HTMLButtonElement
+    const intent = view.getByRole('button', { name: zh['intent.listen'] }) as HTMLButtonElement
+    expect(mode.disabled).toBe(true)
+    expect(intent.disabled).toBe(true)
+    fireEvent.click(mode)
+    fireEvent.click(intent)
+    expect(onSelectMode).not.toHaveBeenCalled()
+    expect(onSelectSupportIntent).not.toHaveBeenCalled()
+  })
 })
 
 describe('MindGardenDock adapter', () => {
   it('reads the mind-garden projection through the standard slot kit', () => {
     const useProjection = vi.fn(() => active())
-    const props = { useProjection, ...actions(), t } as unknown as Parameters<typeof MindGardenDock>[0]
+    const useSession = vi.fn((selector: (state: { running: boolean }) => unknown) => selector({ running: false }))
+    const props = { useProjection, useSession, ...actions(), t } as unknown as Parameters<typeof MindGardenDock>[0]
     const view = render(<MindGardenDock {...props} />)
     expect(useProjection).toHaveBeenCalledWith('mind-garden')
+    expect(useSession).toHaveBeenCalledOnce()
     expect(view.getByRole('button', { name: zh['garden.expand'] }).getAttribute('title'))
-      .toBe(`${zh['mode.serenity']} · ${zh['intent.auto']}`)
+      .toBe(`${zh['intent.auto']} · ${zh['mode.serenity']}`)
   })
 })

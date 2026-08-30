@@ -3,7 +3,7 @@ import type { RemoteResult } from '@deepseek-ai/dsh-typert-protocol';
 import type { MindGardenMode, MindGardenSupportIntent } from '@deepseek-ai/dsh-mind-garden/core/client';
 import type { MindGardenMediaStamp, MindGardenPhotoParticleConfig, MindGardenPhotoStory } from '@deepseek-ai/dsh-mind-garden/media/types';
 import type { MindGardenMemoryAutomationInterval, MindGardenMemoryAutomationPolicy, MindGardenMemoryConfirmRequest, MindGardenMemoryExtractValue, MindGardenMemoryExtractionRun, MindGardenMemoryItem, MindGardenMemoryLatestAuditValue, MindGardenMemoryProposeRequest, MindGardenMemoryResolveRelationshipRequest, MindGardenMemoryResolveRelationshipValue, MindGardenMemoryRevision, MindGardenMemoryUpdateRequest } from '@deepseek-ai/dsh-mind-garden/memory/types';
-import type { MindGardenCalendarDayValue, MindGardenCalendarMonthValue, MindGardenCalendarStamp, MindGardenCheckin, MindGardenConcern, MindGardenConcernConversionValue, MindGardenContemplation, MindGardenExperiment, MindGardenJournal, MindGardenOpenQuestion, MindGardenOpenQuestionStatus, MindGardenPeriodReview, MindGardenPeriodReviewMaterialRequest, MindGardenPeriodReviewMaterialValue, MindGardenPeriodReviewStatus, MindGardenPrinciple, MindGardenPrincipleProposal, MindGardenPrincipleStatus, MindGardenReflectionTrendValue } from '@deepseek-ai/dsh-mind-garden/reflection/types';
+import type { MindGardenCalendarDayValue, MindGardenCalendarMonthValue, MindGardenCalendarStamp, MindGardenCheckin, MindGardenConcern, MindGardenConcernConversionValue, MindGardenContemplation, MindGardenExperiment, MindGardenJournal, MindGardenOpenQuestion, MindGardenOpenQuestionStatus, MindGardenPeriodReview, MindGardenPeriodReviewMaterialRequest, MindGardenPeriodReviewMaterialValue, MindGardenPeriodReviewStatus, MindGardenPrinciple, MindGardenPrincipleContent, MindGardenPrincipleProposal, MindGardenPrincipleStatus, MindGardenReflectionTrendValue } from '@deepseek-ai/dsh-mind-garden/reflection/types';
 import type { MindGardenApplyStarCardRevisionRequest, MindGardenCalibrateStarCardRequest, MindGardenCompleteStarRitualRequest, MindGardenContinueStarCardRequest, MindGardenDrawStarCardRequest, MindGardenFinalizeStarCardRequest, MindGardenSaveStarRitualRequest, MindGardenStarCard, MindGardenStarMapOverview, MindGardenStarTrait, MindGardenUpdateStarProfileRequest, MindGardenUpdateStarTraitRequest } from '@deepseek-ai/dsh-mind-garden/star-map/types';
 import type { MindGardenBackupExportValue, MindGardenBackupInspectValue, MindGardenBackupRestoreValue, MindGardenKeyRotationValue } from '@deepseek-ai/dsh-mind-garden/portability/types';
 /** Settled outcome rendered by the dock while projection updates arrive independently. */
@@ -133,6 +133,16 @@ export interface MindGardenViewActions extends MindGardenDockActions {
     onStopExperiment: (experiment: MindGardenExperiment) => Promise<MindGardenDataResult<MindGardenExperiment>>;
     /** Read post-conversation contemplations, including unconfirmed drafts. */
     onListContemplations: () => Promise<MindGardenDataResult<readonly MindGardenContemplation[]>>;
+    /** Keep one user-authored draft for the current completed serenity Session. */
+    onCreateContemplation: (markdown: string) => Promise<MindGardenDataResult<MindGardenContemplation>>;
+    /** Replace one rendered, unconfirmed contemplation draft. */
+    onUpdateContemplation: (contemplation: MindGardenContemplation, markdown: string) => Promise<MindGardenDataResult<MindGardenContemplation>>;
+    /** Confirm one rendered contemplation without making it model-visible. */
+    onConfirmContemplation: (contemplation: MindGardenContemplation) => Promise<MindGardenDataResult<MindGardenContemplation>>;
+    /** Delete one rendered contemplation draft. */
+    onDeleteContemplation: (contemplation: MindGardenContemplation) => Promise<MindGardenDataResult<true>>;
+    /** Create an inert principle proposal from one confirmed contemplation. */
+    onProposePrinciple: (contemplation: MindGardenContemplation, content: MindGardenPrincipleContent) => Promise<MindGardenDataResult<MindGardenPrincipleProposal>>;
     /** Read principle proposals, including decided records. */
     onListPrincipleProposals: () => Promise<MindGardenDataResult<readonly MindGardenPrincipleProposal[]>>;
     /** Read life principles with their complete version histories. */

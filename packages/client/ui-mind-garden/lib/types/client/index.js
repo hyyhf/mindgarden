@@ -295,6 +295,27 @@ function viewActions(ctx, sessionId) {
                 ? { ok: true, value: result.value.contemplations }
                 : result;
         },
+        onCreateContemplation: async (markdown) => await settle(ctx.remote.mindGardenReflection.createContemplation(sessionId, { markdown })),
+        onUpdateContemplation: async (contemplation, markdown) => await settle(ctx.remote.mindGardenReflection.updateContemplation(sessionId, {
+            id: contemplation.id,
+            ifVersion: contemplation.version,
+            markdown,
+        })),
+        onConfirmContemplation: async (contemplation) => await settle(ctx.remote.mindGardenReflection.confirmContemplation(sessionId, {
+            id: contemplation.id,
+            ifVersion: contemplation.version,
+        })),
+        onDeleteContemplation: async (contemplation) => {
+            const result = await settle(ctx.remote.mindGardenReflection.deleteContemplation(sessionId, {
+                id: contemplation.id,
+                ifVersion: contemplation.version,
+            }));
+            return result.ok ? { ok: true, value: true } : result;
+        },
+        onProposePrinciple: async (contemplation, content) => await settle(ctx.remote.mindGardenReflection.proposePrinciple(sessionId, {
+            sourceContemplationId: contemplation.id,
+            content,
+        })),
         onListPrincipleProposals: async () => {
             const result = await settle(ctx.remote.mindGardenReflection.listPrincipleProposals(sessionId, {
                 includeClosed: true,

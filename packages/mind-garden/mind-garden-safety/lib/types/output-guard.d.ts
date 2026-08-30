@@ -1,8 +1,10 @@
 /** Pure local response rendering and assistant-output policy checks. */
 import type { MindGardenOutputGuardReason, MindGardenOutputViolation, MindGardenSafetyAssessment, MindGardenSafetyLocale } from './types.ts';
+/** Private suffix that keeps every structured output-policy match unpublished. */
+export declare const MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS = 64;
 /**
  * Return every deterministic output rule matched by complete assistant text.
- * @param text - complete buffered text and reasoning output.
+ * @param text - complete buffered user-visible assistant text.
  * @param assessment - effective input assessment for this step.
  * @returns unique stable violations in policy order.
  */

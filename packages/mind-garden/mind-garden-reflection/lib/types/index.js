@@ -563,6 +563,25 @@ function subtractDays(value, days) {
     date.setUTCDate(date.getUTCDate() - days);
     return date.toISOString().slice(0, 10);
 }
+function isMindGardenVaultError(error) {
+    const codes = new Set([
+        'authentication-failed',
+        'corrupt-record',
+        'corrupt-state',
+        'invalid-key',
+        'invalid-record-id',
+        'invalid-value',
+        'key-mismatch',
+        'locked',
+        'record-too-large',
+        'rotation-unavailable',
+    ]);
+    return error instanceof MindGardenVaultError
+        || (typeof error === 'object'
+            && error !== null
+            && typeof error.code === 'string'
+            && codes.has(error.code));
+}
 /** Encrypted reflection records and deterministic calendar projections for Mind Garden. */
 let MindGardenReflectionService = (() => {
     let _classSuper = TypertRemoteService;
@@ -2209,8 +2228,8 @@ let MindGardenReflectionService = (() => {
         /**
          * Select bounded reflection context without sending it to a model.
          * @param agent - Exact live Agent authorizing durable profile access.
-         * @param request - Browser-local date and current conversation query.
-         * @returns The latest same-day check-in and only explicitly retrievable journal excerpts.
+         * @param request - Current conversation query and optional browser-local date.
+         * @returns The latest same-day check-in when requested and only explicitly retrievable journal excerpts.
          */
         authorizedContext(agent, request) {
             return this.enqueue(async () => {
@@ -2218,17 +2237,19 @@ let MindGardenReflectionService = (() => {
                 if (access !== null)
                     return rejected(access);
                 try {
-                    const localDate = this.validateLocalDate(request.localDate);
+                    const localDate = request.localDate === undefined
+                        ? null
+                        : this.validateLocalDate(request.localDate);
                     const query = this.text(request.query, 'query', this.options.maxQueryBytes, false);
                     const records = await this.readRecords();
-                    const todayCheckin = records.filter((record) => record.recordType === 'checkin' && record.stamp.localDate === localDate).sort(compareRecords).at(-1);
+                    const todayCheckin = records.filter((record) => localDate !== null && record.recordType === 'checkin' && record.stamp.localDate === localDate).sort(compareRecords).at(-1);
                     const queryTerms = normalizedBigrams(query);
                     const ranked = records.flatMap((record) => {
                         if (record.recordType !== 'journal' || !record.allowRetrieval)
                             return [];
                         const overlap = [...normalizedBigrams(`${record.title}\n${record.body}`)]
                             .filter(term => queryTerms.has(term)).length;
-                        const sameDay = record.stamp.localDate === localDate;
+                        const sameDay = localDate !== null && record.stamp.localDate === localDate;
                         return overlap === 0 && !sameDay ? [] : [{ score: overlap * 10 + (sameDay ? 5 : 0), record }];
                     }).sort((left, right) => right.score - left.score
                         || right.record.createdAt - left.record.createdAt
@@ -2893,7 +2914,7 @@ let MindGardenReflectionService = (() => {
             if (error instanceof CorruptReflectionStoreError) {
                 return rejected({ code: 'vault-unavailable', state: 'corrupt-state' });
             }
-            if (error instanceof MindGardenVaultError) {
+            if (isMindGardenVaultError(error)) {
                 const state = error.code === 'locked' ? 'locked'
                     : error.code === 'invalid-key' ? 'invalid-key'
                         : error.code === 'key-mismatch' ? 'key-mismatch'
@@ -2905,7 +2926,15 @@ let MindGardenReflectionService = (() => {
         enqueue(operation) {
             if (!this.admissionOpen)
                 return Promise.reject(new Error('mind-garden-reflection: service is disposing'));
-            const result = this.operationTail.then(operation);
+            const result = this.operationTail.then(operation).catch((error) => {
+                if (!isMindGardenVaultError(error))
+                    throw error;
+                const state = error.code === 'locked' ? 'locked'
+                    : error.code === 'invalid-key' ? 'invalid-key'
+                        : error.code === 'key-mismatch' ? 'key-mismatch'
+                            : 'corrupt-state';
+                return rejected({ code: 'vault-unavailable', state });
+            });
             this.operationTail = result.then(() => undefined, () => undefined);
             return result;
         }

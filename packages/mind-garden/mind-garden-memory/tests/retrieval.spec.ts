@@ -97,6 +97,31 @@ describe('Mind Garden deterministic retrieval', () => {
     expect(recall?.text).toContain('[support-preference]')
   })
 
+  it('recalls a global support preference without accidental keyword overlap', () => {
+    const globalPreference = memory({
+      kind: 'support-preference',
+      content: 'Listen first and keep questions sparse.',
+      scope: undefined,
+    })
+    const scopedPreference = memory({
+      kind: 'support-preference',
+      content: 'Offer one concrete option.',
+      scope: 'career decisions',
+    })
+    const recall = retrieveMemories({
+      memories: [scopedPreference, globalPreference],
+      query: '今天下雨。',
+      now: 30,
+      maxMemories: 2,
+      maxBytes: 4096,
+    })
+    expect(recall?.matches.map(match => [match.memory.id, match.reason, match.score])).toEqual([
+      [globalPreference.id, 'relevant', 1],
+    ])
+    expect(recall?.text).toContain(`[memory-id:${globalPreference.id}]`)
+    expect(recall?.text).not.toContain(scopedPreference.content)
+  })
+
   it('keeps complete entries inside count and UTF-8 byte bounds', () => {
     const short = memory({ content: 'Short.', recallPolicy: 'always' })
     const long = memory({ content: '很长'.repeat(200), recallPolicy: 'always' })

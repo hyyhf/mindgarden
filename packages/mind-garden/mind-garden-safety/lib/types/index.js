@@ -6,7 +6,7 @@
 import z from '@deepseek-ai/schemastery';
 import { BlockAssembler, isAgentLoopRequest, } from '@deepseek-ai/dsh-llm';
 import { assessMindGardenInput, recoverMindGardenSafetyState } from "./classifier.js";
-import { assessMindGardenOutput, renderMindGardenGuardReplacement, renderMindGardenSupportResponse, } from "./output-guard.js";
+import { assessMindGardenOutput, MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS, renderMindGardenGuardReplacement, renderMindGardenSupportResponse, } from "./output-guard.js";
 export { mindGardenSafetyResources, MIND_GARDEN_RESOURCE_FALLBACK, MIND_GARDEN_RESOURCE_FALLBACK_EN, } from "./resources.js";
 export { assessMindGardenInput, detectMindGardenSafetyLocale, normalizeMindGardenSafetyText, recoverMindGardenSafetyState, } from "./classifier.js";
 export { assessMindGardenOutput, renderMindGardenGuardReplacement, renderMindGardenSupportResponse, } from "./output-guard.js";
@@ -16,16 +16,17 @@ export const name = 'mind-garden-safety';
 export const inject = ['agents', 'llm', 'mindGarden', 'sessions'];
 /** Schemastery validation for {@link Config}. */
 export const Config = z.object({
-    maxModelOutputTokens: z.number().default(4_096),
+    maxModelOutputTokens: z.number(),
     maxBufferedCharacters: z.number().default(524_288),
     maxBufferedChunks: z.number().default(16_384),
 });
 /** Resolve defaults and reject programmatic callers that bypass the schema. */
 function resolveConfig(config) {
-    const maxModelOutputTokens = config.maxModelOutputTokens ?? 4_096;
+    const maxModelOutputTokens = config.maxModelOutputTokens;
     const maxBufferedCharacters = config.maxBufferedCharacters ?? 524_288;
     const maxBufferedChunks = config.maxBufferedChunks ?? 16_384;
-    if (!Number.isSafeInteger(maxModelOutputTokens) || maxModelOutputTokens < 1) {
+    if (maxModelOutputTokens !== undefined
+        && (!Number.isSafeInteger(maxModelOutputTokens) || maxModelOutputTokens < 1)) {
         throw new Error('mind-garden-safety: maxModelOutputTokens must be a positive safe integer');
     }
     if (!Number.isSafeInteger(maxBufferedCharacters) || maxBufferedCharacters < 1) {
@@ -34,14 +35,12 @@ function resolveConfig(config) {
     if (!Number.isSafeInteger(maxBufferedChunks) || maxBufferedChunks < 1) {
         throw new Error('mind-garden-safety: maxBufferedChunks must be a positive safe integer');
     }
-    return { maxModelOutputTokens, maxBufferedCharacters, maxBufferedChunks };
+    return {
+        ...(maxModelOutputTokens === undefined ? {} : { maxModelOutputTokens }),
+        maxBufferedCharacters,
+        maxBufferedChunks,
+    };
 }
-/**
- * Retained suffix that covers every bounded output-policy expression. A match
- * completes while its first character is still private, so rejected text
- * cannot reach the Session log through an earlier delta.
- */
-const OUTPUT_GUARD_LOOKBEHIND_CHARACTERS = 64;
 /** Find the step whose request is currently entering `llm/stream`. */
 function openStep(session) {
     for (let index = session.events.length - 1; index >= 0; index -= 1) {
@@ -124,7 +123,7 @@ function replaceDeltaText(chunk, text) {
     throw new TypeError('mind-garden-safety: only text and reasoning deltas can be split');
 }
 function inspectedText(assembler) {
-    return assembler.interruptedBlocks().flatMap(block => block.type === 'text' || block.type === 'reasoning' ? [block.text] : []).join('\n');
+    return assembler.interruptedBlocks().flatMap(block => block.type === 'text' ? [block.text] : []).join('\n');
 }
 function recordPublishedChunk(blocks, chunk) {
     if (chunk.type === 'block-start' && (chunk.blockType === 'text' || chunk.blockType === 'reasoning')) {
@@ -146,7 +145,7 @@ function recordPublishedChunk(blocks, chunk) {
 function publishablePrefix(pending, pendingGuardedCharacters) {
     const chunks = [];
     let guardedCharacters = pendingGuardedCharacters;
-    let releasable = Math.max(0, guardedCharacters - OUTPUT_GUARD_LOOKBEHIND_CHARACTERS);
+    let releasable = Math.max(0, guardedCharacters - MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS);
     while (pending.length > 0) {
         const chunk = pending[0];
         if (chunk === undefined)
@@ -262,9 +261,24 @@ function guardedModelStream(ctx, agent, step, assessment, next, config, signal) 
  */
 export function apply(ctx, config) {
     const resolved = resolveConfig(config);
+    ctx.on('agent/pre-step', async ({ agent, messages, signal }, next) => {
+        if (ctx.mindGarden.current(agent.session) === null || signal.aborted)
+            return next();
+        const humanMessages = messages.filter(message => message.source.kind === 'user');
+        if (humanMessages.length === 0)
+            return next();
+        const text = humanText(humanMessages);
+        const previous = latestAssessment(agent.session.events)?.assessment;
+        const assessment = recoverMindGardenSafetyState(assessMindGardenInput(text), previous, text);
+        if (assessment.level > 0)
+            return { kind: 'enter', messages };
+        return next();
+    }, { prepend: true });
     ctx.on('agent/request', async ({ agent }, next) => {
         const request = await next();
         if (ctx.mindGarden.current(agent.session) === null)
+            return request;
+        if (resolved.maxModelOutputTokens === undefined)
             return request;
         const maxTokens = request.maxTokens === undefined
             ? resolved.maxModelOutputTokens

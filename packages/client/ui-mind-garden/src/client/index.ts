@@ -24,12 +24,14 @@ import type {
   MindGardenCheckin,
   MindGardenConcern,
   MindGardenConcernConversionValue,
+  MindGardenContemplation,
   MindGardenExperiment,
   MindGardenJournal,
   MindGardenOpenQuestion,
   MindGardenPeriodReview,
   MindGardenPeriodReviewMaterialValue,
   MindGardenPrinciple,
+  MindGardenPrincipleContent,
   MindGardenPrincipleProposal,
   MindGardenReflectionTrendValue,
 } from '@deepseek-ai/dsh-mind-garden/reflection/types'
@@ -452,6 +454,34 @@ function viewActions(ctx: ClientContext, sessionId: SessionId): MindGardenViewAc
         ? { ok: true, value: result.value.contemplations }
         : result
     },
+    onCreateContemplation: async markdown => await settle<MindGardenContemplation>(
+      ctx.remote.mindGardenReflection.createContemplation(sessionId, { markdown }),
+    ),
+    onUpdateContemplation: async (contemplation, markdown) => await settle<MindGardenContemplation>(
+      ctx.remote.mindGardenReflection.updateContemplation(sessionId, {
+        id: contemplation.id,
+        ifVersion: contemplation.version,
+        markdown,
+      }),
+    ),
+    onConfirmContemplation: async contemplation => await settle<MindGardenContemplation>(
+      ctx.remote.mindGardenReflection.confirmContemplation(sessionId, {
+        id: contemplation.id,
+        ifVersion: contemplation.version,
+      }),
+    ),
+    onDeleteContemplation: async (contemplation) => {
+      const result = await settle(ctx.remote.mindGardenReflection.deleteContemplation(sessionId, {
+        id: contemplation.id,
+        ifVersion: contemplation.version,
+      }))
+      return result.ok ? { ok: true, value: true } : result
+    },
+    onProposePrinciple: async (contemplation, content: MindGardenPrincipleContent) =>
+      await settle<MindGardenPrincipleProposal>(ctx.remote.mindGardenReflection.proposePrinciple(sessionId, {
+        sourceContemplationId: contemplation.id,
+        content,
+      })),
     onListPrincipleProposals: async () => {
       const result = await settle(ctx.remote.mindGardenReflection.listPrincipleProposals(sessionId, {
         includeClosed: true,

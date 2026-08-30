@@ -39,7 +39,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 import { Buffer } from 'node:buffer';
 import { randomUUID } from 'node:crypto';
 import s from '@deepseek-ai/schemastery';
-import { BlockAssembler, createUserMessage } from '@deepseek-ai/dsh-llm';
+import { BlockAssembler, createUserMessage, ReasoningEffortId } from '@deepseek-ai/dsh-llm';
 import { MindGardenVaultError, MindGardenVaultRecordId, } from '@deepseek-ai/dsh-mind-garden/vault';
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol';
 import { decodeStoredStarState, storedStarStateSchema, storedStarCardSchema, storedStarDialogueRunSchema, storedStarObservationRunSchema, storedStarTraitSchema, } from "./records.js";
@@ -57,7 +57,6 @@ const DEFAULT_MAX_SELF_WORDS = 5;
 const DEFAULT_MAX_OBSERVER_QUESTION_BYTES = 4096;
 const DEFAULT_MAX_OBSERVER_MESSAGE_BYTES = 4096;
 const DEFAULT_MAX_OBSERVER_INPUT_BYTES = 32 * 1024;
-const DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS = 2048;
 const DEFAULT_MAX_OBSERVER_SOURCE_BYTES = 1200;
 const DEFAULT_MAX_OBSERVER_SOURCES = 12;
 const MAX_STORED_TRAITS = 64;
@@ -104,7 +103,11 @@ function resolveConfig(config) {
         maxObserverQuestionBytes: positiveSafeInteger(config.maxObserverQuestionBytes, DEFAULT_MAX_OBSERVER_QUESTION_BYTES, 'maxObserverQuestionBytes'),
         maxObserverMessageBytes: positiveSafeInteger(config.maxObserverMessageBytes, DEFAULT_MAX_OBSERVER_MESSAGE_BYTES, 'maxObserverMessageBytes'),
         maxObserverInputBytes: positiveSafeInteger(config.maxObserverInputBytes, DEFAULT_MAX_OBSERVER_INPUT_BYTES, 'maxObserverInputBytes'),
-        maxObserverOutputTokens: positiveSafeInteger(config.maxObserverOutputTokens, DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS, 'maxObserverOutputTokens'),
+        ...(config.maxObserverOutputTokens === undefined
+            ? {}
+            : {
+                maxObserverOutputTokens: positiveSafeInteger(config.maxObserverOutputTokens, config.maxObserverOutputTokens, 'maxObserverOutputTokens'),
+            }),
         maxObserverSourceBytes: positiveSafeInteger(config.maxObserverSourceBytes, DEFAULT_MAX_OBSERVER_SOURCE_BYTES, 'maxObserverSourceBytes'),
         maxObserverSources,
         observerProvider,
@@ -316,7 +319,7 @@ let MindGardenStarMapService = (() => {
             maxObserverQuestionBytes: s.number().default(DEFAULT_MAX_OBSERVER_QUESTION_BYTES),
             maxObserverMessageBytes: s.number().default(DEFAULT_MAX_OBSERVER_MESSAGE_BYTES),
             maxObserverInputBytes: s.number().default(DEFAULT_MAX_OBSERVER_INPUT_BYTES),
-            maxObserverOutputTokens: s.number().default(DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS),
+            maxObserverOutputTokens: s.number(),
             maxObserverSourceBytes: s.number().default(DEFAULT_MAX_OBSERVER_SOURCE_BYTES),
             maxObserverSources: s.number().default(DEFAULT_MAX_OBSERVER_SOURCES),
             observerProvider: s.string(),
@@ -534,7 +537,7 @@ let MindGardenStarMapService = (() => {
         drawCard(agent, request) {
             if (!this.admissionOpen)
                 return Promise.reject(new Error('mind-garden-star-map: service is disposing'));
-            const access = this.accessFailure(agent);
+            const access = this.modelAccessFailure(agent);
             if (access !== null)
                 return Promise.resolve(rejected(access));
             if (this.observerOperation !== null) {
@@ -558,7 +561,7 @@ let MindGardenStarMapService = (() => {
         continueCard(agent, request) {
             if (!this.admissionOpen)
                 return Promise.reject(new Error('mind-garden-star-map: service is disposing'));
-            const access = this.accessFailure(agent);
+            const access = this.modelAccessFailure(agent);
             if (access !== null)
                 return Promise.resolve(rejected(access));
             if (this.observerOperation !== null) {
@@ -1214,13 +1217,18 @@ let MindGardenStarMapService = (() => {
             const options = {
                 provider: prepared.run.provider,
                 model: prepared.run.model,
+                ...(prepared.run.provider === 'deepseek-official' && prepared.run.model === 'deepseek-v4-flash'
+                    ? { reasoningEffort: ReasoningEffortId('off') }
+                    : {}),
                 system: prepared.envelope.system,
                 messages: [createUserMessage({
                         content: [{ type: 'text', text: prepared.envelope.prompt }],
                         source: { kind: 'plugin', plugin: name },
                     })],
                 temperature: prepared.tone === 'direct' ? 0.25 : prepared.tone === 'mystic' ? 0.55 : 0.4,
-                maxTokens: this.options.maxObserverOutputTokens,
+                ...(this.options.maxObserverOutputTokens === undefined
+                    ? {}
+                    : { maxTokens: this.options.maxObserverOutputTokens }),
                 sessionId: agent.session.id,
                 purpose: 'mind-garden-star-observer-draw',
                 signal,
@@ -1244,13 +1252,18 @@ let MindGardenStarMapService = (() => {
             const options = {
                 provider: prepared.run.provider,
                 model: prepared.run.model,
+                ...(prepared.run.provider === 'deepseek-official' && prepared.run.model === 'deepseek-v4-flash'
+                    ? { reasoningEffort: ReasoningEffortId('off') }
+                    : {}),
                 system: prepared.envelope.system,
                 messages: [createUserMessage({
                         content: [{ type: 'text', text: prepared.envelope.prompt }],
                         source: { kind: 'plugin', plugin: name },
                     })],
                 temperature: prepared.tone === 'direct' ? 0.25 : prepared.tone === 'mystic' ? 0.55 : 0.4,
-                maxTokens: this.options.maxObserverOutputTokens,
+                ...(this.options.maxObserverOutputTokens === undefined
+                    ? {}
+                    : { maxTokens: this.options.maxObserverOutputTokens }),
                 sessionId: agent.session.id,
                 purpose: 'mind-garden-star-observer-dialogue',
                 signal,
@@ -1351,6 +1364,16 @@ let MindGardenStarMapService = (() => {
                 return { code: 'mind-garden-not-active' };
             if (state.privacy !== 'durable')
                 return { code: 'durable-session-required' };
+            return null;
+        }
+        /** Require recorded provider disclosure only for operations that contact a model. */
+        modelAccessFailure(agent) {
+            const access = this.accessFailure(agent);
+            if (access !== null)
+                return access;
+            const state = this.ctx.mindGarden.current(agent.session);
+            if (state?.modelDisclosureAccepted !== true)
+                return { code: 'model-disclosure-required' };
             return null;
         }
         resolveProfile(input, onboardingStage, onboardingCompleted, createdAt, updatedAt) {

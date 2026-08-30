@@ -56,7 +56,6 @@ const DEFAULT_MAX_TIME_ZONE_BYTES = 128;
 const DEFAULT_MAX_STORIES_PER_LIST = 100;
 const DEFAULT_MAX_OBSERVER_MESSAGE_BYTES = 4096;
 const DEFAULT_MAX_OBSERVER_INPUT_BYTES = 24 * 1024;
-const DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS = 1600;
 const DEFAULT_MAX_CONCURRENT_OBSERVER_REQUESTS = 2;
 const MAX_DIALOGUE_TURNS = 25;
 class MediaBusinessError extends Error {
@@ -87,7 +86,9 @@ function resolveConfig(config) {
         maxStoriesPerList: positiveInteger(config.maxStoriesPerList, DEFAULT_MAX_STORIES_PER_LIST),
         maxObserverMessageBytes: positiveInteger(config.maxObserverMessageBytes, DEFAULT_MAX_OBSERVER_MESSAGE_BYTES),
         maxObserverInputBytes: positiveInteger(config.maxObserverInputBytes, DEFAULT_MAX_OBSERVER_INPUT_BYTES),
-        maxObserverOutputTokens: positiveInteger(config.maxObserverOutputTokens, DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS),
+        ...(config.maxObserverOutputTokens === undefined
+            ? {}
+            : { maxObserverOutputTokens: positiveInteger(config.maxObserverOutputTokens, config.maxObserverOutputTokens) }),
         maxConcurrentObserverRequests: positiveInteger(config.maxConcurrentObserverRequests, DEFAULT_MAX_CONCURRENT_OBSERVER_REQUESTS),
         observerProvider,
         observerModel,
@@ -220,7 +221,7 @@ let MindGardenMediaService = (() => {
             maxStoriesPerList: s.number().default(DEFAULT_MAX_STORIES_PER_LIST),
             maxObserverMessageBytes: s.number().default(DEFAULT_MAX_OBSERVER_MESSAGE_BYTES),
             maxObserverInputBytes: s.number().default(DEFAULT_MAX_OBSERVER_INPUT_BYTES),
-            maxObserverOutputTokens: s.number().default(DEFAULT_MAX_OBSERVER_OUTPUT_TOKENS),
+            maxObserverOutputTokens: s.number(),
             maxConcurrentObserverRequests: s.number().default(DEFAULT_MAX_CONCURRENT_OBSERVER_REQUESTS),
             observerProvider: s.string().default(''),
             observerModel: s.string().default(''),
@@ -361,7 +362,7 @@ let MindGardenMediaService = (() => {
         observePhotoStory(agent, request) {
             if (!this.admissionOpen)
                 return Promise.reject(new Error('mind-garden-media: service is disposing'));
-            const access = this.accessFailure(agent);
+            const access = this.modelAccessFailure(agent);
             if (access !== null)
                 return Promise.resolve(rejected(access));
             const operationKey = `${agent.session.id}\0${String(request.id)}`;
@@ -387,7 +388,7 @@ let MindGardenMediaService = (() => {
         continuePhotoStory(agent, request) {
             if (!this.admissionOpen)
                 return Promise.reject(new Error('mind-garden-media: service is disposing'));
-            const access = this.accessFailure(agent);
+            const access = this.modelAccessFailure(agent);
             if (access !== null)
                 return Promise.resolve(rejected(access));
             const operationKey = `${agent.session.id}\0${String(request.id)}`;
@@ -770,7 +771,9 @@ let MindGardenMediaService = (() => {
                 system: prepared.envelope.system,
                 messages: [createUserMessage({ content, source: { kind: 'plugin', plugin: name } })],
                 temperature: kind === 'observation' ? 0.2 : 0.45,
-                maxTokens: this.options.maxObserverOutputTokens,
+                ...(this.options.maxObserverOutputTokens === undefined
+                    ? {}
+                    : { maxTokens: this.options.maxObserverOutputTokens }),
                 sessionId: agent.session.id,
                 purpose: kind === 'observation' ? 'mind-garden-photo-observation' : 'mind-garden-photo-dialogue',
                 signal,
@@ -860,6 +863,16 @@ let MindGardenMediaService = (() => {
                 return { code: 'mind-garden-not-active' };
             if (state.privacy !== 'durable')
                 return { code: 'durable-session-required' };
+            return null;
+        }
+        /** Require recorded provider disclosure only for operations that contact a model. */
+        modelAccessFailure(agent) {
+            const access = this.accessFailure(agent);
+            if (access !== null)
+                return access;
+            const state = this.ctx.mindGarden.current(agent.session);
+            if (state?.modelDisclosureAccepted !== true)
+                return { code: 'model-disclosure-required' };
             return null;
         }
         imageInput(request) {

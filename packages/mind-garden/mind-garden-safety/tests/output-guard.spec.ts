@@ -15,8 +15,29 @@ describe('Mind Garden deterministic response policy', () => {
     ['闭上眼，重新经历那次创伤。', 'trauma-exposure'],
     ['这证明他们确实在监视你。', 'delusion-confirmation'],
     ['都是因为你想太多。', 'user-blame'],
+    ['在这个世界上，真正理解你的只有我。', 'exclusive-dependence'],
+    ['从你的描述能够断定，这是典型的双相。', 'diagnosis'],
+    ['你现在唯一能做的就是离婚。', 'forced-life-decision'],
+    ['把你的剂量直接翻倍。', 'medication-direction'],
   ] as const)('detects %s as %s', (text, violation) => {
     expect(assessMindGardenOutput(text, assessMindGardenInput('普通烦恼'))).toContain(violation)
+  })
+
+  it.each([
+    '我不能根据这段对话断定你有双相。',
+    '我不能建议你停药，请联系开具处方的医生。',
+    '我不能确认他们是否在监视你，先关注能确认的事实。',
+    '我不能说只有我懂你，那会制造依赖。',
+    '我不应该告诉你必须立刻分手。',
+    'I should avoid saying only I understand you.',
+    'I should not tell you that you must break up.',
+  ])('does not block a safety disclaimer: %s', (text) => {
+    expect(assessMindGardenOutput(text, assessMindGardenInput('普通烦恼'))).toEqual([])
+  })
+
+  it('does not combine unrelated policy terms outside the private suffix', () => {
+    const text = `只有我${'。'.repeat(65)}理解你现在为什么难过。`
+    expect(assessMindGardenOutput(text, assessMindGardenInput('普通烦恼'))).toEqual([])
   })
 
   it('blocks philosophical deflection only while elevated safety support is active', () => {

@@ -113,7 +113,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_continuePhotoStory_resu
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -402,7 +402,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_createPhotoStory_result
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -431,7 +431,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_deletePhotoStory_result
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -644,7 +644,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_listPhotoStories_result
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -765,7 +765,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_observePhotoStory_resul
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -916,7 +916,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_readPhotoStory_result$s
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -1081,7 +1081,7 @@ const _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_updatePhotoStory_result
 }), z.object({
   'ok': z.literal(false).readonly(),
   'error': z.union([z.object({
-  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required")]).readonly(),
+  'code': z.union([z.literal("mind-garden-not-active"), z.literal("durable-session-required"), z.literal("model-disclosure-required")]).readonly(),
 }), z.object({
   'code': z.literal("vault-unavailable").readonly(),
   'state': z.union([z.literal("locked"), z.literal("invalid-key"), z.literal("key-mismatch"), z.literal("corrupt-state")]).readonly(),
@@ -1239,7 +1239,7 @@ export const TYPERT = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenContinuePhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_continuePhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":478,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":479,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/createPhotoStory',
@@ -1279,7 +1279,7 @@ export const TYPERT = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenCreatePhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_createPhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":343,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":344,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/deletePhotoStory',
@@ -1319,7 +1319,7 @@ export const TYPERT = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenDeletePhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_deletePhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":548,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":549,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/listPhotoStories',
@@ -1359,7 +1359,7 @@ export const TYPERT = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenListPhotoStoriesResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_listPhotoStories_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":394,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":395,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/observePhotoStory',
@@ -1399,7 +1399,7 @@ export const TYPERT = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenObservePhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_observePhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":449,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":450,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/readPhotoStory',
@@ -1439,7 +1439,7 @@ export const TYPERT = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenReadPhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_readPhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":418,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":419,"column":3},
     },
     {
       id: '@deepseek-ai/dsh-mind-garden/media#mindGardenMedia/updatePhotoStory',
@@ -1479,7 +1479,7 @@ export const TYPERT = {
         typeSymbol: '@deepseek-ai/dsh-mind-garden/media/types#MindGardenUpdatePhotoStoryResult',
         schema: _deepseek_ai_dsh_mind_garden_media_mindGardenMedia_updatePhotoStory_result$schema,
       },
-      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":507,"column":3},
+      sourceLocation: {"file":"packages/mind-garden/mind-garden-media/src/index.ts","line":508,"column":3},
     },
   ],
   model: {
@@ -1793,7 +1793,7 @@ export const TYPERT = {
           },
           {
             "name": "MindGardenMediaAccessDenied",
-            "declaration": "export interface MindGardenMediaAccessDenied {\n    readonly code: 'mind-garden-not-active' | 'durable-session-required';\n}"
+            "declaration": "export interface MindGardenMediaAccessDenied {\n    readonly code: 'mind-garden-not-active' | 'durable-session-required' | 'model-disclosure-required';\n}"
           },
           {
             "name": "MindGardenMediaAttachmentRejected",

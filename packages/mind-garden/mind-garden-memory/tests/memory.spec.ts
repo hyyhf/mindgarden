@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import LlmRuntime, {
   createUserMessage,
   LlmAdapter,
+  ReasoningEffortId,
   type GenerateOptions,
   type StreamChunk,
 } from '@deepseek-ai/dsh-llm'
@@ -20,9 +21,10 @@ import MindGardenMemory, {
   type MindGardenMemoryId,
   type MindGardenMemoryVersion,
 } from '@deepseek-ai/dsh-mind-garden/memory'
-import AgentRegistry, { agentEvents, type Agent, type PreStepDecision } from '@deepseek-ai/dsh-agent'
+import AgentRegistry, { agentEvents, assembleContextFor, type Agent, type PreStepDecision } from '@deepseek-ai/dsh-agent'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
 import MindGardenService from '@deepseek-ai/dsh-mind-garden/core'
+import * as mindGardenSafety from '@deepseek-ai/dsh-mind-garden/safety'
 import type { MindGardenSessionState } from '@deepseek-ai/dsh-mind-garden/core'
 import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
 import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
@@ -33,8 +35,11 @@ import {
   MemoryStorageBackend,
 } from '../../../storage/storage-domain/tests/helpers/memory-backend.ts'
 
+const harnessContexts = new Set<Context>()
+
 async function storageContext(): Promise<{ ctx: Context; pool: MemoryMediaPool }> {
   const ctx = new Context()
+  harnessContexts.add(ctx)
   const pool = new MemoryMediaPool()
   await ctx.plugin(Storage)
   ctx.storage.backend.register('memory', new MemoryStorageBackend(pool))
@@ -45,7 +50,10 @@ async function storageContext(): Promise<{ ctx: Context; pool: MemoryMediaPool }
   return { ctx, pool }
 }
 
-function activeState(privacy: MindGardenSessionState['privacy'] = 'durable'): MindGardenSessionState {
+function activeState(
+  privacy: MindGardenSessionState['privacy'] = 'durable',
+  modelDisclosureAccepted = true,
+): MindGardenSessionState {
   return {
     revision: 1,
     activatedAt: 1,
@@ -54,7 +62,7 @@ function activeState(privacy: MindGardenSessionState['privacy'] = 'durable'): Mi
     supportIntent: 'listen',
     privacy,
     contractVersion: 1,
-    modelDisclosureAccepted: true,
+    modelDisclosureAccepted,
   }
 }
 
@@ -65,6 +73,8 @@ async function serviceHarness(config: Config = {}) {
   ctx.provide('agents', { get: (id: string) => live.get(id) } as never)
   ctx.provide('mindGarden', { current: (session: Session) => states.get(session) ?? null } as never)
   await ctx.plugin(LlmRuntime)
+  await ctx.plugin(SystemPrompt)
+  await ctx.plugin(ToolRuntime)
   await ctx.plugin(MindGardenVault)
   await ctx.plugin(MindGardenMemory, config)
 
@@ -139,8 +149,12 @@ function emitIdle(ctx: Context, agent: Agent): void {
   agentEvents(ctx, agent).emit('agent/status', { status: 'idle' })
 }
 
-afterEach(() => {
+afterEach(async () => {
   vi.useRealTimers()
+  await Promise.all([...harnessContexts].map(async (ctx) => {
+    await ctx.fiber.dispose()
+  }))
+  harnessContexts.clear()
 })
 
 describe('Mind Garden memory service', () => {
@@ -169,10 +183,6 @@ describe('Mind Garden memory service', () => {
       .toThrow('configured together')
     expect(() => new MindGardenMemory(new Context(), { maxExtractionCandidates: 9 }))
       .toThrow('schema limit of 8')
-    const standaloneContext = new Context()
-    new MindGardenMemory(standaloneContext, {})
-    await standaloneContext.fiber.dispose()
-
     const custom = await serviceHarness({
       maxContentBytes: 64,
       maxReasonBytes: 32,
@@ -239,6 +249,99 @@ describe('Mind Garden memory service', () => {
     await ctx.fiber.dispose()
     await expect(service.list(inactive)).rejects.toThrow('service is disposing')
     await expect(service.extract(inactive, {})).rejects.toThrow('service is disposing')
+  })
+
+  it('keeps local review available but denies every model-facing path before disclosure acceptance', async () => {
+    const { ctx, makeAgent } = await serviceHarness()
+    const agent = makeAgent('undisclosed-model-paths', activeState('durable', false))
+    const proposal = await ctx.mindGardenMemory.propose(agent, {
+      kind: 'support-preference',
+      content: 'A short walk helps when work feels overwhelming.',
+      reason: 'User-owned local review remains available.',
+    })
+    if (!proposal.ok) throw new Error('proposal failed')
+    const confirmed = await ctx.mindGardenMemory.confirm(agent, {
+      id: proposal.value.id,
+      ifVersion: proposal.value.version,
+      recallPolicy: 'relevant',
+    })
+    if (!confirmed.ok) throw new Error('confirmation failed')
+
+    const assembled = await ctx.systemPrompt.assemble(assembleContextFor(agent))
+    expect(assembled.tools.map(tool => tool.name)).not.toContain('mind_garden_memory_correction')
+    const decision = await firePreStep(ctx, agent, { text: 'Work feels overwhelming; would a short walk help?' })
+    expect(decision.kind).toBe('enter')
+    if (decision.kind === 'enter') {
+      expect(decision.messages.some(message => message.source.kind === 'plugin'
+        && message.source.plugin === 'mind-garden-memory')).toBe(false)
+    }
+
+    appendCompletedTurn(agent, 1, 'A quiet walk helped after a demanding afternoon.')
+    const adapter = new ScriptedExtractionAdapter([response('{"memories":[]}')])
+    ctx.llm.registerAdapter(['undisclosed'], adapter)
+    await expect(ctx.mindGardenMemory.extract(agent, {
+      provider: 'undisclosed', model: 'undisclosed',
+    })).resolves.toEqual({ ok: false, error: { code: 'model-disclosure-required' } })
+    expect(adapter.requests).toHaveLength(0)
+  })
+
+  it('disables DeepSeek reasoning without adding an extraction output cap', async () => {
+    const { ctx, makeAgent } = await serviceHarness()
+    const agent = makeAgent('deepseek-extraction-budget')
+    appendCompletedTurn(agent, 1, 'I prefer one clear question before advice.')
+    const adapter = new ScriptedExtractionAdapter([response('{"memories":[]}')])
+    vi.spyOn(adapter, 'resolveModel').mockResolvedValue({
+      provider: 'deepseek-official',
+      id: 'deepseek-v4-flash',
+      name: 'DeepSeek-V4-Flash',
+      reasoning: {
+        efforts: [
+          { id: ReasoningEffortId('off'), name: 'Off' },
+          { id: ReasoningEffortId('high'), name: 'High' },
+        ],
+        defaultEffort: ReasoningEffortId('high'),
+      },
+    })
+    ctx.llm.registerAdapter(['deepseek-official'], adapter)
+
+    await expect(ctx.mindGardenMemory.extract(agent, {
+      provider: 'deepseek-official', model: 'deepseek-v4-flash',
+    })).resolves.toMatchObject({ ok: true, value: { run: { status: 'completed' } } })
+    expect(adapter.requests[0]?.reasoningEffort).toBe('off')
+    expect(adapter.requests[0]?.maxTokens).toBeUndefined()
+  })
+
+  it('rechecks disclosure inside the queued recall operation before logging plaintext', async () => {
+    const { ctx, makeAgent } = await serviceHarness()
+    const agent = makeAgent('recall-disclosure-race')
+    const proposal = await ctx.mindGardenMemory.propose(agent, {
+      kind: 'support-preference',
+      content: 'A short walk helps when work feels overwhelming.',
+      reason: 'Use a known helpful response when relevant.',
+    })
+    if (!proposal.ok) throw new Error('proposal failed')
+    const confirmed = await ctx.mindGardenMemory.confirm(agent, {
+      id: proposal.value.id,
+      ifVersion: proposal.value.version,
+      recallPolicy: 'relevant',
+    })
+    if (!confirmed.ok) throw new Error('confirmation failed')
+
+    const current = vi.spyOn(ctx.mindGarden, 'current')
+      .mockReturnValueOnce(activeState())
+      .mockReturnValueOnce(activeState('durable', false))
+    const decision = await firePreStep(ctx, agent, { text: 'Work feels overwhelming today.' })
+    current.mockRestore()
+
+    expect(decision.kind).toBe('enter')
+    if (decision.kind === 'enter') {
+      expect(decision.messages.some(message => message.source.kind === 'plugin'
+        && message.source.plugin === 'mind-garden-memory')).toBe(false)
+    }
+    await expect(ctx.mindGardenMemory.latestAudit(agent)).resolves.toEqual({
+      ok: true,
+      value: { audit: null },
+    })
   })
 
   it('stores forward-only automatic extraction authorization with equality-only updates', async () => {
@@ -1835,6 +1938,9 @@ describe('Mind Garden memory service', () => {
       response(JSON.stringify({ memories: secondRows })),
       response(JSON.stringify({ memories: [
         proposal(7, { content: 'I prefer one clear next step.', importance: 1 }),
+        proposal(4, { content: 'Your attachment style is avoidant.', importance: 0.99 }),
+        proposal(4, { content: 'Your subconscious controls this choice.', importance: 0.98 }),
+        proposal(4, { content: 'Your risk level is high.', importance: 0.97 }),
         proposal(4, {
           content: 'I keep a related valid fact.',
           importance: 0.95,
@@ -1880,12 +1986,114 @@ function response(text: string): StreamChunk[] {
   ]
 }
 
+function toolResponse(id: string, name: string, args: Record<string, string>): StreamChunk[] {
+  const input = JSON.stringify(args)
+  return [
+    { type: 'block-start', index: 0, blockType: 'tool-call' },
+    { type: 'tool-call-delta', index: 0, id: id as never, name, argumentsDelta: input },
+    { type: 'block-end', index: 0, block: { type: 'tool-call', id: id as never, name, arguments: input } },
+    { type: 'finish', reason: { kind: 'tool-calls' } },
+  ]
+}
+
+function textLeaves(value: unknown): string[] {
+  if (Array.isArray(value)) return value.flatMap(textLeaves)
+  if (value === null || typeof value !== 'object') return []
+  const record = value as Record<string, unknown>
+  const own = record.type === 'text' && typeof record.text === 'string' ? [record.text] : []
+  return [...own, ...Object.values(record).flatMap(textLeaves)]
+}
+
 class RecallAdapter extends LlmAdapter {
   readonly requests: GenerateOptions[] = []
 
   override async * stream(options: GenerateOptions): AsyncIterable<StreamChunk> {
     this.requests.push(options)
     yield* response('I remember that a short walk can help; would that fit today?')
+  }
+}
+
+class CorrectionAdapter extends LlmAdapter {
+  readonly requests: GenerateOptions[] = []
+  private pending: { readonly id: string; readonly version: string } | undefined
+  private attemptedSameTurnConfirmation = false
+  private confirmationCalls = 0
+
+  constructor(private readonly options: {
+    readonly proposalReply?: string
+    readonly confirmationText?: string
+    readonly confirmationEvidenceQuote?: string
+    readonly decisionAction?: 'confirm' | 'cancel'
+  } = {}) {
+    super()
+  }
+
+  override async * stream(options: GenerateOptions): AsyncIterable<StreamChunk> {
+    this.requests.push(options)
+    if (this.requests.length > 8) throw new Error('correction adapter exceeded its expected step count')
+    const human = options.messages.filter(message => message.source.kind === 'user').at(-1)
+    const humanText = human?.content.flatMap(block => block.type === 'text' ? [block.text] : []).join('') ?? ''
+    const result = textLeaves(options.messages.at(-1)).flatMap((text) => {
+      try {
+        const parsed = JSON.parse(text) as Record<string, unknown>
+        return typeof parsed.status === 'string' ? [parsed] : []
+      } catch {
+        return []
+      }
+    })[0]
+    if (result?.status === 'awaiting-confirmation') {
+      this.pending = { id: String(result.proposal_id), version: String(result.proposal_version) }
+      this.attemptedSameTurnConfirmation = true
+      yield* toolResponse('call-premature-confirm-correction', 'mind_garden_memory_correction', {
+        action: 'confirm',
+        evidence_quote: '你记错了：我难受时更希望先被听见，不要马上给建议。',
+        proposal_id: this.pending.id,
+        proposal_version: this.pending.version,
+      })
+      return
+    }
+    if (result?.status === 'updated') {
+      yield* response('改好了。谢谢你直接纠正我；这一次我先听你说。')
+      return
+    }
+    if (options.messages.at(-1)?.source.kind === 'tool') {
+      if (this.attemptedSameTurnConfirmation) {
+        this.attemptedSameTurnConfirmation = false
+        yield* response(this.options.proposalReply
+          ?? '我会以你现在说的为准。要把长期记忆改成“我难受时更希望先被听见，不要马上给建议。”吗？')
+        return
+      }
+      yield* response(`Correction tool failed: ${textLeaves(options.messages.at(-1)).join(' ')}`)
+      return
+    }
+    if (humanText.includes('你记错了')) {
+      const recall = options.messages.find(message => message.source.kind === 'plugin'
+        && message.source.plugin === 'mind-garden-memory'
+        && message.source.form === 'recall')
+      const recallText = recall?.content.flatMap(block => block.type === 'text' ? [block.text] : []).join('') ?? ''
+      const memoryId = /\[memory-id:([0-9a-f-]+)\]/u.exec(recallText)?.[1]
+      if (memoryId === undefined) throw new Error('correction test did not receive a memory id')
+      yield* toolResponse('call-propose-correction', 'mind_garden_memory_correction', {
+        action: 'propose',
+        evidence_quote: '你记错了：我难受时更希望先被听见，不要马上给建议。',
+        memory_id: memoryId,
+        corrected_content: '我难受时更希望先被听见，不要马上给建议。',
+      })
+      return
+    }
+    const confirmationText = this.options.confirmationText ?? '对，就这样改。'
+    if (humanText.includes(confirmationText)) {
+      if (this.pending === undefined) throw new Error('correction confirmation lacks a pending proposal')
+      this.confirmationCalls += 1
+      yield* toolResponse(`call-confirm-correction-${this.confirmationCalls}`, 'mind_garden_memory_correction', {
+        action: this.options.decisionAction ?? 'confirm',
+        evidence_quote: this.options.confirmationEvidenceQuote ?? confirmationText,
+        proposal_id: this.pending.id,
+        proposal_version: this.pending.version,
+      })
+      return
+    }
+    yield* response('I am listening.')
   }
 }
 
@@ -1943,7 +2151,88 @@ class DialogueAndExtractionAdapter extends LlmAdapter {
   }
 }
 
+class UndisclosedCorrectionAdapter extends LlmAdapter {
+  readonly requests: GenerateOptions[] = []
+
+  override async * stream(options: GenerateOptions): AsyncIterable<StreamChunk> {
+    this.requests.push(options)
+    if (options.messages.at(-1)?.source.kind === 'tool') {
+      yield* response(textLeaves(options.messages.at(-1)).join(' '))
+      return
+    }
+    yield* toolResponse('call-undisclosed-correction', 'mind_garden_memory_correction', {
+      action: 'propose',
+      evidence_quote: '请改掉那条记忆。',
+      memory_id: '00000000-0000-4000-8000-000000000001',
+      corrected_content: '我希望先被听见。',
+    })
+  }
+}
+
+async function correctionLoopHarness(id: string, adapter: CorrectionAdapter) {
+  const { ctx, pool } = await storageContext()
+  await ctx.plugin(LlmRuntime)
+  await ctx.plugin(SessionStore)
+  await ctx.plugin(SessionProjectionRegistry)
+  await ctx.plugin(SystemPrompt)
+  await ctx.plugin(ToolRuntime)
+  await ctx.plugin(AgentRegistry)
+  await ctx.plugin(MindGardenService)
+  await ctx.plugin(MindGardenVault)
+  await ctx.plugin(MindGardenMemory)
+  await ctx.plugin(AgentLoop, { agents: [] })
+  ctx.llm.registerAdapter(['mock'], adapter)
+  const agent = ctx.agentLoop.create(SessionId(id), { provider: 'mock', model: 'test' })
+  ctx.mindGarden.activate(agent.session, {
+    mode: 'serenity', privacy: 'durable', modelDisclosureAccepted: true,
+  })
+  const proposal = await ctx.mindGardenMemory.propose(agent, {
+    kind: 'support-preference',
+    content: '我难受时希望马上得到建议。',
+    reason: 'Use the response style the user prefers.',
+  })
+  if (!proposal.ok) throw new Error('memory proposal failed')
+  const original = await ctx.mindGardenMemory.confirm(agent, {
+    id: proposal.value.id,
+    ifVersion: proposal.value.version,
+    recallPolicy: 'relevant',
+  })
+  if (!original.ok) throw new Error('memory confirmation failed')
+  return { ctx, pool, agent, original }
+}
+
 describe('Mind Garden memory real AgentLoop composition', () => {
+  it('unregisters the conversational correction tool when the plugin fiber is disposed', async () => {
+    const { ctx } = await storageContext()
+    ctx.provide('agents', { get: () => undefined } as never)
+    ctx.provide('mindGarden', { current: () => null } as never)
+    await ctx.plugin(LlmRuntime)
+    await ctx.plugin(SystemPrompt)
+    await ctx.plugin(ToolRuntime)
+    await ctx.plugin(MindGardenVault)
+    const memoryFiber = await ctx.plugin(MindGardenMemory)
+    const tool = ctx.tools.get('mind_garden_memory_correction')
+    const presentationArgs = {
+      action: 'propose',
+      evidence_quote: 'That memory is wrong.',
+      memory_id: 'memory-id',
+      corrected_content: 'I prefer listening first.',
+    }
+    expect(tool?.presentCall?.(presentationArgs)).toEqual({
+      card: 'generic',
+      title: '更新记忆 · Memory correction',
+      kind: 'other',
+    })
+    expect(tool?.presentResult?.(presentationArgs, { content: [], isError: false })).toEqual({
+      card: 'generic',
+      content: [],
+    })
+
+    await memoryFiber.dispose()
+    expect(ctx.tools.get('mind_garden_memory_correction')).toBeUndefined()
+    await ctx.fiber.dispose()
+  })
+
   it('claims real Agent maintenance for an authorized post-turn automatic review', async () => {
     const { ctx } = await storageContext()
     await ctx.plugin(LlmRuntime)
@@ -2047,5 +2336,427 @@ describe('Mind Garden memory real AgentLoop composition', () => {
     })
     expect(JSON.stringify(pool.media.get('mind_garden_vault'))).not.toContain('A short walk helps')
     await ctx.fiber.dispose()
+  })
+
+  it('suppresses matching recall and its sent audit when safety answers the turn locally', async () => {
+    const { ctx } = await storageContext()
+    await ctx.plugin(LlmRuntime)
+    await ctx.plugin(SessionStore)
+    await ctx.plugin(SessionProjectionRegistry)
+    await ctx.plugin(SystemPrompt)
+    await ctx.plugin(ToolRuntime)
+    await ctx.plugin(AgentRegistry)
+    await ctx.plugin(MindGardenService)
+    await ctx.plugin(MindGardenVault)
+    await ctx.plugin(MindGardenMemory)
+    await ctx.plugin(mindGardenSafety)
+    await ctx.plugin(AgentLoop, { agents: [] })
+    const adapter = new RecallAdapter()
+    ctx.llm.registerAdapter(['mock'], adapter)
+    const agent = ctx.agentLoop.create(SessionId('memory-safety-local'), { provider: 'mock', model: 'test' })
+    ctx.mindGarden.activate(agent.session, {
+      mode: 'serenity', privacy: 'durable', modelDisclosureAccepted: true,
+    })
+
+    const candidate = await ctx.mindGardenMemory.propose(agent, {
+      kind: 'fact',
+      content: 'The rooftop is where I go when work feels overwhelming.',
+      reason: 'User-confirmed place context.',
+    })
+    if (!candidate.ok) throw new Error('proposal failed')
+    const confirmed = await ctx.mindGardenMemory.confirm(agent, {
+      id: candidate.value.id,
+      ifVersion: candidate.value.version,
+      recallPolicy: 'relevant',
+    })
+    if (!confirmed.ok) throw new Error('confirmation failed')
+
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '我现在要跳楼，已经在楼顶。' }],
+      source: { kind: 'user' },
+    }))
+    await agent.whenIdle()
+
+    expect(adapter.requests).toEqual([])
+    expect(agent.session.events.some(event =>
+      event.type === 'user/message'
+      && event.data.source.kind === 'plugin'
+      && event.data.source.plugin === 'mind-garden-memory',
+    )).toBe(false)
+    await expect(ctx.mindGardenMemory.latestAudit(agent)).resolves.toEqual({
+      ok: true,
+      value: { audit: null },
+    })
+    expect(agent.session.events.find(event => event.type === 'mind-garden/safety-assessment')?.data)
+      .toMatchObject({ response: 'local', assessment: { level: 3 } })
+    await ctx.fiber.dispose()
+  })
+
+  it('keeps correction invisible until activation and replaces recalled memory after a later confirmation', async () => {
+    const { ctx } = await storageContext()
+    await ctx.plugin(LlmRuntime)
+    await ctx.plugin(SessionStore)
+    await ctx.plugin(SessionProjectionRegistry)
+    await ctx.plugin(SystemPrompt)
+    await ctx.plugin(ToolRuntime)
+    await ctx.plugin(AgentRegistry)
+    await ctx.plugin(MindGardenService)
+    await ctx.plugin(MindGardenVault)
+    await ctx.plugin(MindGardenMemory)
+    await ctx.plugin(AgentLoop, { agents: [] })
+    const adapter = new CorrectionAdapter()
+    ctx.llm.registerAdapter(['mock'], adapter)
+    const agent = ctx.agentLoop.create(SessionId('memory-correction-real-loop'), {
+      provider: 'mock', model: 'test',
+    })
+    const hidden = await ctx.systemPrompt.assemble(assembleContextFor(agent))
+    expect(hidden.tools.map(tool => tool.name)).not.toContain('mind_garden_memory_correction')
+    ctx.mindGarden.activate(agent.session, {
+      mode: 'serenity', privacy: 'durable', modelDisclosureAccepted: true,
+    })
+    const visible = await ctx.systemPrompt.assemble(assembleContextFor(agent))
+    expect(visible.tools.map(tool => tool.name)).toContain('mind_garden_memory_correction')
+
+    const proposal = await ctx.mindGardenMemory.propose(agent, {
+      kind: 'support-preference',
+      content: '我难受时希望马上得到建议。',
+      reason: 'Use the response style the user prefers.',
+    })
+    if (!proposal.ok) throw new Error('memory proposal failed')
+    const original = await ctx.mindGardenMemory.confirm(agent, {
+      id: proposal.value.id,
+      ifVersion: proposal.value.version,
+      recallPolicy: 'relevant',
+    })
+    if (!original.ok) throw new Error('memory confirmation failed')
+
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '你记错了：我难受时更希望先被听见，不要马上给建议。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(3)
+    })
+    const awaiting = await ctx.mindGardenMemory.list(agent)
+    if (!awaiting.ok) throw new Error('memory list failed')
+    const correctionCandidate = awaiting.value.items.find(item => item.status === 'candidate')
+    expect(awaiting.value.items).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: original.value.id, content: '我难受时希望马上得到建议。' }),
+    ]))
+    expect(correctionCandidate).toMatchObject({
+      status: 'candidate',
+      content: '我难受时更希望先被听见，不要马上给建议。',
+    })
+    expect(correctionCandidate?.relationship).toMatchObject({
+      targetMemoryId: original.value.id,
+      status: 'pending',
+    })
+    expect(adapter.requests[0]?.tools?.map(tool => tool.name)).toContain('mind_garden_memory_correction')
+    const prematureResult = agent.session.events.find(event => event.type === 'tool/result'
+      && event.data.message.source.callId === 'call-premature-confirm-correction')
+    expect(JSON.stringify(prematureResult)).toContain('MIND_GARDEN_MEMORY_CORRECTION_CONFIRMATION_REQUIRED')
+
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '对，就这样改。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(5)
+    })
+    const assistantText = agent.session.events.flatMap(event => event.type === 'assistant/message'
+      ? event.data.message.content.flatMap(block => block.type === 'text' ? [block.text] : [])
+      : [])
+    expect(assistantText).toEqual([
+      '我会以你现在说的为准。要把长期记忆改成“我难受时更希望先被听见，不要马上给建议。”吗？',
+      '改好了。谢谢你直接纠正我；这一次我先听你说。',
+    ])
+    const corrected = await ctx.mindGardenMemory.list(agent)
+    if (!corrected.ok) throw new Error('memory list failed')
+    const active = corrected.value.items.find(item => item.id === original.value.id)
+    expect(corrected.value.items).toEqual(expect.arrayContaining([
+      expect.objectContaining({ status: 'superseded', supersededBy: original.value.id }),
+    ]))
+    expect(active).toMatchObject({
+      status: 'confirmed',
+      content: '我难受时更希望先被听见，不要马上给建议。',
+      recallPolicy: 'relevant',
+    })
+    expect(active?.sources.some(source => source.evidenceQuote === '对，就这样改。')).toBe(true)
+    await ctx.fiber.dispose()
+  })
+
+  it.each([
+    ['Chinese mixed approval and refusal', 'memory-correction-refusal-zh', '对，但别改记忆。', '对'],
+    ['Chinese approval followed by no-save', 'memory-correction-refusal-save', '没错，不过不要保存。', '没错'],
+    ['Chinese approval followed by reluctance', 'memory-correction-refusal-reluctant', '对，但我不想改。', '对'],
+    ['Chinese approval followed by no need', 'memory-correction-refusal-needless', '是的，但不需要保存。', '是的'],
+    ['English approval followed by refusal', 'memory-correction-refusal-en', 'yes, but do not change it.', 'yes'],
+    ['English approval followed by curly-apostrophe refusal', 'memory-correction-refusal-curly', 'Yes, but I don’t want it changed.', 'Yes'],
+    ['question quoting approval', 'memory-correction-question-approval', '你是说“可以”就会保存吗？', '可以'],
+    ['reported approval', 'memory-correction-reported-approval', '他说可以保存。', '可以'],
+    ['uncertain approval', 'memory-correction-uncertain-approval', '可以吧，我还不确定。', '可以'],
+    ['unrelated use of approval word', 'memory-correction-unrelated-approval', '我今天可以早点休息。', '可以'],
+  ])('refuses confirmation for %s in the complete human message', async (
+    _label,
+    sessionId,
+    confirmationText,
+    confirmationEvidenceQuote,
+  ) => {
+    const adapter = new CorrectionAdapter({
+      confirmationText,
+      confirmationEvidenceQuote,
+    })
+    const { ctx, agent, original } = await correctionLoopHarness(sessionId, adapter)
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '你记错了：我难受时更希望先被听见，不要马上给建议。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(3)
+    })
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: confirmationText }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(5)
+    })
+
+    const result = agent.session.events.find(event => event.type === 'tool/result'
+      && event.data.message.source.callId === 'call-confirm-correction-1')
+    expect(JSON.stringify(result)).toContain('MIND_GARDEN_MEMORY_CORRECTION_CONFIRMATION_REQUIRED')
+    const memories = await ctx.mindGardenMemory.list(agent)
+    if (!memories.ok) throw new Error('memory list failed')
+    expect(memories.value.items).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: original.value.id, content: '我难受时希望马上得到建议。' }),
+      expect.objectContaining({ status: 'candidate', content: '我难受时更希望先被听见，不要马上给建议。' }),
+    ]))
+  })
+
+  it('accepts a common clear approval phrased without a dedicated command', async () => {
+    const confirmationText = '可以，就按你说的。'
+    const adapter = new CorrectionAdapter({ confirmationText })
+    const { ctx, agent, original } = await correctionLoopHarness('memory-correction-natural-approval', adapter)
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '你记错了：我难受时更希望先被听见，不要马上给建议。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(3)
+    })
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: confirmationText }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(5)
+    })
+    const memories = await ctx.mindGardenMemory.list(agent)
+    if (!memories.ok) throw new Error('memory list failed')
+    expect(memories.value.items.find(item => item.id === original.value.id)).toMatchObject({
+      status: 'confirmed',
+      content: '我难受时更希望先被听见，不要马上给建议。',
+    })
+  })
+
+  it('refuses confirmation until the exact proposed wording appears in user-visible history', async () => {
+    const adapter = new CorrectionAdapter({ proposalReply: '我记下了这个方向。这样改可以吗？' })
+    const { ctx, agent, original } = await correctionLoopHarness('memory-correction-hidden-proposal', adapter)
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '你记错了：我难受时更希望先被听见，不要马上给建议。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(3)
+    })
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '对，就这样改。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(5)
+    })
+
+    const result = agent.session.events.find(event => event.type === 'tool/result'
+      && event.data.message.source.callId === 'call-confirm-correction-1')
+    expect(JSON.stringify(result)).toContain('MIND_GARDEN_MEMORY_CORRECTION_PROPOSAL_NOT_PRESENTED')
+    const memories = await ctx.mindGardenMemory.list(agent)
+    if (!memories.ok) throw new Error('memory list failed')
+    expect(memories.value.items.find(item => item.id === original.value.id)).toMatchObject({
+      content: '我难受时希望马上得到建议。',
+    })
+  })
+
+  it('does not bind an unrelated later question to a proposal stated separately', async () => {
+    const adapter = new CorrectionAdapter({
+      proposalReply: '我会把长期记忆改成“我难受时更希望先被听见，不要马上给建议。”。今天还好吗？',
+    })
+    const { ctx, agent, original } = await correctionLoopHarness('memory-correction-unrelated-question', adapter)
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '你记错了：我难受时更希望先被听见，不要马上给建议。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(3)
+    })
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '对，就这样改。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(5)
+    })
+
+    const result = agent.session.events.find(event => event.type === 'tool/result'
+      && event.data.message.source.callId === 'call-confirm-correction-1')
+    expect(JSON.stringify(result)).toContain('MIND_GARDEN_MEMORY_CORRECTION_PROPOSAL_NOT_PRESENTED')
+    const memories = await ctx.mindGardenMemory.list(agent)
+    if (!memories.ok) throw new Error('memory list failed')
+    expect(memories.value.items.find(item => item.id === original.value.id)).toMatchObject({
+      content: '我难受时希望马上得到建议。',
+    })
+  })
+
+  it('refuses to cancel a pending proposal from an unrelated complete message', async () => {
+    const confirmationText = '今天天气不错。'
+    const adapter = new CorrectionAdapter({ confirmationText, decisionAction: 'cancel' })
+    const { ctx, agent, original } = await correctionLoopHarness('memory-correction-cancel-unrelated', adapter)
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '你记错了：我难受时更希望先被听见，不要马上给建议。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(3)
+    })
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: confirmationText }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(5)
+    })
+
+    const result = agent.session.events.find(event => event.type === 'tool/result'
+      && event.data.message.source.callId === 'call-confirm-correction-1')
+    expect(JSON.stringify(result)).toContain('MIND_GARDEN_MEMORY_CORRECTION_CANCELLATION_REQUIRED')
+    const memories = await ctx.mindGardenMemory.list(agent)
+    if (!memories.ok) throw new Error('memory list failed')
+    expect(memories.value.items).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: original.value.id, status: 'confirmed' }),
+      expect.objectContaining({ status: 'candidate' }),
+    ]))
+  })
+
+  it('cancels only after a later complete human message explicitly withdraws the proposal', async () => {
+    const confirmationText = '对，但别改记忆。'
+    const adapter = new CorrectionAdapter({ confirmationText, decisionAction: 'cancel' })
+    const { ctx, agent, original } = await correctionLoopHarness('memory-correction-cancel-explicit', adapter)
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '你记错了：我难受时更希望先被听见，不要马上给建议。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(3)
+    })
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: confirmationText }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(5)
+    })
+
+    const result = agent.session.events.find(event => event.type === 'tool/result'
+      && event.data.message.source.callId === 'call-confirm-correction-1')
+    expect(textLeaves(result).some(text => text.includes('"status":"cancelled"'))).toBe(true)
+    const memories = await ctx.mindGardenMemory.list(agent)
+    if (!memories.ok) throw new Error('memory list failed')
+    expect(memories.value.items).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: original.value.id, status: 'confirmed' }),
+      expect.objectContaining({ status: 'rejected' }),
+    ]))
+  })
+
+  it('finishes candidate settlement when confirmation retries after the target write committed', async () => {
+    const adapter = new CorrectionAdapter()
+    const { ctx, agent, original } = await correctionLoopHarness('memory-correction-recovery', adapter)
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '你记错了：我难受时更希望先被听见，不要马上给建议。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(3)
+    })
+
+    const put = ctx.mindGardenVault.put.bind(ctx.mindGardenVault)
+    let interruptSettlement = true
+    vi.spyOn(ctx.mindGardenVault, 'put').mockImplementation(async (domain, id, value) => {
+      const record = value as Record<string, unknown>
+      if (interruptSettlement && record.recordType === 'memory' && record.status === 'superseded') {
+        interruptSettlement = false
+        throw new Error('simulated candidate settlement interruption')
+      }
+      return await put(domain, id, value)
+    })
+
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '对，就这样改。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(5)
+    })
+    const interrupted = await ctx.mindGardenMemory.list(agent)
+    if (!interrupted.ok) throw new Error('memory list failed')
+    expect(interrupted.value.items.find(item => item.id === original.value.id)).toMatchObject({
+      content: '我难受时更希望先被听见，不要马上给建议。',
+    })
+    expect(interrupted.value.items.some(item => item.status === 'candidate')).toBe(true)
+
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '对，就这样改。' }],
+      source: { kind: 'user' },
+    }))
+    await vi.waitFor(() => {
+      expect(agent.session.events.filter(event => event.type === 'assistant/message')).toHaveLength(7)
+    })
+    const recovered = await ctx.mindGardenMemory.list(agent)
+    if (!recovered.ok) throw new Error('memory list failed')
+    expect(recovered.value.items).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: original.value.id, content: '我难受时更希望先被听见，不要马上给建议。' }),
+      expect.objectContaining({ status: 'superseded', supersededBy: original.value.id }),
+    ]))
+    expect(recovered.value.items.some(item => item.status === 'candidate')).toBe(false)
+  })
+
+  it('denies an undisclosed correction call even when an alternate model invokes the hidden tool', async () => {
+    const { ctx } = await storageContext()
+    await ctx.plugin(LlmRuntime)
+    await ctx.plugin(SessionStore)
+    await ctx.plugin(SessionProjectionRegistry)
+    await ctx.plugin(SystemPrompt)
+    await ctx.plugin(ToolRuntime)
+    await ctx.plugin(AgentRegistry)
+    await ctx.plugin(MindGardenService)
+    await ctx.plugin(MindGardenVault)
+    await ctx.plugin(MindGardenMemory)
+    await ctx.plugin(AgentLoop, { agents: [] })
+    const adapter = new UndisclosedCorrectionAdapter()
+    ctx.llm.registerAdapter(['mock'], adapter)
+    const agent = ctx.agentLoop.create(SessionId('memory-undisclosed-tool'), { provider: 'mock', model: 'test' })
+    ctx.mindGarden.activate(agent.session, {
+      mode: 'serenity', privacy: 'durable', modelDisclosureAccepted: false,
+    })
+
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: '请改掉那条记忆。' }],
+      source: { kind: 'user' },
+    }))
+    await agent.whenIdle()
+    expect(adapter.requests[0]?.tools?.map(tool => tool.name) ?? []).not.toContain('mind_garden_memory_correction')
+    const result = agent.session.events.find(event => event.type === 'tool/result'
+      && event.data.message.source.callId === 'call-undisclosed-correction')
+    expect(JSON.stringify(result)).toContain('MIND_GARDEN_MEMORY_CORRECTION_ACCESS_DENIED')
+    expect(JSON.stringify(result)).toContain('model-disclosure-required')
   })
 })

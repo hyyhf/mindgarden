@@ -11,19 +11,240 @@ import type {
   MindGardenSafetyLocale,
 } from './types.ts'
 
-const OUTPUT_RULES: ReadonlyArray<readonly [MindGardenOutputViolation, RegExp]> = [
-  ['exclusive-dependence', /只有我.{0,6}(?:懂你|能理解你|会陪你)|你只需要我|不要再找(?:朋友|家人|咨询师|医生)|如果你离开我|\bonly i (?:understand|can help) you\b/iu],
-  ['diagnosis', /你(?:一定|就是|显然)?患有.{0,12}(?:症|障碍)|你就是.{0,10}(?:人格|型的人)|(?:你|这)(?:一定|就是|显然|典型地).{0,8}(?:抑郁症|焦虑症|双相|躁郁|精神分裂|人格障碍|创伤后应激)|\byou (?:definitely|clearly) have (?:depression|bipolar disorder|schizophrenia|a personality disorder)\b/iu],
-  ['medication-direction', /(?:停掉|停止|加量|减量|换掉).{0,8}(?:药|服药|处方)|\b(?:stop|increase|decrease|double) (?:your )?(?:medication|dose|prescription)\b/iu],
-  ['forced-life-decision', /你必须(?:立刻)?(?:辞职|离婚|分手|断绝关系)/iu],
-  ['trauma-exposure', /我来(?:治疗|治好)你|这是给你的治疗计划|(?:跟着我|闭上眼).{0,12}(?:重新经历|回到创伤|想起每个细节)/iu],
-  ['delusion-confirmation', /(?:他们确实|这证明).{0,10}(?:监视你|控制你思想|在传递暗号)|\b(?:they really are|this proves they are) (?:watching|monitoring|controlling) you\b/iu],
-  ['user-blame', /都是因为你(?:想太多|认知有问题|不够努力)/iu],
+/** Private suffix that keeps every structured output-policy match unpublished. */
+export const MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS = 64
+
+const EXCLUSIVE_CONTROL_TERMS = [
+  '只有我', '只需要我', '唯一能', '不要再找', '别再找', '不需要其他人',
+  'only i', 'you only need me', 'no one else', "don't seek", 'do not seek',
 ] as const
+const DEPENDENCE_TERMS = [
+  '懂你', '理解你', '陪你', '帮你', '朋友', '家人', '咨询师', '医生',
+  'understand you', 'help you', 'support you', 'friends', 'family', 'therapist', 'doctor',
+] as const
+const EXCLUSIVE_DEPENDENCE_DISCLAIMERS = [
+  '不能说只有我', '不该说只有我', '不会说只有我', '不要声称只有我', '不能声称只有我',
+  'cannot say only i', "can't say only i", 'should not say only i', 'must not say only i',
+  'avoid saying only i',
+] as const
+const DIAGNOSIS_CERTAINTY_TERMS = [
+  '你一定', '你就是', '你显然', '这就是', '这一定', '这是典型', '可以断定', '能够断定', '证明你有',
+  'you definitely', 'you clearly', 'you have', 'this is clearly', 'this proves', 'must have',
+] as const
+const DIAGNOSIS_TERMS = [
+  '抑郁症', '焦虑症', '双相', '躁郁', '精神分裂', '人格障碍', '创伤后应激',
+  'depression', 'anxiety disorder', 'bipolar', 'schizophrenia', 'personality disorder', 'ptsd',
+] as const
+const DIAGNOSIS_DISCLAIMERS = [
+  '不能诊断', '无法诊断', '不能断定', '无法断定', '不能根据这段对话',
+  'cannot diagnose', "can't diagnose", 'cannot determine', "can't determine",
+] as const
+const MEDICATION_ACTION_TERMS = [
+  '停药', '停掉药', '停掉处方药', '停掉所有处方药', '停止服药', '加量', '减量', '换药',
+  '剂量翻倍', '剂量直接翻倍', '双倍剂量',
+  'stop medication', 'stop your medication', 'increase your dose', 'decrease your dose',
+  'double your dose', 'change your prescription',
+] as const
+const MEDICATION_DISCLAIMERS = [
+  '不要停药', '不能建议你停药', '不能建议你换药', '不能建议你调整剂量', '请联系开具处方的医生',
+  'do not stop your medication', 'cannot advise you to stop', "can't advise you to stop",
+  'contact the prescribing clinician',
+] as const
+const OBLIGATION_TERMS = [
+  '你必须', '唯一能做的', '只能立刻', '没有别的选择',
+  'you must', 'your only option', 'you have no choice',
+] as const
+const LIFE_DECISION_TERMS = [
+  '辞职', '离婚', '分手', '断绝关系', '搬走',
+  'quit your job', 'divorce', 'break up', 'cut off contact', 'move out',
+] as const
+const FORCED_DECISION_DISCLAIMERS = [
+  '不应该告诉你必须', '不能告诉你必须', '不会告诉你必须', '不该说你必须',
+  'should not tell you that you must', 'cannot tell you that you must',
+  "can't tell you that you must", 'must not tell you that you must',
+] as const
+const TRAUMA_DIRECTIVE_TERMS = [
+  '跟着我', '闭上眼', '我来治疗你', '我来治好你', '治疗计划',
+  'follow me', 'close your eyes', 'i will heal you', 'treatment plan',
+] as const
+const TRAUMA_EXPOSURE_TERMS = [
+  '重新经历', '回到创伤', '想起每个细节', '重现创伤',
+  'relive', 'return to the trauma', 'remember every detail',
+] as const
+const REALITY_CERTAINTY_TERMS = [
+  '他们确实', '这证明', '肯定有人', '毫无疑问',
+  'they really are', 'this proves', 'definitely someone', 'without doubt',
+] as const
+const DELUSION_TERMS = [
+  '监视你', '控制你思想', '传递暗号', '读取你的思想',
+  'watching you', 'monitoring you', 'controlling your thoughts', 'sending you messages', 'reading your mind',
+] as const
+const REALITY_DISCLAIMERS = [
+  '不能确认', '无法确认', '先关注能确认的',
+  'cannot confirm', "can't confirm", 'focus on what you can verify',
+] as const
+const USER_BLAME_CAUSES = ['都是因为你', '问题就在于你', '归根结底是你', 'this is all because you'] as const
+const USER_BLAME_TERMS = [
+  '想太多', '认知有问题', '不够努力', '太敏感', '自己造成的',
+  'overthink', 'faulty thinking', 'not trying hard enough', 'too sensitive', 'your own fault',
+] as const
+
+interface PolicyPhraseMatch {
+  readonly start: number
+  readonly end: number
+}
+
+function normalizeOutputPolicyText(value: string): string {
+  return value.normalize('NFKC')
+    .toLocaleLowerCase('en-US')
+    .replace(/[‘’]/gu, "'")
+    .replace(/[“”"「」『』()[\]{}，,。.！!？?；;：:]/gu, ' ')
+}
+
+function latinTokens(value: string): ReadonlyArray<PolicyPhraseMatch & { readonly value: string }> {
+  return [...value.matchAll(/[a-z0-9']+/gu)].map(match => ({
+    value: match[0],
+    start: match.index,
+    end: match.index + match[0].length,
+  }))
+}
+
+function phraseMatches(
+  value: string,
+  phrases: readonly string[],
+  tokens: ReturnType<typeof latinTokens>,
+): PolicyPhraseMatch[] {
+  const matches: PolicyPhraseMatch[] = []
+  for (const phrase of phrases) {
+    if (/[a-z]/u.test(phrase)) {
+      const phraseTokens = phrase.match(/[a-z0-9']+/gu) ?? []
+      for (let index = 0; index <= tokens.length - phraseTokens.length; index += 1) {
+        const candidate = tokens.slice(index, index + phraseTokens.length)
+        if (!candidate.every((token, offset) => token.value === phraseTokens[offset])) continue
+        const first = candidate[0]
+        const last = candidate.at(-1)
+        if (first !== undefined && last !== undefined) matches.push({ start: first.start, end: last.end })
+      }
+      continue
+    }
+    let index = value.indexOf(phrase)
+    while (index >= 0) {
+      matches.push({ start: index, end: index + phrase.length })
+      index = value.indexOf(phrase, index + 1)
+    }
+  }
+  return [...new Map(matches.map(match => [`${match.start}:${match.end}`, match])).values()]
+    .sort((left, right) => left.start - right.start || left.end - right.end)
+}
+
+function firstMatchAtOrAfter(matches: readonly PolicyPhraseMatch[], start: number): number {
+  let low = 0
+  let high = matches.length
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2)
+    if ((matches[middle]?.start ?? Number.POSITIVE_INFINITY) < start) low = middle + 1
+    else high = middle
+  }
+  return low
+}
+
+function structuredRuleMatches(
+  value: string,
+  tokens: ReturnType<typeof latinTokens>,
+  requiredGroups: readonly (readonly string[])[],
+  excludedPhrases: readonly string[] = [],
+): boolean {
+  const groups = requiredGroups.map(group => phraseMatches(value, group, tokens))
+  if (groups.some(group => group.length === 0)) return false
+  const excluded = phraseMatches(value, excludedPhrases, tokens)
+  const accepted = (start: number, end: number): boolean => {
+    if (end - start > MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS) return false
+    const excludedStart = firstMatchAtOrAfter(
+      excluded,
+      start - MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS,
+    )
+    for (let index = excludedStart; index < excluded.length; index += 1) {
+      const match = excluded[index]
+      if (match === undefined || match.start > end + MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS) break
+      if (Math.max(end, match.end) - Math.min(start, match.start)
+        <= MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS) return false
+    }
+    return true
+  }
+  const firstGroup = groups[0] ?? []
+  if (groups.length === 1) return firstGroup.some(match => accepted(match.start, match.end))
+  const secondGroup = groups[1] ?? []
+  for (const first of firstGroup) {
+    const nearbyStart = firstMatchAtOrAfter(
+      secondGroup,
+      first.start - MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS,
+    )
+    for (let index = nearbyStart; index < secondGroup.length; index += 1) {
+      const second = secondGroup[index]
+      if (second === undefined
+        || second.start > first.end + MIND_GARDEN_OUTPUT_GUARD_LOOKBEHIND_CHARACTERS) break
+      if (accepted(Math.min(first.start, second.start), Math.max(first.end, second.end))) return true
+    }
+  }
+  return false
+}
+
+function structuredOutputViolations(text: string): MindGardenOutputViolation[] {
+  const normalized = normalizeOutputPolicyText(text)
+  const tokens = latinTokens(normalized)
+  const violations: MindGardenOutputViolation[] = []
+  if (structuredRuleMatches(
+    normalized,
+    tokens,
+    [EXCLUSIVE_CONTROL_TERMS, DEPENDENCE_TERMS],
+    EXCLUSIVE_DEPENDENCE_DISCLAIMERS,
+  )) {
+    violations.push('exclusive-dependence')
+  }
+  if (structuredRuleMatches(
+    normalized,
+    tokens,
+    [DIAGNOSIS_CERTAINTY_TERMS, DIAGNOSIS_TERMS],
+    DIAGNOSIS_DISCLAIMERS,
+  )) {
+    violations.push('diagnosis')
+  }
+  if (structuredRuleMatches(
+    normalized,
+    tokens,
+    [MEDICATION_ACTION_TERMS],
+    MEDICATION_DISCLAIMERS,
+  )) {
+    violations.push('medication-direction')
+  }
+  if (structuredRuleMatches(
+    normalized,
+    tokens,
+    [OBLIGATION_TERMS, LIFE_DECISION_TERMS],
+    FORCED_DECISION_DISCLAIMERS,
+  )) {
+    violations.push('forced-life-decision')
+  }
+  if (structuredRuleMatches(normalized, tokens, [TRAUMA_DIRECTIVE_TERMS, TRAUMA_EXPOSURE_TERMS])) {
+    violations.push('trauma-exposure')
+  }
+  if (structuredRuleMatches(
+    normalized,
+    tokens,
+    [REALITY_CERTAINTY_TERMS, DELUSION_TERMS],
+    REALITY_DISCLAIMERS,
+  )) {
+    violations.push('delusion-confirmation')
+  }
+  if (structuredRuleMatches(normalized, tokens, [USER_BLAME_CAUSES, USER_BLAME_TERMS])) {
+    violations.push('user-blame')
+  }
+  return violations
+}
 
 /**
  * Return every deterministic output rule matched by complete assistant text.
- * @param text - complete buffered text and reasoning output.
+ * @param text - complete buffered user-visible assistant text.
  * @param assessment - effective input assessment for this step.
  * @returns unique stable violations in policy order.
  */
@@ -31,7 +252,7 @@ export function assessMindGardenOutput(
   text: string,
   assessment: MindGardenSafetyAssessment | undefined,
 ): MindGardenOutputViolation[] {
-  const violations = OUTPUT_RULES.flatMap(([kind, pattern]) => pattern.test(text) ? [kind] : [])
+  const violations = structuredOutputViolations(text)
   if ((assessment?.level ?? 0) >= 2 && /哲学|斯多葛|存在主义|中道/iu.test(text)) {
     violations.push('risk-deflection')
   }

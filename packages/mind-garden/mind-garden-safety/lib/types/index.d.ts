@@ -15,7 +15,7 @@ export declare const name = "mind-garden-safety";
 export declare const inject: string[];
 /** Deployment bounds for incremental model-output inspection. */
 export interface Config {
-    /** Maximum output tokens recorded for each activated Mind Garden conversation request. */
+    /** Optional deployment-owned output cap for each activated Mind Garden conversation request. */
     maxModelOutputTokens?: number;
     /** Maximum serialized characters inspected before fail-closed replacement. */
     maxBufferedCharacters?: number;

@@ -8,10 +8,12 @@ interface GardenPortabilityPanelProps {
     readonly onInspectBackup: (file: File, passphrase: string) => Promise<MindGardenDataResult<MindGardenBackupInspectValue>>;
     readonly onRestoreBackup: (file: File, passphrase: string) => Promise<MindGardenDataResult<MindGardenBackupRestoreValue>>;
     readonly onRotateVaultKey: () => Promise<MindGardenDataResult<MindGardenKeyRotationValue>>;
+    /** Invalidate mounted profile projections after a successful merge. */
+    readonly onRestoreSuccess?: () => void;
 }
 /** Hand already encrypted package bytes to the browser's native download flow. */
 export declare function downloadMindGardenBackup(value: MindGardenBackupExportValue): void;
 /** Render the passphrase ceremony and whole-profile encrypted download. */
-export declare function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onRestoreBackup, onRotateVaultKey, }: GardenPortabilityPanelProps): import("react").JSX.Element;
+export declare function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onRestoreBackup, onRotateVaultKey, onRestoreSuccess, }: GardenPortabilityPanelProps): import("react").JSX.Element;
 export {};
 //# sourceMappingURL=GardenPortabilityPanel.d.ts.map

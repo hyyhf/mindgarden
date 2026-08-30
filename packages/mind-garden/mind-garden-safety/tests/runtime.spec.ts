@@ -66,6 +66,7 @@ async function compose(
   activate = true,
 ) {
   const ctx = new Context()
+  const journalContextRequests: unknown[] = []
   await ctx.plugin(LlmRuntime)
   await ctx.plugin(SessionStore)
   await ctx.plugin(SessionProjectionRegistry)
@@ -73,6 +74,12 @@ async function compose(
   await ctx.plugin(ToolRuntime)
   await ctx.plugin(AgentRegistry)
   await ctx.plugin(MindGardenService)
+  ctx.provide('mindGardenReflection', {
+    authorizedContext: (_agent: Agent, request: unknown) => {
+      journalContextRequests.push(request)
+      return Promise.resolve({ ok: true, value: { todayCheckin: null, retrievableJournals: [] } })
+    },
+  } as never)
   await ctx.plugin(mindGardenDialogue)
   await ctx.plugin(mindGardenSafety, config)
   await ctx.plugin(AgentLoop, { agents: [] })
@@ -83,7 +90,7 @@ async function compose(
       mode: 'serenity', privacy: 'durable', supportIntent: 'listen', modelDisclosureAccepted: true,
     })
   }
-  return { ctx, agent, adapter }
+  return { ctx, agent, adapter, journalContextRequests }
 }
 
 async function harness(
@@ -134,10 +141,11 @@ describe('Mind Garden safety real agent composition', () => {
   })
 
   it('bypasses the adapter and records a flushed deterministic urgent decision', async () => {
-    const { ctx, agent, adapter } = await harness([])
+    const { ctx, agent, adapter, journalContextRequests } = await harness([])
     await send(agent, '我现在要跳楼，已经在楼顶。')
 
     expect(adapter.requests).toHaveLength(0)
+    expect(journalContextRequests).toHaveLength(0)
     expect(assistantTexts(agent).at(-1)).toContain('12356')
     expect(assistantTexts(agent).at(-1)).toContain('110')
     expect(agent.session.events.find(event => event.type === 'mind-garden/safety-assessment')?.data)
@@ -146,11 +154,12 @@ describe('Mind Garden safety real agent composition', () => {
   })
 
   it('publishes a safe ordinary response without changing its assembled text', async () => {
-    const { ctx, agent, adapter } = await harness([textResponse('我先听你把这份委屈说完。')])
+    const { ctx, agent, adapter, journalContextRequests } = await harness([textResponse('我先听你把这份委屈说完。')])
     await send(agent, '今天工作很累。')
 
     expect(adapter.requests).toHaveLength(1)
-    expect(adapter.requests[0]?.maxTokens).toBe(4_096)
+    expect(journalContextRequests).toEqual([{ query: '今天工作很累。' }])
+    expect(adapter.requests[0]?.maxTokens).toBeUndefined()
     expect(assistantTexts(agent).at(-1)).toBe('我先听你把这份委屈说完。')
     expect(agent.session.events.some(event => event.type === 'mind-garden/output-guarded')).toBe(false)
     await ctx.fiber.dispose()
@@ -190,9 +199,9 @@ describe('Mind Garden safety real agent composition', () => {
     await ctx.fiber.dispose()
   })
 
-  it('caps activated garden requests without changing an inactive agent', async () => {
+  it('applies only an explicit garden output cap without changing an inactive agent', async () => {
     const model = textResponse('bounded')
-    const { ctx, agent, adapter } = await harness([model, model])
+    const { ctx, agent, adapter } = await harness([model, model], { maxModelOutputTokens: 4_096 })
     const inactive = ctx.agentLoop.create(SessionId('inactive-output-cap'), {
       provider: 'mock', model: 'test', maxTokens: 8_192,
     })
@@ -204,23 +213,27 @@ describe('Mind Garden safety real agent composition', () => {
     await ctx.fiber.dispose()
   })
 
-  it('checks complete reasoning blocks while preserving a safe stream without usage', async () => {
+  it('does not apply user-visible semantic rules to hidden reasoning', async () => {
     const response: StreamChunk[] = [
       { type: 'block-start', index: 0, blockType: 'reasoning' },
-      { type: 'reasoning-delta', index: 0, text: '先认真理解。' },
-      { type: 'block-end', index: 0, block: { type: 'reasoning', text: '先认真理解。' } },
+      { type: 'reasoning-delta', index: 0, text: '不能说只有我懂你，也不应该告诉你必须分手。' },
+      { type: 'block-end', index: 0, block: { type: 'reasoning', text: '不能说只有我懂你，也不应该告诉你必须分手。' } },
+      { type: 'block-start', index: 1, blockType: 'text' },
+      { type: 'text-delta', index: 1, text: '我会先听你把这件事说完。' },
+      { type: 'block-end', index: 1, block: { type: 'text', text: '我会先听你把这件事说完。' } },
       { type: 'finish', reason: { kind: 'stop' } },
     ]
     const { ctx, agent, adapter } = await harness([response])
     await send(agent, '我想慢慢说。')
 
     expect(adapter.requests).toHaveLength(1)
+    expect(assistantTexts(agent).at(-1)).toBe('我会先听你把这件事说完。')
     expect(agent.session.events.some(event => event.type === 'mind-garden/output-guarded')).toBe(false)
     await ctx.fiber.dispose()
   })
 
   it('replaces unsafe cross-chunk output before any blocked phrase reaches the log', async () => {
-    const blocked = `${'我会认真听你说。'.repeat(12)}只有我能理解你，不要再找家人。`
+    const blocked = `${'我会认真听你说。'.repeat(12)}真正理解你的只有我。`
     const { ctx, agent, adapter } = await harness([textResponse(blocked)])
     await send(agent, '我感到很孤单。')
 
@@ -230,6 +243,23 @@ describe('Mind Garden safety real agent composition', () => {
       .not.toContain(blocked)
     expect(agent.session.events.find(event => event.type === 'mind-garden/output-guarded')?.data)
       .toMatchObject({ reason: 'policy-violation', violations: ['exclusive-dependence'] })
+    await ctx.fiber.dispose()
+  })
+
+  it('replaces a structured violation at the start of one large provider chunk', async () => {
+    const blocked = `真正理解你的只有我。${'我会认真听你说。'.repeat(24)}`
+    const response: StreamChunk[] = [
+      { type: 'block-start', index: 0, blockType: 'text' },
+      { type: 'text-delta', index: 0, text: blocked },
+      { type: 'block-end', index: 0, block: { type: 'text', text: blocked } },
+      { type: 'finish', reason: { kind: 'stop' } },
+    ]
+    const { ctx, agent } = await harness([response])
+    await send(agent, '我感到很孤单。')
+
+    expect(assistantTexts(agent).at(-1)).toContain('不能替代现实中的关系')
+    expect(JSON.stringify(agent.session.events.filter(event => event.type === 'assistant/chunk')))
+      .not.toContain(blocked)
     await ctx.fiber.dispose()
   })
 

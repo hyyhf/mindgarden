@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-real-today.png" alt="真实用户保存开放问题后的心智庭院今天空间" width="100%">
+  <img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-header.png" alt="DeepSeek Harness 中私密而长期的心智庭院陪伴空间" width="100%">
 </p>
 
 <h1 align="center">心智庭院</h1>
 
 <p align="center">
-  <strong>DeepSeek Harness 里温暖而私密的反思空间。</strong><br>
-  真实陪伴对话、由用户治理的记忆、电影感照片粒子与持续生长的 3D 星图——故事的最终解释权始终属于你。
+  <strong>一个能长期、准确理解你，也允许你随时修正它的陪伴者。</strong><br>
+  普通对话、由用户治理的记忆、电影感照片粒子与持续生长的 3D 星图——故事的最终解释权始终属于你。
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 <p align="center"><a href="README.md">English</a> · 简体中文</p>
 
-心智庭院是可安装到 DeepSeek Harness Web profile 的陪伴与私密反思工作区。普通对话仍然属于 Harness Session；庭院在其上增加加密私人记录、受治理记忆、原版 Fun Garden 迁移、九个互相关联的反思空间，以及富有表现力的 3D 与照片粒子场景。
+心智庭院是可安装到 DeepSeek Harness Web profile 的长期陪伴与私密反思工作区。它留在普通对话中维持连续理解，不把猜测偷偷写成事实，也允许用户用一句自然语言随时纠正，而不要求用户管理另一套复杂系统。庭院还提供加密私人记录、受治理记忆、原版 Fun Garden 迁移、九个互相关联的反思空间，以及富有表现力的 3D 与照片粒子场景。
 
 它复用 Harness 的模型提供方、凭据、存储、附件、Remote 与插件生命周期，不会分叉或复制 DeepSeek Harness 应用。
 
@@ -35,18 +35,20 @@ dsh web
 
 ## 一段真实旅程，不是静态样稿
 
-下面的连续结果来自同一个全新 Harness Web Session。用户进入心智庭院，向 `deepseek-v4-flash` 发送反思消息，通过界面保存开放问题，完成首次观星仪式，切换到紧凑布局，准入一张照片，请 `deepseek-v4-flash-vision-exp` 观察它，再从粒子工具栏打开已验证原图。测试会先断言持久事件中记录的提供方和模型，再保存这些截图。
+最新真实提供方测试让同一项关系困扰经过四个独立的 `deepseek-v4-flash` 轮次：用户改变所需的陪伴姿态、纠正一次过强解释，并最终要求停止分析。同一次运行还覆盖需确认的记忆提取、Star Observer 抽卡与纠正对话、本地紧急消息处理、`deepseek-v4-flash-vision-exp` 照片观察和已验证原图路径，再保存这些截图。
 
-| 2026-08-25 本轮真实证据 | 结果 |
+| 2026-08-31 本轮真实证据 | 结果 |
 |---|---|
 | 生产装配 | 只安装正式 `ui-mind-garden`；图册与真实模型测试均不使用 QA fork。 |
 | 模拟用户历史 | 九个空间都通过真实 Host API 写入记录：签到、日记、心事、开放问题、实验与观察、确认记忆、沉思与原则、周期回望、照片故事和星图底稿。 |
-| 在线模型来源 | 陪伴对话为 `deepseek-official` / `deepseek-v4-flash`；照片观察为 `deepseek-official` / `deepseek-v4-flash-vision-exp`。 |
-| 浏览器证据 | 18 张桌面状态 + 18 张紧凑状态 + 6 张真实模型旅程 = **42 张本轮重新录制的截图**。 |
+| 真实陪伴证据 | 四个独立的 `deepseek-official` / `deepseek-v4-flash` 轮次分别检查倾听、澄清、修复，以及不再追加问题或练习的安静停留。 |
+| 受治理模型路径 | 真实记忆提取、Star Observer 抽卡与纠正、本地紧急消息处理和 `deepseek-v4-flash-vision-exp` 照片观察均通过生产边界完成。 |
+| 输出预算 | 心智庭院默认不添加任何应用层 `maxTokens`；输出长度由所选提供方与模型决定。 |
+| 浏览器证据 | 本轮重新生成 6 张真实提供方截图；更完整的桌面与紧凑图册继续来自真实 Host 服务接受的记录。 |
 
 <table>
   <tr>
-    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-real-companion.png" alt="DeepSeek V4 Flash 的真实陪伴回复"><br><strong>1 · 一轮真实陪伴</strong><br>回复经过已发布的对话与安全插件，再进入普通 Harness 对话。</td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-real-companion.png" alt="四轮 DeepSeek V4 Flash 陪伴旅程的最后一次回复"><br><strong>1 · 能陪你一起停下</strong><br>经过倾听、澄清与纠正后，最后一次回复尊重用户暂停的要求，不再添加解释、问题或练习。</td>
     <td width="50%"><img src="https://raw.githubusercontent.com/hyyhf/mindgarden/main/assets/mind-garden-real-today.png" alt="今天空间中真实保存的问题"><br><strong>2 · 结果进入日常</strong><br>用户通过界面保存问题，它随即成为晨间庭院里有来源的真实节点。</td>
   </tr>
   <tr>
@@ -80,7 +82,7 @@ dsh web
 
 心智庭院服务于那些需要耐心、连续性和用户决定权，而不是另一个任务面板的对话。它遵循四条原则：
 
-- **陪伴，不冒充治疗**：Agent 可以倾听、映照并留下一个值得慢慢想的问题，但不会诊断，也不会冒充专业照护。
+- **陪伴，不冒充治疗**：Agent 从用户最新说出的内容继续，保留用户要求的区分，修复误解，也允许留白；它不会诊断或冒充专业照护。
 - **每个结论都由用户作主**：提取出的记忆、推测特质、Star Observer 星卡、原则修订和关系冲突，在用户决定前都只是候选。
 - **私密记录具有结构性隐私**：记忆、反思、星图和故事元数据以认证密文持久化；模型只会收到当前动作明确授权的有界材料。
 - **它是真正的 Harness 插件**：组合包通过 manifest 声明挂载到 Web profile，复用 Harness 的 Agent、Session、提供方、凭据、附件、Remote、Loader 配置行和官方客户端壳层。
@@ -360,7 +362,7 @@ npm test
 npm run check
 ```
 
-本次修订的发布资格检查还会把仅含 216 个文件的运行时包安装进空目录，解析 47 个可执行公开导出，实际导入 12 个 Host face，通过 461 项聚焦 Harness 测试和 2 项组合包装配测试，完成全部生产包类型检查，并构建 UI 与 9 个 Host bundle。随后，完整 replay 工作流、桌面与 390 × 844 图册、全新真实模型旅程共 8 项生产 Web E2E 全部通过；本轮重新录制全部 42 张 README 截图，断言持久事件中的提供方与模型来源，经 Harness 附件上传并观察真实图片，打开已验证原图，完成首次观星仪式，并拒绝浏览器错误与警告。这些是有记录的发布检查，不会冒充当前 GitHub Actions 已经强制执行的覆盖，详见[完善执行计划](MIND_GARDEN_IMPROVEMENT_PLAN.md)。
+本次修订在上游通过了 53 个文件中的 448 项心智庭院聚焦测试、6 项生产 Web 回放场景、真实提供方旅程与安全路径、全部 37 项静态门禁、lint、Host 与 Client 构建，以及 239 项编译包 Loader 检查。真实运行重新生成了上方 6 张提供方截图，核验持久事件中的提供方与模型来源，覆盖受治理记忆和 Star Observer 调用，经附件边界上传并观察图片，打开已验证原图，并拒绝浏览器错误与警告。独立仓库还会再次检查源码同步、可安装布局、公开导出、测试与包完整性。这些是有记录的发布检查，不会冒充当前 GitHub Actions 已经强制执行的覆盖，详见[完善执行计划](MIND_GARDEN_IMPROVEMENT_PLAN.md)。
 
 ## 提供方与安全行为
 
@@ -371,12 +373,12 @@ npm run check
 | 普通陪伴消息 | 一轮标准 Harness 对话，带稳定心智庭院策略、有界授权召回和发布前安全检查。 |
 | 升高的本地安全输入 | 不调用提供方；发布并审计确定性本地回复。 |
 | 签到、日记、心事、日历、实验、原则、问题与回望存储 | 不调用提供方。 |
-| 手动或已授权自动记忆整理 | 一次有界辅助调用；每条候选仍需用户审阅。 |
-| Star Observer 抽卡或星卡追问 | 一次辅助调用，只包含星卡与显式授权证据。 |
-| 照片观察或照片自有追问 | 通过 `deepseek-official` / `deepseek-v4-flash-vision-exp` 发起一次有界辅助调用，只属于已验证故事，不写入普通 Session 历史。 |
+| 手动或已授权自动记忆整理 | 一次范围受控的辅助调用；每条候选仍需用户审阅。 |
+| Star Observer 抽卡或星卡追问 | 一次范围受控的辅助调用，只包含星卡与显式授权证据。 |
+| 照片观察或照片自有追问 | 通过 `deepseek-official` / `deepseek-v4-flash-vision-exp` 发起一次范围受控的辅助调用，只属于已验证故事，不写入普通 Session 历史。 |
 | 备份、恢复、迁移或换钥 | 不调用提供方。 |
 
-已启用的心智庭院普通对话会把模型输出限制为 4096 tokens，除非调用方已经设置了更小值。这样即使适配器具有非常大的部署默认值，完整答案也能留在确定性发布缓冲内。其他 Harness Agent 与心智庭院辅助调用保留各自的上限。
+心智庭院默认不会为普通对话、记忆提取、Star Observer 或照片观察设置应用层 `maxTokens`。输出长度由所选提供方与模型决定；部署方仍可根据自己的运行策略主动配置上限。
 
 当前安全资源面向中国大陆，使用版本化本地 `12356`、`110`、`120` 注册表。中文高风险输入会显示这组明确标注地区的资源；英文输入使用英文通用安全指引，不附加中国大陆号码。插件不会声称覆盖未经核验的其他地区，也不会把自己描述成专业照护。
 

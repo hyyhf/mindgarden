@@ -74,6 +74,7 @@
 .sectionHeader > span { display: grid; width: 34px; aspect-ratio: 1; flex: none; place-items: center; border: 1px solid rgb(64 95 135 / 23%); border-radius: 50%; color: var(--mg-indigo, #405f87); }
 .sectionHeader h2 { margin: 0; font-family: var(--mg-font-reflection); font-size: 27px; font-weight: 560; letter-spacing: -0.025em; }
 .sectionHeader p { max-width: 46ch; margin: 5px 0 0; color: var(--mg-muted, #76695e); font-size: 10px; line-height: 1.6; }
+.sectionHeader > button { min-height: 36px; flex: none; margin-inline-start: auto; }
 
 .proposalSection .sectionHeader { border-block-end-color: rgb(255 250 242 / 18%); }
 .proposalSection .sectionHeader > span { color: #d9b378; border-color: rgb(217 179 120 / 35%); }
@@ -100,7 +101,38 @@
 .note article > header { display: flex; justify-content: space-between; gap: 14px; color: var(--mg-muted, #76695e); font-size: 10px; }
 .note article > header small { color: var(--mg-plum, #8d5a5e); font-weight: 700; }
 .note article > p { margin: 12px 0; color: var(--mg-ink, #342d27); font-family: var(--mg-font-reflection); font-size: 18px; line-height: 1.75; }
-.note footer { display: flex; justify-content: flex-end; }
+.note footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+
+.inlineComposer,
+.principleComposer {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 18px;
+  padding: 14px;
+  border: 1px solid rgb(83 62 45 / 13%);
+  border-radius: 10px;
+  background: rgb(255 252 246 / 66%);
+}
+.inlineComposer label,
+.principleComposer label { color: var(--mg-muted, #76695e); font-size: 10px; line-height: 1.6; }
+.inlineComposer textarea,
+.principleComposer input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgb(83 62 45 / 18%);
+  border-radius: 8px;
+  color: var(--mg-ink, #342d27);
+  background: #fffdf8;
+  font: inherit;
+  line-height: 1.65;
+}
+.inlineComposer textarea { min-height: 108px; resize: vertical; padding: 10px 12px; }
+.principleComposer input { min-height: 42px; padding: 8px 11px; }
+.inlineComposer > div,
+.principleComposer > div,
+.deleteConfirmation { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 7px; }
+.deleteConfirmation { margin: 10px 0; color: var(--mg-muted, #76695e); font-size: 10px; }
+.deleteConfirmation > span { margin-inline-end: auto; }
 
 .proposalList { gap: 14px; }
 .proposal {
@@ -244,6 +276,8 @@
   .meaning div { grid-template-columns: 1fr; }
   .proposalActions button,
   .note footer button,
+  .inlineComposer button,
+  .principleComposer button,
   .principle footer button { min-height: 42px; }
 }
 

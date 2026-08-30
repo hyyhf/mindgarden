@@ -77,7 +77,7 @@ export function relevanceScore(queryTerms: ReadonlySet<string>, memory: StoredMe
 }
 
 function lineFor(memory: StoredMemory): string {
-  return `- [${memory.kind}] ${memory.content}${memory.scope === undefined ? '' : ` (scope: ${memory.scope})`}`
+  return `- [memory-id:${memory.id}] [${memory.kind}] ${memory.content}${memory.scope === undefined ? '' : ` (scope: ${memory.scope})`}`
 }
 
 /**
@@ -101,6 +101,9 @@ export function retrieveMemories(options: {
     if (memory.recallPolicy === 'never' || memory.sensitivity === 'high') return []
     if (memory.recallPolicy === 'always') return [{ memory, reason: 'always', score: 0 }]
     const score = relevanceScore(terms, memory)
+    if (score === 0 && memory.kind === 'support-preference' && memory.scope === undefined) {
+      return [{ memory, reason: 'relevant', score: 1 }]
+    }
     return score === 0 ? [] : [{ memory, reason: 'relevant', score }]
   }).sort((left, right) => {
     const policy = Number(right.reason === 'always') - Number(left.reason === 'always')

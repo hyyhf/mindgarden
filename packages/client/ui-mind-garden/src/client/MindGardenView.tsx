@@ -47,15 +47,6 @@ import css from './MindGardenView.module.css'
 
 const CATEGORIES = ['events', 'ongoing', 'changes', 'experiments', 'focus'] as const satisfies readonly MindGardenPeriodReviewMaterialCategory[]
 const PERIOD_TYPES = ['week', 'month', 'year'] as const satisfies readonly MindGardenPeriodReviewType[]
-const DIRECTION_CONTRACT = `<!-- IMPECCABLE 9e22e091
-THESIS: A lived-in morning courtyard turns private reflection into a tactile passage; it refuses the repeated heading, explanation, container, list template.
-OWN-WORLD: Luminous xuan paper, pale-ash joinery, honed limestone, matte porcelain, physical brass paths, deep indigo actions, muted plum bindings, grounded shadows, and Noto Sans SC operational type.
-STORY: Five clear garden regions lead to nine fully preserved tools, while each destination becomes its own recognizable room with truthful records and explicit control.
-FIRST VIEWPORT: A slim five-region header opens directly onto a 38/62 practical entry and full-depth B+C courtyard corridor; three semantic stations sit over a generated physical scene and lead into complete tools below.
-FORM: B paper-corridor spatial depth fused with C morning architecture, top navigation, and quick-action hierarchy, approved by the user, seed 9e22e091.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance.
--->`
-
 /** Pure view props used both by the slot adapter and component tests. */
 export interface MindGardenReviewCenterProps extends MindGardenViewActions, PropsLocale<'mindGarden'> {
   /** Undefined means projection capability loading; null means inactive. */
@@ -72,6 +63,8 @@ export interface MindGardenReviewCenterProps extends MindGardenViewActions, Prop
   onToggleSidebar?: () => void
   /** Place an explicitly selected garden record into Harness's resident composer. */
   onDraftConversation?: (draft: string) => void
+  /** True while the current Agent is producing a response. */
+  running?: boolean
 }
 
 const ignoreSpaceSelection = (_space: MindGardenSpace): void => undefined
@@ -151,6 +144,11 @@ export function MindGardenReviewCenter({
   onObserveExperiment,
   onStopExperiment,
   onListContemplations,
+  onCreateContemplation,
+  onUpdateContemplation,
+  onConfirmContemplation,
+  onDeleteContemplation,
+  onProposePrinciple,
   onListPrincipleProposals,
   onListPrinciples,
   onAcceptPrincipleProposal,
@@ -168,6 +166,7 @@ export function MindGardenReviewCenter({
   onSelectSpace = ignoreSpaceSelection,
   onToggleSidebar = ignoreSidebarToggle,
   onDraftConversation = ignoreConversationDraft,
+  running = false,
   t,
   ...dockActions
 }: MindGardenReviewCenterProps) {
@@ -188,6 +187,7 @@ export function MindGardenReviewCenter({
   const [reviewContent, setReviewContent] = useState('')
   const [starSidebar, setStarSidebar] = useState<MindGardenStarMapOverview | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [profileRevision, setProfileRevision] = useState(0)
   const requestRef = useRef(0)
   const pendingRef = useRef(false)
   const starSidebarLoadedRef = useRef(false)
@@ -236,7 +236,7 @@ export function MindGardenReviewCenter({
       }
     })
     return () => { disposed = true }
-  }, [activeSpace, onStarMapOverview])
+  }, [activeSpace, onStarMapOverview, profileRevision])
 
   const refresh = useCallback(async (showLoading = false) => {
     const request = ++requestRef.current
@@ -268,6 +268,12 @@ export function MindGardenReviewCenter({
     void refresh(true)
     return () => { requestRef.current++ }
   }, [projection, refresh])
+
+  const handleRestoreSuccess = useCallback(() => {
+    starSidebarLoadedRef.current = false
+    setProfileRevision(value => value + 1)
+    void refresh(true)
+  }, [refresh])
 
   const mutate = useCallback(async <T,>(
     action: () => Promise<MindGardenDataResult<T>>,
@@ -406,7 +412,6 @@ export function MindGardenReviewCenter({
 
   return (
     <div className={css.shell} data-mind-garden-view="active" data-active-space={activeSpace}>
-      <template dangerouslySetInnerHTML={{ __html: DIRECTION_CONTRACT }} />
       <GardenSidebar
         activeSpace={activeSpace}
         collapsed={sidebarCollapsed}
@@ -432,7 +437,7 @@ export function MindGardenReviewCenter({
         onToggle={onToggleSidebar}
         t={t}
       />
-      <section className={css.workspace}>
+      <section className={css.workspace} key={profileRevision}>
         {activeSpace === 'photo-story' ? (
           <PhotoStorySpace
             today={today}
@@ -499,6 +504,11 @@ export function MindGardenReviewCenter({
           <PhilosophySpace
             today={today}
             onListContemplations={onListContemplations}
+            onCreateContemplation={onCreateContemplation}
+            onUpdateContemplation={onUpdateContemplation}
+            onConfirmContemplation={onConfirmContemplation}
+            onDeleteContemplation={onDeleteContemplation}
+            onProposePrinciple={onProposePrinciple}
             onListPrincipleProposals={onListPrincipleProposals}
             onListPrinciples={onListPrinciples}
             onAcceptPrincipleProposal={onAcceptPrincipleProposal}
@@ -733,7 +743,7 @@ export function MindGardenReviewCenter({
             <div className={css.settingsContent}>
               <section className={css.settingsDialogue}>
                 <span className={css.settingsIndex}>01</span>
-                <MindGardenPanel projection={projection} defaultOpen {...dockActions} t={t} />
+                <MindGardenPanel projection={projection} defaultOpen running={running} {...dockActions} t={t} />
               </section>
               <section className={css.settingsPortability}>
                 <span className={css.settingsIndex}><IconDataOutline16 size={14} />02</span>
@@ -742,6 +752,7 @@ export function MindGardenReviewCenter({
                   onInspectBackup={onInspectBackup}
                   onRestoreBackup={onRestoreBackup}
                   onRotateVaultKey={onRotateVaultKey}
+                  onRestoreSuccess={handleRestoreSuccess}
                   t={t}
                 />
               </section>
@@ -765,13 +776,22 @@ export type MindGardenViewProps =
   & PropsStore<ReturnType<typeof createMindGardenViewStore>>
 
 /** Read the typed session projection and adapt it to the review center. */
-export function MindGardenView({ useProjection, useStore, actions, inputActions, ...props }: MindGardenViewProps) {
+export function MindGardenView({
+  useProjection,
+  useSession,
+  useStore,
+  actions,
+  inputActions,
+  ...props
+}: MindGardenViewProps) {
   const projection = useProjection('mind-garden')
   const imageLimits = useProjection('imageLimits')
+  const running = useSession(state => state.running)
   const view = useStore(state => state)
   return (
     <MindGardenReviewCenter
       projection={projection}
+      running={running}
       {...(imageLimits === undefined ? {} : { imageLimits })}
       activeSpace={view.activeSpace}
       sidebarCollapsed={view.sidebarCollapsed}

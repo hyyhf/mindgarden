@@ -41,9 +41,12 @@ const unnamedAttachment: ImageAttachmentRef = {
 const stamp = (overrides: Partial<MindGardenMediaStamp> = {}): MindGardenMediaStamp => ({
   localDate: '2026-08-19', timeZone: 'Asia/Shanghai', utcOffsetMinutes: 480, ...overrides,
 })
-const activeState = (privacy: MindGardenSessionState['privacy'] = 'durable'): MindGardenSessionState => ({
+const activeState = (
+  privacy: MindGardenSessionState['privacy'] = 'durable',
+  modelDisclosureAccepted = true,
+): MindGardenSessionState => ({
   revision: 1, activatedAt: 1, updatedAt: 1, mode: 'serenity', supportIntent: 'listen', privacy,
-  contractVersion: 1, modelDisclosureAccepted: true,
+  contractVersion: 1, modelDisclosureAccepted,
 })
 
 const observationOutput = JSON.stringify({
@@ -326,6 +329,7 @@ describe('Mind Garden media service', () => {
       sessionId: agent.session.id,
     })
     expect(modelCalls[0]?.reasoningEffort).toBeUndefined()
+    expect(modelCalls[0]?.maxTokens).toBeUndefined()
     expect(JSON.stringify(modelCalls[0]?.messages)).toContain(`\"attachmentId\":\"${attachment.attachmentId}\"`)
     expect(JSON.stringify(modelCalls[0]?.messages)).toContain('\"type\":\"image\"')
 
@@ -351,6 +355,7 @@ describe('Mind Garden media service', () => {
     expect(continued.value.turns[2]?.content).toContain('来自你的记忆')
     expect(modelCalls[1]?.purpose).toBe('mind-garden-photo-dialogue')
     expect(modelCalls[1]?.reasoningEffort).toBeUndefined()
+    expect(modelCalls[1]?.maxTokens).toBeUndefined()
     const dialogueRequest = JSON.stringify(modelCalls[1]?.messages)
     expect(dialogueRequest).not.toContain('\"type\":\"image\"')
     expect(dialogueRequest).not.toContain(attachment.attachmentId)
@@ -361,6 +366,27 @@ describe('Mind Garden media service', () => {
     expect(durableMedium).not.toContain('白色杯子')
     expect(durableMedium).not.toContain('那确实是傍晚')
     expect(durableMedium).not.toContain('来自你的记忆')
+  })
+
+  it('keeps local photo storage available while blocking every model call before disclosure', async () => {
+    const { ctx, makeAgent, modelCalls, readImage } = await harness({
+      observerProvider: 'vision', observerModel: 'garden-eye',
+    })
+    const agent = makeAgent('photo-disclosure-pending', activeState('durable', false))
+    const created = await ctx.mindGardenMedia.createPhotoStory(agent, createRequest({ title: '只保存在庭院' }))
+    if (!created.ok) throw new Error('create failed')
+
+    await expect(ctx.mindGardenMedia.observePhotoStory(agent, {
+      id: created.value.id,
+      ifVersion: created.value.version,
+    })).resolves.toEqual({ ok: false, error: { code: 'model-disclosure-required' } })
+    await expect(ctx.mindGardenMedia.continuePhotoStory(agent, {
+      id: created.value.id,
+      ifVersion: created.value.version,
+      content: '继续聊聊。',
+    })).resolves.toEqual({ ok: false, error: { code: 'model-disclosure-required' } })
+    expect(readImage).not.toHaveBeenCalled()
+    expect(modelCalls).toEqual([])
   })
 
   it('disables reasoning only for the fixed DeepSeek photo route', async () => {

@@ -36,7 +36,6 @@
 
 .mark,
 .markActive,
-.modeIcon,
 .optionIcon {
   display: inline-grid;
   flex: none;
@@ -51,8 +50,7 @@
 }
 
 .entryTitle,
-.activeTitle,
-.modeTitle {
+.activeTitle {
   color: currentColor;
   font-size: 11px;
   font-weight: 600;
@@ -117,7 +115,7 @@
   position: fixed;
   z-index: 79;
   inset: 0;
-  background: rgb(39 32 26 / 22%);
+  background: color-mix(in srgb, var(--dsw-alias-label-primary) 22%, transparent);
   content: '';
 }
 
@@ -262,57 +260,54 @@
   line-height: 1.55;
 }
 
-.modeGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
+.activationActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-block-start: 16px;
 }
 
-.modeCard {
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr);
-  gap: 9px;
-  min-height: 70px;
+.activationActions > small {
+  max-width: 30ch;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.activate {
+  display: inline-flex;
+  min-height: 40px;
+  flex: none;
   align-items: center;
-  padding: 10px 11px;
-  border: 1px solid transparent;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 0;
   border-radius: 8px;
-  color: var(--dsw-alias-label-primary);
-  background: color-mix(in srgb, var(--dsw-alias-bg-layer-2) 64%, transparent);
-  text-align: start;
+  color: var(--dsw-alias-label-primary-inverted, #fff);
+  background: var(--dsw-alias-state-business-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
   cursor: pointer;
-  transition: border-color 120ms ease, background-color 120ms ease;
+  transition: background-color 120ms ease;
 }
 
-.modeCard:hover {
-  border-color: color-mix(in srgb, var(--dsw-alias-state-warn-primary) 20%, transparent);
-  background: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 7%, var(--dsw-alias-bg-layer-2));
+.activate:hover {
+  background: color-mix(in srgb, var(--dsw-alias-state-business-primary) 88%, var(--dsw-alias-label-primary));
 }
 
-.modeCard:disabled {
+.activate:disabled {
   cursor: not-allowed;
   opacity: .48;
 }
 
-.modeCard > span:last-child {
-  display: grid;
-}
-
-.modeIcon,
 .optionIcon {
   width: 28px;
   height: 28px;
   border-radius: 50%;
   color: color-mix(in srgb, var(--dsw-alias-state-warn-primary) 58%, var(--dsw-alias-label-primary));
   background: color-mix(in srgb, var(--dsw-alias-state-warn-secondary) 10%, transparent);
-}
-
-.modeDescription {
-  margin-block-start: 2px;
-  color: var(--dsw-alias-label-tertiary);
-  font-size: 10px;
-  line-height: 1.55;
 }
 
 .activePanel {
@@ -579,7 +574,7 @@
 .entry:focus-visible,
 .close:focus-visible,
 .activeHeader:focus-visible,
-.modeCard:focus-visible,
+.activate:focus-visible,
 .segment:focus-visible,
 .segmentActive:focus-visible,
 .intent:focus-visible,
@@ -592,7 +587,7 @@
 .segmentActive:disabled,
 .intent:disabled,
 .intentActive:disabled,
-.modeCard:disabled,
+.activate:disabled,
 .close:disabled {
   cursor: default;
   opacity: 0.5;
@@ -641,7 +636,7 @@
 
 @media (max-width: 430px) {
   .dock:has(.panel)::before {
-    background: rgb(39 32 26 / 36%);
+    background: color-mix(in srgb, var(--dsw-alias-label-primary) 36%, transparent);
   }
 
   .panel {
@@ -651,8 +646,12 @@
     padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px));
     border-radius: 11px 11px 7px 7px;
     background:
-      linear-gradient(145deg, rgb(245 224 191 / 18%), transparent 44%),
-      #fffdf9;
+      linear-gradient(
+        145deg,
+        color-mix(in srgb, var(--dsw-alias-state-warn-primary) 18%, transparent),
+        transparent 44%
+      ),
+      var(--dsw-alias-bg-base);
   }
 
   .close { width: 44px; height: 44px; }
@@ -664,11 +663,15 @@
 
   .consent strong { font-size: 14px; }
 
-  .modeCard:disabled { opacity: .7; }
-  .modeDescription { font-size: 12px; }
+  .activate:disabled { opacity: .7; }
 
-  .modeGrid {
-    grid-template-columns: 1fr;
+  .activationActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .activate {
+    min-height: 46px;
   }
 
   .dock[data-surface='settings'] .intentList {
@@ -686,7 +689,7 @@
   .activeHeader,
   .chevron,
   .chevronOpen,
-  .modeCard,
+  .activate,
   .segment,
   .segmentActive,
   .intent,

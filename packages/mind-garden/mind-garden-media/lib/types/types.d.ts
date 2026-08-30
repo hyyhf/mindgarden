@@ -175,9 +175,9 @@ export interface MindGardenContinuePhotoStoryRequest {
 export interface MindGardenDeletePhotoStoryValue {
     readonly absent: true;
 }
-/** The operation requires an activated durable Mind Garden Session. */
+/** The operation requires an activated durable Mind Garden Session and, for model calls, accepted disclosure. */
 export interface MindGardenMediaAccessDenied {
-    readonly code: 'mind-garden-not-active' | 'durable-session-required';
+    readonly code: 'mind-garden-not-active' | 'durable-session-required' | 'model-disclosure-required';
 }
 /** Encrypted metadata could not be authenticated. */
 export interface MindGardenMediaVaultUnavailable {

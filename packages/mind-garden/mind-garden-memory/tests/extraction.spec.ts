@@ -51,10 +51,12 @@ describe('Mind Garden governed extraction codec', () => {
       [{ ...memory, id: '00000000-0000-4000-8000-000000000002' as never, content: 'x'.repeat(500) }, memory],
       recentOnlyBytes,
       Buffer.byteLength(JSON.stringify([memory]), 'utf8'),
+      3,
     )
     expect(envelope.transcript).toEqual([{ id: recent.id, role: 'user', text: 'recent human statement' }])
     expect(envelope.memories).toEqual([memory])
     expect(envelope.prompt).not.toContain('hidden plugin instruction')
+    expect(JSON.parse(envelope.prompt)).toMatchObject({ maxCandidates: 3 })
     expect(envelope.system).toBe(EXTRACTION_SYSTEM_PROMPT)
     expect(envelope.hadHumanText).toBe(true)
   })
@@ -64,7 +66,7 @@ describe('Mind Garden governed extraction codec', () => {
       content: [{ type: 'text', text: 'model only' }],
       source: { provider: 'mock', model: 'mock' },
     })
-    expect(buildExtractionEnvelope([assistant], [], 1024, 1024)).toMatchObject({
+    expect(buildExtractionEnvelope([assistant], [], 1024, 1024, 3)).toMatchObject({
       hadHumanText: false,
       transcript: [{ role: 'assistant' }],
     })
@@ -72,7 +74,7 @@ describe('Mind Garden governed extraction codec', () => {
       content: [{ type: 'text', text: 'too large for one byte' }],
       source: { kind: 'user' },
     })
-    expect(buildExtractionEnvelope([human], [], 1, 1)).toMatchObject({
+    expect(buildExtractionEnvelope([human], [], 1, 1, 3)).toMatchObject({
       hadHumanText: true,
       transcript: [],
       memories: [],
