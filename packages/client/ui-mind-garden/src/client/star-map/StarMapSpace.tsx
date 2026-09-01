@@ -21,8 +21,9 @@ import type {
 import type { MindGardenDataResult } from '../slots.ts'
 import type { MindGardenKey } from '../locales.ts'
 import { STAR_MIST_COURTYARD_V5 } from '../generated-assets.ts'
+import { settleMindGardenAction } from '../settle-action.ts'
 import { createGardenStarMap } from './model.ts'
-import { StarField } from './StarField.tsx'
+import { StarField } from './StarFieldView.tsx'
 import { StarProfilePanel } from './StarProfilePanel.tsx'
 import { StarRitual } from './StarRitual.tsx'
 import { StarObserver } from './StarObserver.tsx'
@@ -106,7 +107,7 @@ export function StarMapSpace({
   const refresh = useCallback(async () => {
     setLoading(true)
     setLoadError(false)
-    const result = await onOverview()
+    const result = await settleMindGardenAction(onOverview)
     setLoading(false)
     if (!result.ok) {
       setLoadError(true)
@@ -122,9 +123,9 @@ export function StarMapSpace({
   const runCardAction = useCallback(async (
     operation: () => Promise<MindGardenDataResult<MindGardenStarCard>>,
   ): Promise<MindGardenDataResult<MindGardenStarCard>> => {
-    const result = await operation()
+    const result = await settleMindGardenAction(operation)
     if (!result.ok) return result
-    const latest = await onOverview()
+    const latest = await settleMindGardenAction(onOverview)
     if (latest.ok) setOverview(latest.value)
     return result
   }, [onOverview])
@@ -139,8 +140,10 @@ export function StarMapSpace({
     return <StarRitual
       profile={overview.profile}
       t={t}
-      onSave={async (input, stage, version) => await onSaveRitual({ ...input, onboardingStage: stage, ifVersion: version })}
-      onComplete={async (input, version) => await onCompleteRitual({ ...input, ifVersion: version })}
+      onSave={async (input, stage, version) => await settleMindGardenAction(
+        () => onSaveRitual({ ...input, onboardingStage: stage, ifVersion: version }),
+      )}
+      onComplete={async (input, version) => await settleMindGardenAction(() => onCompleteRitual({ ...input, ifVersion: version }))}
       onCommit={setOverview}
       onExit={onBack}
     />
@@ -162,7 +165,9 @@ export function StarMapSpace({
     onCommit={setOverview}
     onUpdateProfile={async (profile, permissions, observerTone, observationIntent, reducedMotion) => {
       const request = profileRequest(profile, { permissions, observerTone, observationIntent, reducedMotion })
-      return request === null ? { ok: false, code: 'star-ritual-required' } : await onUpdateProfile(request)
+      return request === null
+        ? { ok: false, code: 'star-ritual-required' }
+        : await settleMindGardenAction(() => onUpdateProfile(request))
     }}
     onUpdateTrait={onUpdateTrait}
     onDrawCard={request => runCardAction(() => onDrawCard(request))}
@@ -240,11 +245,11 @@ function CompletedStarMap({
   const retireTrait = async () => {
     if (selectedTrait === undefined || traitPending) return
     setTraitPending(true)
-    const result = await onUpdateTrait({
+    const result = await settleMindGardenAction(() => onUpdateTrait({
       id: selectedTrait.id,
       ifVersion: selectedTrait.version,
       status: 'retired',
-    })
+    }))
     setTraitPending(false)
     if (!result.ok) return
     onCommit({ ...overview, traits: overview.traits.filter(trait => trait.id !== result.value.id) })

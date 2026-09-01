@@ -12,6 +12,7 @@ import type {
 } from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type { MindGardenDataResult } from '../slots.ts'
 import type { MindGardenKey } from '../locales.ts'
+import { settleMindGardenAction } from '../settle-action.ts'
 import css from './StarObserver.module.css'
 import { StarObserverDialogue } from './StarObserverDialogue.tsx'
 import { PrivateIcon, StarMapIcon } from '../GardenIcons.tsx'
@@ -84,11 +85,11 @@ export function StarObserver({
     if (pending !== null) return
     setPending('draw')
     setError(false)
-    const result = await onDraw({
+    const result = await settleMindGardenAction(() => onDraw({
       deck,
       question: question.trim(),
       observedLocalDate: browserLocalDate(),
-    })
+    }))
     setPending(null)
     if (!result.ok) setError(true)
   }
@@ -97,12 +98,12 @@ export function StarObserver({
     if (card === null || pending !== null) return
     setPending('calibrate')
     setError(false)
-    const result = await onCalibrate({
+    const result = await settleMindGardenAction(() => onCalibrate({
       id: card.id,
       ifVersion: card.version,
       verdict,
       ...(correction.trim().length === 0 ? {} : { correction: correction.trim() }),
-    })
+    }))
     setPending(null)
     if (!result.ok) setError(true)
   }
@@ -111,7 +112,7 @@ export function StarObserver({
     if (card === null || pending !== null) return
     setPending('finalize')
     setError(false)
-    const result = await onFinalize({ id: card.id, ifVersion: card.version, action })
+    const result = await settleMindGardenAction(() => onFinalize({ id: card.id, ifVersion: card.version, action }))
     setPending(null)
     if (!result.ok) {
       setError(true)

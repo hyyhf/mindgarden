@@ -11,12 +11,4 @@ import type { GardenStarMapModel } from './model.ts';
  * @returns Teardown that releases listeners, GPU resources, observers, and the canvas.
  */
 export declare function mountGardenStarField(host: HTMLDivElement, model: GardenStarMapModel, reducedMotion: boolean, selectedId?: string, onSelect?: (id: string) => void, onHover?: (id: string, x: number, y: number) => void): () => void;
-/** Display the live WebGL constellation, with the surrounding space owning accessible nodes. */
-export declare function StarField({ model, fallback, reducedMotion, selectedId, onSelect, }: {
-    readonly model: GardenStarMapModel;
-    readonly fallback: string;
-    readonly reducedMotion?: boolean;
-    readonly selectedId?: string;
-    readonly onSelect?: (id: string) => void;
-}): import("react").JSX.Element;
 //# sourceMappingURL=StarField.d.ts.map

@@ -29,8 +29,9 @@ import { calendarStamp } from '../calendar.ts'
 import { PHOTO_MEMORY_STAGE_V5 } from '../generated-assets.ts'
 import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenViewActions } from '../slots.ts'
+import { settleMindGardenAction } from '../settle-action.ts'
 import { applyPhotoParticlePreset } from './presets.ts'
-import { PhotoParticleScene } from './PhotoParticleScene.tsx'
+import { PhotoParticleScene } from './PhotoParticleSceneView.tsx'
 import { preparePhotoUpload, type PhotoUploadLimits } from './photo-upload.ts'
 import css from './PhotoStorySpace.module.css'
 
@@ -172,7 +173,7 @@ export function PhotoStorySpace({
 
   const refresh = useCallback(async () => {
     const request = ++requestRef.current
-    const result = await onListPhotoStories()
+    const result = await settleMindGardenAction(onListPhotoStories)
     if (request !== requestRef.current) return
     if (result.ok) {
       setStories(result.value)
@@ -236,7 +237,10 @@ export function PhotoStorySpace({
     if (missing.length === 0) return
     missing.forEach((story) => { requestedImagesRef.current.add(storyKey(story)) })
     const request = ++imageRequestRef.current
-    void Promise.all(missing.map(async story => ({ story, result: await onReadPhotoStory(story) }))).then((entries) => {
+    void Promise.all(missing.map(async story => ({
+      story,
+      result: await settleMindGardenAction(() => onReadPhotoStory(story)),
+    }))).then((entries) => {
       if (request !== imageRequestRef.current) return
       if (entries.some(entry => !entry.result.ok)) setErrorKey('photo.error.load')
       entries.forEach(({ story, result }) => {

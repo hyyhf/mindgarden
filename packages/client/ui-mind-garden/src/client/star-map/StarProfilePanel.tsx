@@ -10,6 +10,7 @@ import type {
 } from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type { MindGardenDataResult } from '../slots.ts'
 import type { MindGardenKey } from '../locales.ts'
+import { settleMindGardenAction } from '../settle-action.ts'
 import css from './StarProfilePanel.module.css'
 
 interface StarProfilePanelProps {
@@ -47,7 +48,7 @@ export function StarProfilePanel({ profile, t, onSave, onCommit, onClose }: Star
     if (pending) return
     setPending(true)
     setNotice(null)
-    const result = await onSave(profile, permissions, tone, intent, reducedMotion)
+    const result = await settleMindGardenAction(() => onSave(profile, permissions, tone, intent, reducedMotion))
     setPending(false)
     if (!result.ok) {
       setNotice('error')

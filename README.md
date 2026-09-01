@@ -85,6 +85,7 @@ Mind Garden is for conversations that benefit from patience, continuity, and use
 - **Companion, not clinician** — the agent listens from the user's latest words, preserves requested distinctions, repairs misunderstandings, and can leave space without diagnosing or impersonating professional care.
 - **The user owns every conclusion** — extracted memories, inferred traits, Star Observer cards, principle revisions, and relationship conflicts stay provisional until the user decides.
 - **Private records stay structurally private** — memories, reflections, star data, and story metadata are authenticated ciphertext at rest; model calls receive only the bounded material authorized for that exact action.
+- **Continuity includes unfinished work** — moving between Garden spaces keeps local drafts intact, while handing material back to conversation appends to rather than overwrites text already waiting in the Harness composer.
 - **A real Harness plugin** — the bundle is a manifest-declared Web-profile add-on. It reuses Harness agents, Sessions, providers, credentials, attachments, Remotes, loader rows, and the official client shell.
 
 Compared with the original Fun Garden implementation, this edition adds evidence-bound memory governance, crash-recoverable key rotation, authenticated non-overwriting restore, deterministic safety gates, accessible WebGL fallbacks, and package-level extension boundaries. It keeps the expressive constellation and photo-particle identity while adopting the restrained spacing, icon language, and interaction grammar of DeepSeek Harness.
@@ -348,6 +349,7 @@ The original archive is read-only throughout inspection and restore. Keep it unt
 ## Visual performance and accessibility
 
 - The constellation and photo scenes use bounded WebGL work, device-memory-aware density, suspended rendering outside active views, and explicit resource disposal.
+- The initial client stays lightweight: Three.js, GPU renderers, the display font, and scene textures load only when a user first opens the corresponding visual space; the full visual treatment is preserved after that handoff.
 - Pointer physics, bloom, exposure, depth, paper motion, tint, and vignette stay within Host-validated configuration limits.
 - Reduced-motion preferences disable nonessential movement. A constellation list and verified-image presentation remain available when WebGL or particle rendering is unavailable.
 - Semantic headings, buttons, labels, focus states, readable contrast, and keyboard-accessible controls remain the source of truth; canvas pixels never become the only record interface.

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, FormEvent } from 'react'
+import { createPortal } from 'react-dom'
 import {
   IconCloseOutline16,
   IconDataOutline16,
@@ -43,6 +44,7 @@ import { TodayPractice } from './spaces/TodayPractice.tsx'
 import { PhotoStorySpace } from './photo-story/PhotoStorySpace.tsx'
 import type { PhotoUploadLimits } from './photo-story/photo-upload.ts'
 import { GardenPortabilityPanel } from './GardenPortabilityPanel.tsx'
+import { settleMindGardenAction } from './settle-action.ts'
 import css from './MindGardenView.module.css'
 
 const CATEGORIES = ['events', 'ongoing', 'changes', 'experiments', 'focus'] as const satisfies readonly MindGardenPeriodReviewMaterialCategory[]
@@ -70,6 +72,13 @@ export interface MindGardenReviewCenterProps extends MindGardenViewActions, Prop
 const ignoreSpaceSelection = (_space: MindGardenSpace): void => undefined
 const ignoreSidebarToggle = (): void => undefined
 const ignoreConversationDraft = (_draft: string): void => undefined
+
+function mergeConversationDraft(current: string, addition: string): string {
+  if (current.trim() === '') return addition
+  if (addition.trim() === '' || current.endsWith(addition)) return current
+  const separator = current.endsWith('\n\n') ? '' : current.endsWith('\n') ? '\n' : '\n\n'
+  return `${current}${separator}${addition}`
+}
 
 function errorKey(code: string): MindGardenKey {
   if (code === 'open-question-version-conflict' || code === 'period-review-version-conflict') {
@@ -188,10 +197,12 @@ export function MindGardenReviewCenter({
   const [starSidebar, setStarSidebar] = useState<MindGardenStarMapOverview | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [profileRevision, setProfileRevision] = useState(0)
+  const [visitedSpaces, setVisitedSpaces] = useState<readonly MindGardenSpace[]>([activeSpace])
   const requestRef = useRef(0)
   const pendingRef = useRef(false)
   const starSidebarLoadedRef = useRef(false)
   const settingsSheetRef = useRef<HTMLDivElement>(null)
+  const settingsScrimRef = useRef<HTMLDivElement>(null)
   const settingsTriggerRef = useRef<HTMLButtonElement | null>(null)
 
   const closeSettings = useCallback(() => {
@@ -201,6 +212,19 @@ export function MindGardenReviewCenter({
 
   useEffect(() => {
     if (!settingsOpen) return
+    const scrim = settingsScrimRef.current
+    const background = [...document.body.children].filter(element => element !== scrim)
+    const backgroundState = background.map(element => ({
+      element: element as HTMLElement,
+      inert: (element as HTMLElement).inert,
+      ariaHidden: element.getAttribute('aria-hidden'),
+    }))
+    for (const item of backgroundState) {
+      item.element.inert = true
+      item.element.setAttribute('aria-hidden', 'true')
+    }
+    const previousOverflow = document.documentElement.style.overflow
+    document.documentElement.style.overflow = 'hidden'
     const containFocus = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault()
@@ -223,13 +247,25 @@ export function MindGardenReviewCenter({
       }
     }
     window.addEventListener('keydown', containFocus)
-    return () => { window.removeEventListener('keydown', containFocus) }
+    return () => {
+      window.removeEventListener('keydown', containFocus)
+      document.documentElement.style.overflow = previousOverflow
+      for (const item of backgroundState) {
+        item.element.inert = item.inert
+        if (item.ariaHidden === null) item.element.removeAttribute('aria-hidden')
+        else item.element.setAttribute('aria-hidden', item.ariaHidden)
+      }
+    }
   }, [closeSettings, settingsOpen])
+
+  useEffect(() => {
+    setVisitedSpaces(current => current.includes(activeSpace) ? current : [...current, activeSpace])
+  }, [activeSpace])
 
   useEffect(() => {
     if (activeSpace !== 'star-map' && starSidebarLoadedRef.current) return
     let disposed = false
-    void onStarMapOverview().then((result) => {
+    void settleMindGardenAction(onStarMapOverview).then((result) => {
       if (!disposed && result.ok) {
         starSidebarLoadedRef.current = true
         setStarSidebar(result.value)
@@ -242,8 +278,8 @@ export function MindGardenReviewCenter({
     const request = ++requestRef.current
     if (showLoading) setLoading(true)
     const [questionResult, reviewResult] = await Promise.all([
-      onListOpenQuestions(),
-      onListPeriodReviews(),
+      settleMindGardenAction(onListOpenQuestions),
+      settleMindGardenAction(onListPeriodReviews),
     ])
     if (request !== requestRef.current) return false
     if (!questionResult.ok) {
@@ -335,6 +371,9 @@ export function MindGardenReviewCenter({
     category,
     items: material?.items.filter(item => item.category === category) ?? [],
   })).filter(group => group.items.length > 0)
+  const shouldMount = (space: MindGardenSpace): boolean =>
+    space === activeSpace || visitedSpaces.includes(space)
+  const reviewSpaceActive = activeSpace === 'today' || activeSpace === 'memory' || activeSpace === 'life'
 
   async function submitQuestion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -438,86 +477,104 @@ export function MindGardenReviewCenter({
         t={t}
       />
       <section className={css.workspace} key={profileRevision}>
-        {activeSpace === 'photo-story' ? (
-          <PhotoStorySpace
-            today={today}
-            {...(imageLimits === undefined ? {} : { imageLimits })}
-            onListPhotoStories={onListPhotoStories}
-            onCreatePhotoStory={onCreatePhotoStory}
-            onReadPhotoStory={onReadPhotoStory}
-            onObservePhotoStory={onObservePhotoStory}
-            onContinuePhotoStory={onContinuePhotoStory}
-            onUpdatePhotoStory={onUpdatePhotoStory}
-            onDeletePhotoStory={onDeletePhotoStory}
-            t={t}
-          />
-        ) : activeSpace === 'star-map' ? (
-          <StarMapSpace
-            questions={questions}
-            reviews={reviews}
-            mode={projection.state.mode}
-            onOverview={onStarMapOverview}
-            onSaveRitual={onSaveStarRitual}
-            onCompleteRitual={onCompleteStarRitual}
-            onUpdateProfile={onUpdateStarProfile}
-            onUpdateTrait={onUpdateStarTrait}
-            onDrawCard={onDrawStarCard}
-            onCalibrateCard={onCalibrateStarCard}
-            onFinalizeCard={onFinalizeStarCard}
-            onContinueCard={onContinueStarCard}
-            onApplyCardRevision={onApplyStarCardRevision}
-            t={t}
-            onBack={() => { onSelectSpace('today') }}
-          />
-        ) : activeSpace === 'concerns' ? (
-          <ConcernsSpace
-            today={today}
-            onListConcerns={onListConcerns}
-            onCreateConcern={onCreateConcern}
-            onUpdateConcern={onUpdateConcern}
-            onCompleteConcern={onCompleteConcern}
-            onConvertConcern={onConvertConcern}
-            onDraftConversation={onDraftConversation}
-            t={t}
-          />
-        ) : activeSpace === 'calendar' ? (
-          <CalendarSpace
-            today={today}
-            onCalendarMonth={onCalendarMonth}
-            onCalendarDay={onCalendarDay}
-            onReflectionTrend={onReflectionTrend}
-            onDraftConversation={onDraftConversation}
-            t={t}
-          />
-        ) : activeSpace === 'growth' ? (
-          <GrowthSpace
-            today={today}
-            onListExperiments={onListExperiments}
-            onCreateExperiment={onCreateExperiment}
-            onStartExperiment={onStartExperiment}
-            onObserveExperiment={onObserveExperiment}
-            onStopExperiment={onStopExperiment}
-            onDraftConversation={onDraftConversation}
-            t={t}
-          />
-        ) : activeSpace === 'philosophy' ? (
-          <PhilosophySpace
-            today={today}
-            onListContemplations={onListContemplations}
-            onCreateContemplation={onCreateContemplation}
-            onUpdateContemplation={onUpdateContemplation}
-            onConfirmContemplation={onConfirmContemplation}
-            onDeleteContemplation={onDeleteContemplation}
-            onProposePrinciple={onProposePrinciple}
-            onListPrincipleProposals={onListPrincipleProposals}
-            onListPrinciples={onListPrinciples}
-            onAcceptPrincipleProposal={onAcceptPrincipleProposal}
-            onRejectPrincipleProposal={onRejectPrincipleProposal}
-            onRevisePrincipleStatus={onRevisePrincipleStatus}
-            onDraftConversation={onDraftConversation}
-            t={t}
-          />
-        ) : (
+        {shouldMount('photo-story') && (
+          <div className={css.spaceMount} hidden={activeSpace !== 'photo-story'}>
+            <PhotoStorySpace
+              today={today}
+              {...(imageLimits === undefined ? {} : { imageLimits })}
+              onListPhotoStories={onListPhotoStories}
+              onCreatePhotoStory={onCreatePhotoStory}
+              onReadPhotoStory={onReadPhotoStory}
+              onObservePhotoStory={onObservePhotoStory}
+              onContinuePhotoStory={onContinuePhotoStory}
+              onUpdatePhotoStory={onUpdatePhotoStory}
+              onDeletePhotoStory={onDeletePhotoStory}
+              t={t}
+            />
+          </div>
+        )}
+        {shouldMount('star-map') && (
+          <div className={css.spaceMount} hidden={activeSpace !== 'star-map'}>
+            <StarMapSpace
+              questions={questions}
+              reviews={reviews}
+              mode={projection.state.mode}
+              onOverview={onStarMapOverview}
+              onSaveRitual={onSaveStarRitual}
+              onCompleteRitual={onCompleteStarRitual}
+              onUpdateProfile={onUpdateStarProfile}
+              onUpdateTrait={onUpdateStarTrait}
+              onDrawCard={onDrawStarCard}
+              onCalibrateCard={onCalibrateStarCard}
+              onFinalizeCard={onFinalizeStarCard}
+              onContinueCard={onContinueStarCard}
+              onApplyCardRevision={onApplyStarCardRevision}
+              t={t}
+              onBack={() => { onSelectSpace('today') }}
+            />
+          </div>
+        )}
+        {shouldMount('concerns') && (
+          <div className={css.spaceMount} hidden={activeSpace !== 'concerns'}>
+            <ConcernsSpace
+              today={today}
+              onListConcerns={onListConcerns}
+              onCreateConcern={onCreateConcern}
+              onUpdateConcern={onUpdateConcern}
+              onCompleteConcern={onCompleteConcern}
+              onConvertConcern={onConvertConcern}
+              onDraftConversation={onDraftConversation}
+              t={t}
+            />
+          </div>
+        )}
+        {shouldMount('calendar') && (
+          <div className={css.spaceMount} hidden={activeSpace !== 'calendar'}>
+            <CalendarSpace
+              today={today}
+              onCalendarMonth={onCalendarMonth}
+              onCalendarDay={onCalendarDay}
+              onReflectionTrend={onReflectionTrend}
+              onDraftConversation={onDraftConversation}
+              t={t}
+            />
+          </div>
+        )}
+        {shouldMount('growth') && (
+          <div className={css.spaceMount} hidden={activeSpace !== 'growth'}>
+            <GrowthSpace
+              today={today}
+              onListExperiments={onListExperiments}
+              onCreateExperiment={onCreateExperiment}
+              onStartExperiment={onStartExperiment}
+              onObserveExperiment={onObserveExperiment}
+              onStopExperiment={onStopExperiment}
+              onDraftConversation={onDraftConversation}
+              t={t}
+            />
+          </div>
+        )}
+        {shouldMount('philosophy') && (
+          <div className={css.spaceMount} hidden={activeSpace !== 'philosophy'}>
+            <PhilosophySpace
+              today={today}
+              onListContemplations={onListContemplations}
+              onCreateContemplation={onCreateContemplation}
+              onUpdateContemplation={onUpdateContemplation}
+              onConfirmContemplation={onConfirmContemplation}
+              onDeleteContemplation={onDeleteContemplation}
+              onProposePrinciple={onProposePrinciple}
+              onListPrincipleProposals={onListPrincipleProposals}
+              onListPrinciples={onListPrinciples}
+              onAcceptPrincipleProposal={onAcceptPrincipleProposal}
+              onRejectPrincipleProposal={onRejectPrincipleProposal}
+              onRevisePrincipleStatus={onRevisePrincipleStatus}
+              onDraftConversation={onDraftConversation}
+              t={t}
+            />
+          </div>
+        )}
+        <div className={css.spaceMount} hidden={!reviewSpaceActive}>
           <main className={css.view}>
             {activeSpace === 'today' ? (
               <section className={css.todayOpening} data-mind-garden-space="today">
@@ -559,36 +616,40 @@ export function MindGardenReviewCenter({
               </section>
             ) : null}
 
-            {activeSpace === 'today' && (
-              <TodayPractice
-                today={today}
-                onCalendarDay={onCalendarDay}
-                onCreateCheckin={onCreateCheckin}
-                onCreateJournal={onCreateJournal}
-                onUpdateJournal={onUpdateJournal}
-                onDeleteJournal={onDeleteJournal}
-                t={t}
-              />
+            {shouldMount('today') && (
+              <div hidden={activeSpace !== 'today'}>
+                <TodayPractice
+                  today={today}
+                  onCalendarDay={onCalendarDay}
+                  onCreateCheckin={onCreateCheckin}
+                  onCreateJournal={onCreateJournal}
+                  onUpdateJournal={onUpdateJournal}
+                  onDeleteJournal={onDeleteJournal}
+                  t={t}
+                />
+              </div>
             )}
 
-            {activeSpace === 'memory' && (
-              <MemoryGovernance
-                onListMemories={onListMemories}
-                onProposeMemory={onProposeMemory}
-                onConfirmMemory={onConfirmMemory}
-                onUpdateMemory={onUpdateMemory}
-                onRejectMemory={onRejectMemory}
-                onResolveMemoryRelationship={onResolveMemoryRelationship}
-                onListMemoryRevisions={onListMemoryRevisions}
-                onExtractMemories={onExtractMemories}
-                onLatestMemoryExtraction={onLatestMemoryExtraction}
-                onMemoryAutomationPolicy={onMemoryAutomationPolicy}
-                onSetMemoryAutomationPolicy={onSetMemoryAutomationPolicy}
-                onDeleteMemory={onDeleteMemory}
-                onLatestMemoryAudit={onLatestMemoryAudit}
-                onDraftConversation={onDraftConversation}
-                t={t}
-              />
+            {shouldMount('memory') && (
+              <div hidden={activeSpace !== 'memory'}>
+                <MemoryGovernance
+                  onListMemories={onListMemories}
+                  onProposeMemory={onProposeMemory}
+                  onConfirmMemory={onConfirmMemory}
+                  onUpdateMemory={onUpdateMemory}
+                  onRejectMemory={onRejectMemory}
+                  onResolveMemoryRelationship={onResolveMemoryRelationship}
+                  onListMemoryRevisions={onListMemoryRevisions}
+                  onExtractMemories={onExtractMemories}
+                  onLatestMemoryExtraction={onLatestMemoryExtraction}
+                  onMemoryAutomationPolicy={onMemoryAutomationPolicy}
+                  onSetMemoryAutomationPolicy={onSetMemoryAutomationPolicy}
+                  onDeleteMemory={onDeleteMemory}
+                  onLatestMemoryAudit={onLatestMemoryAudit}
+                  onDraftConversation={onDraftConversation}
+                  t={t}
+                />
+              </div>
             )}
 
             {loading && <div className={css.loading} role="status">{t('review.loading')}</div>}
@@ -715,10 +776,17 @@ export function MindGardenReviewCenter({
               </div>
             )}
           </main>
-        )}
+        </div>
       </section>
-      {settingsOpen && (
-        <div className={css.settingsScrim} role="dialog" aria-modal="true" aria-label={t('garden.settings')} onMouseDown={closeSettings}>
+      {settingsOpen && createPortal((
+        <div
+          ref={settingsScrimRef}
+          className={css.settingsScrim}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('garden.settings')}
+          onMouseDown={(event) => { if (event.target === event.currentTarget) closeSettings() }}
+        >
           <div ref={settingsSheetRef} className={css.settingsSheet} onMouseDown={(event) => { event.stopPropagation() }}>
             <header className={css.settingsHeading}>
               <span className={css.settingsInstrument} aria-hidden="true">
@@ -759,7 +827,7 @@ export function MindGardenReviewCenter({
             </div>
           </div>
         </div>
-      )}
+      ), document.body)}
     </div>
   )
 }
@@ -779,6 +847,7 @@ export type MindGardenViewProps =
 export function MindGardenView({
   useProjection,
   useSession,
+  useInput,
   useStore,
   actions,
   inputActions,
@@ -787,6 +856,7 @@ export function MindGardenView({
   const projection = useProjection('mind-garden')
   const imageLimits = useProjection('imageLimits')
   const running = useSession(state => state.running)
+  const inputDraft = useInput(state => state.draft)
   const view = useStore(state => state)
   return (
     <MindGardenReviewCenter
@@ -797,7 +867,7 @@ export function MindGardenView({
       sidebarCollapsed={view.sidebarCollapsed}
       onSelectSpace={(space) => { actions.selectSpace(space) }}
       onToggleSidebar={() => { actions.toggleSidebar() }}
-      onDraftConversation={(draft) => { inputActions.setDraft(draft) }}
+      onDraftConversation={(draft) => { inputActions.setDraft(mergeConversationDraft(inputDraft, draft)) }}
       {...props}
     />
   )

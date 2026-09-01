@@ -5,6 +5,7 @@ import { IconCheckOutline16, IconCloseOutline16, IconSendOutline14, IconSparkle1
 import { calendarStamp } from "../calendar.js";
 import { PhilosophyIcon, PrivateIcon } from "../GardenIcons.js";
 import { PHILOSOPHY_FOLIO_ROOM_V3 } from "../generated-assets.js";
+import { settleMindGardenAction } from "../settle-action.js";
 import shared from './GardenSpace.module.css';
 import css from './PhilosophySpace.module.css';
 const PRINCIPLE_STATUSES = ['trying', 'adopted', 'questioning', 'retired'];
@@ -33,9 +34,9 @@ export function PhilosophySpace({ today, onListContemplations, onCreateContempla
     const refresh = useCallback(async () => {
         const request = ++requestRef.current;
         const [contemplationResult, proposalResult, principleResult] = await Promise.all([
-            onListContemplations(),
-            onListPrincipleProposals(),
-            onListPrinciples(),
+            settleMindGardenAction(onListContemplations),
+            settleMindGardenAction(onListPrincipleProposals),
+            settleMindGardenAction(onListPrinciples),
         ]);
         if (request !== requestRef.current)
             return;

@@ -10,6 +10,7 @@ import type {
 } from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type { MindGardenDataResult } from '../slots.ts'
 import type { MindGardenKey } from '../locales.ts'
+import { settleMindGardenAction } from '../settle-action.ts'
 import { STAR_MIST_COURTYARD_V5 } from '../generated-assets.ts'
 import css from './StarRitual.module.css'
 
@@ -96,8 +97,8 @@ export function StarRitual({ profile, t, onSave, onComplete, onCommit, onExit }:
       selfWords: words.split(/[，,]/u).map(word => word.trim()).filter(Boolean),
     }
     const result = step < 2
-      ? await onSave(normalized, step === 0 ? 1 : 2, profile.version)
-      : await onComplete(normalized, profile.version)
+      ? await settleMindGardenAction(() => onSave(normalized, step === 0 ? 1 : 2, profile.version))
+      : await settleMindGardenAction(() => onComplete(normalized, profile.version))
     setPending(false)
     if (!result.ok) {
       setError(true)

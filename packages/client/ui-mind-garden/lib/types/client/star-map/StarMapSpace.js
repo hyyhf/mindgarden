@@ -2,8 +2,9 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 /** Harness-native constellation space backed by an encrypted Star Map profile. */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { STAR_MIST_COURTYARD_V5 } from "../generated-assets.js";
+import { settleMindGardenAction } from "../settle-action.js";
 import { createGardenStarMap } from "./model.js";
-import { StarField } from "./StarField.js";
+import { StarField } from "./StarFieldView.js";
 import { StarProfilePanel } from "./StarProfilePanel.js";
 import { StarRitual } from "./StarRitual.js";
 import { StarObserver } from "./StarObserver.js";
@@ -39,7 +40,7 @@ export function StarMapSpace({ questions, reviews, mode, t, onBack, onOverview, 
     const refresh = useCallback(async () => {
         setLoading(true);
         setLoadError(false);
-        const result = await onOverview();
+        const result = await settleMindGardenAction(onOverview);
         setLoading(false);
         if (!result.ok) {
             setLoadError(true);
@@ -51,10 +52,10 @@ export function StarMapSpace({ questions, reviews, mode, t, onBack, onOverview, 
         void refresh();
     }, [refresh]);
     const runCardAction = useCallback(async (operation) => {
-        const result = await operation();
+        const result = await settleMindGardenAction(operation);
         if (!result.ok)
             return result;
-        const latest = await onOverview();
+        const latest = await settleMindGardenAction(onOverview);
         if (latest.ok)
             setOverview(latest.value);
         return result;
@@ -66,11 +67,13 @@ export function StarMapSpace({ questions, reviews, mode, t, onBack, onOverview, 
         return _jsxs("main", { className: css.state, children: [_jsx("p", { children: t('star.error') }), _jsxs("div", { children: [_jsx("button", { type: "button", onClick: () => { void refresh(); }, children: t('review.retry') }), _jsx("button", { type: "button", onClick: onBack, children: t('star.back') })] })] });
     }
     if (!overview.profile.onboardingCompleted) {
-        return _jsx(StarRitual, { profile: overview.profile, t: t, onSave: async (input, stage, version) => await onSaveRitual({ ...input, onboardingStage: stage, ifVersion: version }), onComplete: async (input, version) => await onCompleteRitual({ ...input, ifVersion: version }), onCommit: setOverview, onExit: onBack });
+        return _jsx(StarRitual, { profile: overview.profile, t: t, onSave: async (input, stage, version) => await settleMindGardenAction(() => onSaveRitual({ ...input, onboardingStage: stage, ifVersion: version })), onComplete: async (input, version) => await settleMindGardenAction(() => onCompleteRitual({ ...input, ifVersion: version })), onCommit: setOverview, onExit: onBack });
     }
     return _jsx(CompletedStarMap, { overview: overview, questions: questions, reviews: reviews, mode: mode, t: t, onBack: onBack, profileOpen: profileOpen, setProfileOpen: setProfileOpen, selectedId: selectedId, setSelectedId: setSelectedId, traitPending: traitPending, setTraitPending: setTraitPending, onCommit: setOverview, onUpdateProfile: async (profile, permissions, observerTone, observationIntent, reducedMotion) => {
             const request = profileRequest(profile, { permissions, observerTone, observationIntent, reducedMotion });
-            return request === null ? { ok: false, code: 'star-ritual-required' } : await onUpdateProfile(request);
+            return request === null
+                ? { ok: false, code: 'star-ritual-required' }
+                : await settleMindGardenAction(() => onUpdateProfile(request));
         }, onUpdateTrait: onUpdateTrait, onDrawCard: request => runCardAction(() => onDrawCard(request)), onCalibrateCard: request => runCardAction(() => onCalibrateCard(request)), onFinalizeCard: request => runCardAction(() => onFinalizeCard(request)), onContinueCard: request => runCardAction(() => onContinueCard(request)), onApplyCardRevision: request => runCardAction(() => onApplyCardRevision(request)) });
 }
 function CompletedStarMap({ overview, questions, reviews, mode, t, onBack, profileOpen, setProfileOpen, selectedId, setSelectedId, traitPending, setTraitPending, onCommit, onUpdateProfile, onUpdateTrait, onDrawCard, onCalibrateCard, onFinalizeCard, onContinueCard, onApplyCardRevision, }) {
@@ -96,11 +99,11 @@ function CompletedStarMap({ overview, questions, reviews, mode, t, onBack, profi
         if (selectedTrait === undefined || traitPending)
             return;
         setTraitPending(true);
-        const result = await onUpdateTrait({
+        const result = await settleMindGardenAction(() => onUpdateTrait({
             id: selectedTrait.id,
             ifVersion: selectedTrait.version,
             status: 'retired',
-        });
+        }));
         setTraitPending(false);
         if (!result.ok)
             return;

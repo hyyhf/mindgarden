@@ -1,8 +1,5 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 /** Interactive Three.js reconstruction of one verified photo attachment. */
-import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import css from './PhotoParticleScene.module.css';
 const QUALITY_EDGE = { low: 128, medium: 208, high: 320 };
 const vertexShader = `
 attribute vec3 photoColor;
@@ -429,73 +426,5 @@ export function mountPhotoParticleScene(host, image, initialConfig, reducedMotio
             canvas.remove();
         },
     };
-}
-function loadImage(src) {
-    return new Promise((resolve, reject) => {
-        const image = new Image();
-        image.decoding = 'async';
-        image.onload = () => { resolve(image); };
-        image.onerror = () => { reject(new Error('photo-decode-failed')); };
-        image.src = src;
-    });
-}
-/** React adapter that keeps a verified-image fallback visible when WebGL is unavailable. */
-export function PhotoParticleScene({ src, alt, config, labels, onCount, recomposeToken = 0, }) {
-    const [host, setHost] = useState(null);
-    const [state, setState] = useState('loading');
-    const [reducedMotion, setReducedMotion] = useState(() => typeof window.matchMedia === 'function'
-        && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    const controllerRef = useRef(null);
-    const recomposeRef = useRef(recomposeToken);
-    useEffect(() => {
-        if (typeof window.matchMedia !== 'function')
-            return;
-        const query = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const update = () => { setReducedMotion(query.matches); };
-        update();
-        query.addEventListener('change', update);
-        return () => { query.removeEventListener('change', update); };
-    }, []);
-    useEffect(() => {
-        controllerRef.current?.update(config);
-    }, [config]);
-    useEffect(() => {
-        if (recomposeRef.current === recomposeToken)
-            return;
-        recomposeRef.current = recomposeToken;
-        controllerRef.current?.recompose();
-    }, [recomposeToken]);
-    useEffect(() => {
-        if (host === null)
-            return;
-        if (reducedMotion) {
-            controllerRef.current?.dispose();
-            controllerRef.current = null;
-            host.replaceChildren();
-            onCount?.(0);
-            setState('reduced');
-            return;
-        }
-        let disposed = false;
-        setState('loading');
-        void loadImage(src).then((image) => {
-            if (disposed)
-                return;
-            const controller = mountPhotoParticleScene(host, image, config, window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-            controllerRef.current = controller;
-            onCount?.(controller.count);
-            setState('ready');
-        }).catch(() => {
-            if (!disposed)
-                setState('fallback');
-        });
-        return () => {
-            disposed = true;
-            controllerRef.current?.dispose();
-            controllerRef.current = null;
-            host.replaceChildren();
-        };
-    }, [host, onCount, reducedMotion, src]);
-    return (_jsxs("figure", { className: css.scene, "data-render-state": state, style: { '--mg-photo-bg': config.rendering.background }, children: [_jsx("div", { className: css.host, ref: setHost, "aria-label": labels.scene, role: "img" }), state === 'loading' && _jsx("span", { className: css.status, role: "status", children: labels.loading }), (state === 'fallback' || state === 'reduced') && (_jsxs("div", { className: css.fallback, children: [_jsx("img", { src: src, alt: alt }), _jsx("span", { role: "status", children: state === 'reduced' ? labels.reduced : labels.fallback })] })), _jsx("i", { className: css.vignette, "aria-hidden": "true", style: { opacity: config.effects.vignette } })] }));
 }
 //# sourceMappingURL=PhotoParticleScene.js.map

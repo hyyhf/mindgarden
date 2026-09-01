@@ -41,10 +41,12 @@ vi.mock('three', async (importOriginal) => {
   return { ...actual, Clock, WebGLRenderer }
 })
 
-import {
-  mountPhotoParticleScene,
-  PhotoParticleScene,
-} from '../src/client/photo-story/PhotoParticleScene.tsx'
+vi.mock('../src/client/scene-loader.ts', () => ({
+  loadMindGardenScenes: async () => await import('../src/client/photo-story/PhotoParticleScene.tsx'),
+}))
+
+import { mountPhotoParticleScene } from '../src/client/photo-story/PhotoParticleScene.tsx'
+import { PhotoParticleScene } from '../src/client/photo-story/PhotoParticleSceneView.tsx'
 
 let animationCallbacks: FrameRequestCallback[]
 let resizeCallback: (() => void) | undefined
@@ -229,14 +231,19 @@ describe('photo particle scene', () => {
       <PhotoParticleScene
         src="data:image/png;base64,AQID"
         alt="frame"
-        config={{ ...DEFAULT_PHOTO_PARTICLE_CONFIG, effects: { ...DEFAULT_PHOTO_PARTICLE_CONFIG.effects, tint: '#00ffaa' } }}
+        config={{
+          ...DEFAULT_PHOTO_PARTICLE_CONFIG,
+          rendering: { ...DEFAULT_PHOTO_PARTICLE_CONFIG.rendering, background: '#00ffaa' },
+        }}
         labels={{ scene: 'scene', loading: 'loading', fallback: 'fallback', reduced: 'reduced' }}
       />,
     )
-    await waitFor(() => { expect(rendererState.renderers).toHaveLength(2) })
+    await waitFor(() => {
+      expect(rendererState.renderers[0]?.setClearColor).toHaveBeenCalledWith('#00ffaa', 1)
+      expect(rendererState.renderers).toHaveLength(1)
+    })
     view.unmount()
     expect(rendererState.renderers[0]!.dispose).toHaveBeenCalledOnce()
-    expect(rendererState.renderers[1]!.dispose).toHaveBeenCalledOnce()
 
     failImage = true
     const failed = render(
@@ -252,6 +259,27 @@ describe('photo particle scene', () => {
     failed.unmount()
 
     delayedImage = true
+    const latestConfig = render(
+      <PhotoParticleScene
+        src="latest-config"
+        alt="latest config"
+        config={{ ...DEFAULT_PHOTO_PARTICLE_CONFIG, rendering: { ...DEFAULT_PHOTO_PARTICLE_CONFIG.rendering, background: '#111111' } }}
+        labels={{ scene: 'scene', loading: 'loading', fallback: 'fallback', reduced: 'reduced' }}
+      />,
+    )
+    latestConfig.rerender(
+      <PhotoParticleScene
+        src="latest-config"
+        alt="latest config"
+        config={{ ...DEFAULT_PHOTO_PARTICLE_CONFIG, rendering: { ...DEFAULT_PHOTO_PARTICLE_CONFIG.rendering, background: '#abcdef' } }}
+        labels={{ scene: 'scene', loading: 'loading', fallback: 'fallback', reduced: 'reduced' }}
+      />,
+    )
+    resolveDelayedImage?.()
+    await waitFor(() => { expect(latestConfig.container.querySelector('[data-render-state="ready"]')).toBeTruthy() })
+    expect(rendererState.renderers.at(-1)?.setClearColor).toHaveBeenCalledWith('#abcdef', 1)
+    latestConfig.unmount()
+
     const delayed = render(
       <PhotoParticleScene
         src="delayed"

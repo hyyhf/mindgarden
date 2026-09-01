@@ -3,6 +3,7 @@ import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-run
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { IconChevronLeftOutline14, IconChevronRightOutline14, IconSendOutline14, } from '@deepseek-ai/dsh-client-ui-primitives';
 import { CalendarIcon, CheckinIcon, ConcernsIcon, GrowthIcon, JournalIcon, PhilosophyIcon, StarMapIcon, } from "../GardenIcons.js";
+import { settleMindGardenAction } from "../settle-action.js";
 import shared from './GardenSpace.module.css';
 import css from './CalendarSpace.module.css';
 const FILTERS = [
@@ -107,7 +108,7 @@ export function CalendarSpace({ today, onCalendarMonth, onCalendarDay, onReflect
     const plottedTrendCoordinates = useMemo(() => trend === null ? [] : trendCoordinates(trend), [trend]);
     const loadMonth = useCallback(async (nextMonth) => {
         const request = ++requestRef.current;
-        const result = await onCalendarMonth(nextMonth);
+        const result = await settleMindGardenAction(() => onCalendarMonth(nextMonth));
         if (request !== requestRef.current)
             return;
         if (result.ok) {
@@ -119,7 +120,7 @@ export function CalendarSpace({ today, onCalendarMonth, onCalendarDay, onReflect
         }
     }, [onCalendarMonth]);
     const loadDay = useCallback(async (date) => {
-        const result = await onCalendarDay(date);
+        const result = await settleMindGardenAction(() => onCalendarDay(date));
         if (result.ok) {
             setDayValue(result.value);
             setError(false);
@@ -137,7 +138,7 @@ export function CalendarSpace({ today, onCalendarMonth, onCalendarDay, onReflect
     }, [loadDay, selectedDate]);
     useEffect(() => {
         let current = true;
-        void onReflectionTrend(30, today).then((result) => {
+        void settleMindGardenAction(() => onReflectionTrend(30, today)).then((result) => {
             if (!current)
                 return;
             if (result.ok)

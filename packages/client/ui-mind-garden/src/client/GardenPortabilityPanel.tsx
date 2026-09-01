@@ -19,6 +19,7 @@ import type {
 } from '@deepseek-ai/dsh-mind-garden/portability/types'
 import type { MindGardenDataResult } from './slots.ts'
 import type { MindGardenKey } from './locales.ts'
+import { settleMindGardenAction } from './settle-action.ts'
 import css from './GardenPortabilityPanel.module.css'
 
 interface GardenPortabilityPanelProps {
@@ -141,7 +142,7 @@ export function GardenPortabilityPanel({
     event.preventDefault()
     if (!ready) return
     setState({ kind: 'working' })
-    const result = await onExportBackup(passphrase)
+    const result = await settleMindGardenAction(() => onExportBackup(passphrase))
     if (!result.ok) {
       setState({ kind: 'error', key: errorKey(result.code) })
       return
@@ -158,7 +159,7 @@ export function GardenPortabilityPanel({
 
   const rotate = async () => {
     setRotation({ kind: 'working' })
-    const result = await onRotateVaultKey()
+    const result = await settleMindGardenAction(onRotateVaultKey)
     setRotation(result.ok
       ? { kind: 'success', value: result.value }
       : { kind: 'error', key: rotationErrorKey(result.code) })
@@ -167,7 +168,7 @@ export function GardenPortabilityPanel({
   const inspectRestore = async () => {
     if (restoreFile === null || codePointLength(restorePassphrase) < 8) return
     setRestore({ kind: 'inspecting' })
-    const result = await onInspectBackup(restoreFile, restorePassphrase)
+    const result = await settleMindGardenAction(() => onInspectBackup(restoreFile, restorePassphrase))
     setRestore(result.ok
       ? { kind: 'preview', value: result.value }
       : { kind: 'error', code: result.code, key: restoreErrorKey(result.code) })
@@ -177,7 +178,7 @@ export function GardenPortabilityPanel({
     if (restoreFile === null || restore.kind !== 'preview') return
     const preview = restore.value
     setRestore({ kind: 'restoring', value: preview })
-    const result = await onRestoreBackup(restoreFile, restorePassphrase)
+    const result = await settleMindGardenAction(() => onRestoreBackup(restoreFile, restorePassphrase))
     if (!result.ok) {
       setRestore({ kind: 'error', code: result.code, key: restoreErrorKey(result.code) })
       return

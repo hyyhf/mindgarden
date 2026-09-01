@@ -202,6 +202,8 @@
     "packages/client/ui-mind-garden/lib/index.js",
     "packages/client/ui-mind-garden/lib/invariant.js",
     "packages/client/ui-mind-garden/lib/client.js",
+    "packages/client/ui-mind-garden/lib/heavy-scenes.js",
+    "packages/client/ui-mind-garden/lib/assets/*",
     "packages/client/ui-mind-garden/lib/types/**/*.d.ts",
     "packages/mind-garden/*/package.json",
     "packages/mind-garden/*/lib/**",

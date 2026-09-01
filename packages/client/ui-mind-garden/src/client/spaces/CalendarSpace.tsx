@@ -23,6 +23,7 @@ import {
 } from '../GardenIcons.tsx'
 import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenViewActions } from '../slots.ts'
+import { settleMindGardenAction } from '../settle-action.ts'
 import shared from './GardenSpace.module.css'
 import css from './CalendarSpace.module.css'
 
@@ -169,7 +170,7 @@ export function CalendarSpace({
 
   const loadMonth = useCallback(async (nextMonth: string) => {
     const request = ++requestRef.current
-    const result = await onCalendarMonth(nextMonth)
+    const result = await settleMindGardenAction(() => onCalendarMonth(nextMonth))
     if (request !== requestRef.current) return
     if (result.ok) {
       setMonthValue(result.value)
@@ -180,7 +181,7 @@ export function CalendarSpace({
   }, [onCalendarMonth])
 
   const loadDay = useCallback(async (date: string) => {
-    const result = await onCalendarDay(date)
+    const result = await settleMindGardenAction(() => onCalendarDay(date))
     if (result.ok) {
       setDayValue(result.value)
       setError(false)
@@ -200,7 +201,7 @@ export function CalendarSpace({
 
   useEffect(() => {
     let current = true
-    void onReflectionTrend(30, today).then((result) => {
+    void settleMindGardenAction(() => onReflectionTrend(30, today)).then((result) => {
       if (!current) return
       if (result.ok) setTrend(result.value)
       else setError(true)

@@ -8,7 +8,7 @@ import { DEFAULT_PHOTO_PARTICLE_CONFIG } from '../src/client/photo-story/presets
 import type { MindGardenViewActions } from '../src/client/slots.ts'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
 
-vi.mock('../src/client/photo-story/PhotoParticleScene.tsx', () => ({
+vi.mock('../src/client/photo-story/PhotoParticleSceneView.tsx', () => ({
   PhotoParticleScene: ({ alt, onCount }: { alt: string; onCount?: (count: number) => void }) => (
     <button type="button" aria-label={alt} data-testid="particle-scene" onClick={() => { onCount?.(43_210) }}>particle scene</button>
   ),

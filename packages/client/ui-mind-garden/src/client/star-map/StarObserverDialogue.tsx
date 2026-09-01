@@ -13,6 +13,7 @@ import type {
 } from '@deepseek-ai/dsh-mind-garden/star-map/types'
 import type { MindGardenDataResult } from '../slots.ts'
 import type { MindGardenKey } from '../locales.ts'
+import { settleMindGardenAction } from '../settle-action.ts'
 import css from './StarObserver.module.css'
 
 interface StarObserverDialogueProps {
@@ -56,26 +57,27 @@ export function StarObserverDialogue({ card, t, onContinue, onApplyRevision }: S
     setPendingMessage(message)
     setPending('continue')
     setError(false)
-    const result = await onContinue({
+    const result = await settleMindGardenAction(() => onContinue({
       id: card.id,
       ifVersion: card.version,
       content: message,
       quickReplyKind,
-    })
+    }))
     setPending(null)
     setPendingMessage('')
     if (!result.ok) setError(true)
   }
 
   const applyRevision = async () => {
-    if (card.pendingRevision === null || pending !== null) return
+    const revision = card.pendingRevision
+    if (revision === null || pending !== null) return
     setPending('revision')
     setError(false)
-    const result = await onApplyRevision({
+    const result = await settleMindGardenAction(() => onApplyRevision({
       id: card.id,
       ifVersion: card.version,
-      revisionId: card.pendingRevision.id,
-    })
+      revisionId: revision.id,
+    }))
     setPending(null)
     if (!result.ok) setError(true)
   }

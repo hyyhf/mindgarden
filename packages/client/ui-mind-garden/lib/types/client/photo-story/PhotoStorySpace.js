@@ -4,8 +4,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { IconChevronLeftOutline14, IconChevronRightOutline14, IconFullscreenOutline16, IconNewChatOutline16, IconPauseOutline16, IconPlayOutline16, IconPlusOutline16, IconRefreshOutline14, IconSettingsOutline16, Modal, } from '@deepseek-ai/dsh-client-ui-primitives';
 import { calendarStamp } from "../calendar.js";
 import { PHOTO_MEMORY_STAGE_V5 } from "../generated-assets.js";
+import { settleMindGardenAction } from "../settle-action.js";
 import { applyPhotoParticlePreset } from "./presets.js";
-import { PhotoParticleScene } from "./PhotoParticleScene.js";
+import { PhotoParticleScene } from "./PhotoParticleSceneView.js";
 import { preparePhotoUpload } from "./photo-upload.js";
 import css from './PhotoStorySpace.module.css';
 const PAGE_SIZE = 9;
@@ -108,7 +109,7 @@ export function PhotoStorySpace({ today, imageLimits, onListPhotoStories, onCrea
     const reducedMotion = useReducedMotion();
     const refresh = useCallback(async () => {
         const request = ++requestRef.current;
-        const result = await onListPhotoStories();
+        const result = await settleMindGardenAction(onListPhotoStories);
         if (request !== requestRef.current)
             return;
         if (result.ok) {
@@ -166,7 +167,10 @@ export function PhotoStorySpace({ today, imageLimits, onListPhotoStories, onCrea
             return;
         missing.forEach((story) => { requestedImagesRef.current.add(storyKey(story)); });
         const request = ++imageRequestRef.current;
-        void Promise.all(missing.map(async (story) => ({ story, result: await onReadPhotoStory(story) }))).then((entries) => {
+        void Promise.all(missing.map(async (story) => ({
+            story,
+            result: await settleMindGardenAction(() => onReadPhotoStory(story)),
+        }))).then((entries) => {
             if (request !== imageRequestRef.current)
                 return;
             if (entries.some(entry => !entry.result.ok))

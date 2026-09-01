@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Mind Garden Display';
-  src: url('../assets/mind-garden-display.woff2') format('woff2');
+  src: url('/plugins/@deepseek-ai/dsh-mind-garden/ui/assets/mind-garden-display.woff2') format('woff2');
   font-style: normal;
   font-weight: 200 900;
   font-display: swap;
@@ -42,9 +42,21 @@
   container: mind-garden-workspace / inline-size;
 }
 
+.spaceMount {
+  width: 100%;
+  min-height: 100%;
+}
+
 .settingsScrim {
-  position: absolute;
-  z-index: 20;
+  --mg-paper-bright: #fffaf2;
+  --mg-paper-deep: #ead8c0;
+  --mg-ink: #342d27;
+  --mg-muted: #76695e;
+  --mg-indigo: #405f87;
+  --mg-font-ui: 'Noto Sans SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei UI', system-ui, sans-serif;
+  --mg-font-reflection: 'Mind Garden Display', 'Noto Serif SC', 'Source Han Serif SC', serif;
+  position: fixed;
+  z-index: 1200;
   inset: 0;
   display: grid;
   align-items: end;
@@ -52,6 +64,9 @@
   padding: 24px;
   background: color-mix(in srgb, var(--dsw-alias-bg-mask-drop) 42%, transparent);
   backdrop-filter: blur(10px) saturate(0.82);
+  color: var(--mg-ink);
+  font-family: var(--mg-font-ui);
+  overscroll-behavior: contain;
 }
 
 .settingsSheet {
@@ -134,7 +149,7 @@
 
 .settingsHeadingCopy > span {
   color: color-mix(in srgb, var(--dsw-alias-state-warn-primary) 72%, var(--dsw-alias-label-primary-inverted));
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 650;
   letter-spacing: 0.13em;
 }
@@ -168,7 +183,7 @@
   align-items: center;
   gap: 6px;
   color: color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 72%, transparent);
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.55;
 }
 
@@ -177,6 +192,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  min-height: 44px;
   padding: 7px 10px;
   border: 1px solid color-mix(in srgb, var(--dsw-alias-label-primary-inverted) 18%, transparent);
   border-radius: 6px;
@@ -254,7 +270,7 @@
   }
 
   .settingsHeadingCopy > p {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .settingsAssurances {
@@ -1820,9 +1836,9 @@ select:disabled {
   --mg-sage: #71806e;
   --mg-font-ui: Inter, 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
   --mg-font-reflection: 'Mind Garden Display', 'Noto Serif SC', 'Songti SC', serif;
-  --mg-xuan-texture: url('../assets/morning-xuan-texture-v2.webp');
-  --mg-limestone-texture: url('../assets/warm-limestone-texture-v2.webp');
-  --mg-wood-texture: url('../assets/pale-ash-wood-texture-v2.webp');
+  --mg-xuan-texture: url('/plugins/@deepseek-ai/dsh-mind-garden/ui/assets/morning-xuan-texture-v2.webp');
+  --mg-limestone-texture: url('/plugins/@deepseek-ai/dsh-mind-garden/ui/assets/warm-limestone-texture-v2.webp');
+  --mg-wood-texture: url('/plugins/@deepseek-ai/dsh-mind-garden/ui/assets/pale-ash-wood-texture-v2.webp');
   --dsw-alias-bg-base: #fbf7ef;
   --dsw-alias-bg-layer-1: #f4eadc;
   --dsw-alias-bg-layer-2: #eadbc8;
@@ -2693,7 +2709,7 @@ select:disabled {
   .workspace select { font-size: 16px; }
 
   .settingsScrim {
-    inset-block-end: calc(var(--dsh-composer-height, 152px) + env(safe-area-inset-bottom, 0px) + 12px);
+    inset: 0;
     align-items: end;
     padding: 12px 0 0;
   }

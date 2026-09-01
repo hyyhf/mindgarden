@@ -2,6 +2,7 @@ import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-run
 /** Recoverable card-owned conversation and explicit revision acceptance surface. */
 import { useEffect, useRef, useState } from 'react';
 import { IconSendOutline14, IconSparkle16, MarkdownText, } from '@deepseek-ai/dsh-client-ui-primitives';
+import { settleMindGardenAction } from "../settle-action.js";
 import css from './StarObserver.module.css';
 /** Render bounded encrypted turns without owning session or Remote context. */
 export function StarObserverDialogue({ card, t, onContinue, onApplyRevision }) {
@@ -29,27 +30,28 @@ export function StarObserverDialogue({ card, t, onContinue, onApplyRevision }) {
         setPendingMessage(message);
         setPending('continue');
         setError(false);
-        const result = await onContinue({
+        const result = await settleMindGardenAction(() => onContinue({
             id: card.id,
             ifVersion: card.version,
             content: message,
             quickReplyKind,
-        });
+        }));
         setPending(null);
         setPendingMessage('');
         if (!result.ok)
             setError(true);
     };
     const applyRevision = async () => {
-        if (card.pendingRevision === null || pending !== null)
+        const revision = card.pendingRevision;
+        if (revision === null || pending !== null)
             return;
         setPending('revision');
         setError(false);
-        const result = await onApplyRevision({
+        const result = await settleMindGardenAction(() => onApplyRevision({
             id: card.id,
             ifVersion: card.version,
-            revisionId: card.pendingRevision.id,
-        });
+            revisionId: revision.id,
+        }));
         setPending(null);
         if (!result.ok)
             setError(true);

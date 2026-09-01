@@ -49,6 +49,8 @@
     "lib/index.js",
     "lib/invariant.js",
     "lib/client.js",
+    "lib/heavy-scenes.js",
+    "lib/assets/*",
     "lib/types/**/*.d.ts"
   ],
   "license": "MIT",
@@ -89,6 +91,7 @@
     "@testing-library/react": "^16.1.0",
     "@types/three": "^0.184.1",
     "@types/react": "~18.3.1",
+    "@types/react-dom": "~18.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

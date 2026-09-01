@@ -5,6 +5,7 @@ import { IconCheckOutline16, IconPlusOutline16, IconSendOutline14, IconStopFill1
 import { calendarStamp } from "../calendar.js";
 import { GrowthIcon, PrivateIcon } from "../GardenIcons.js";
 import { GROWTH_OBSERVATION_BENCH_V3 } from "../generated-assets.js";
+import { settleMindGardenAction } from "../settle-action.js";
 import shared from './GardenSpace.module.css';
 import css from './GrowthSpace.module.css';
 /** Render user-governed, unscored reality experiments and their observations. */
@@ -23,7 +24,7 @@ export function GrowthSpace({ today, onListExperiments, onCreateExperiment, onSt
     const requestRef = useRef(0);
     const refresh = useCallback(async () => {
         const request = ++requestRef.current;
-        const result = await onListExperiments();
+        const result = await settleMindGardenAction(onListExperiments);
         if (request !== requestRef.current)
             return;
         if (result.ok) {
@@ -43,7 +44,7 @@ export function GrowthSpace({ today, onListExperiments, onCreateExperiment, onSt
         setPending(true);
         setError(false);
         setNotice(null);
-        const result = await actionRequest();
+        const result = await settleMindGardenAction(actionRequest);
         setPending(false);
         if (!result.ok) {
             setError(true);

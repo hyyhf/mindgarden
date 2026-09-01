@@ -1,6 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 /** User-controlled Star Map authorizations and observation preferences. */
 import { useEffect, useState } from 'react';
+import { settleMindGardenAction } from "../settle-action.js";
 import css from './StarProfilePanel.module.css';
 /** Edit the privacy-sensitive subset that governs future Star Observer work. */
 export function StarProfilePanel({ profile, t, onSave, onCommit, onClose }) {
@@ -22,7 +23,7 @@ export function StarProfilePanel({ profile, t, onSave, onCommit, onClose }) {
             return;
         setPending(true);
         setNotice(null);
-        const result = await onSave(profile, permissions, tone, intent, reducedMotion);
+        const result = await settleMindGardenAction(() => onSave(profile, permissions, tone, intent, reducedMotion));
         setPending(false);
         if (!result.ok) {
             setNotice('error');

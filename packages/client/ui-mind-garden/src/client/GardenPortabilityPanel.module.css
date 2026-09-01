@@ -102,9 +102,9 @@
   padding: 4px 7px;
   border: 1px solid color-mix(in srgb, var(--archive-brass-light) 18%, transparent);
   border-radius: 999px;
-  color: color-mix(in srgb, var(--archive-bone) 72%, transparent);
+  color: color-mix(in srgb, var(--archive-bone) 84%, transparent);
   background: rgb(27 44 67 / 32%);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.03em;
 }
 
@@ -119,13 +119,13 @@
 .form label {
   display: grid;
   gap: 6px;
-  color: rgb(241 234 220 / 76%);
-  font-size: 11px;
+  color: rgb(241 234 220 / 88%);
+  font-size: 12px;
 }
 
 .form input {
   width: 100%;
-  height: 36px;
+  height: 44px;
   padding: 0 10px;
   border: 1px solid color-mix(in srgb, var(--archive-brass-light) 22%, transparent);
   border-radius: 5px;
@@ -137,7 +137,7 @@
 }
 
 .form input::placeholder {
-  color: color-mix(in srgb, var(--archive-bone) 28%, transparent);
+  color: color-mix(in srgb, var(--archive-bone) 72%, transparent);
 }
 
 .form input:focus-visible {
@@ -155,8 +155,8 @@
 
 .formFooter p {
   margin: 0;
-  color: color-mix(in srgb, var(--archive-bone) 62%, transparent);
-  font-size: 10px;
+  color: color-mix(in srgb, var(--archive-bone) 82%, transparent);
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -169,7 +169,7 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  min-height: 36px;
+  min-height: 44px;
   padding: 8px 13px;
   border: 1px solid color-mix(in srgb, var(--archive-brass-light) 30%, transparent);
   border-radius: 5px;
@@ -177,7 +177,7 @@
   background: linear-gradient(180deg, var(--archive-oxblood), var(--archive-oxblood-deep));
   box-shadow: inset 0 1px rgb(255 255 255 / 9%), 0 6px 16px rgb(0 0 0 / 18%);
   font: inherit;
-  font-size: 10px;
+  font-size: 12px;
   cursor: pointer;
   transition: border-color 120ms ease, filter 120ms ease, transform 120ms ease;
 }
@@ -211,13 +211,13 @@
   gap: 12px;
   margin: 12px 0 0;
   color: var(--archive-success);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .status p span {
   min-width: 0;
   overflow: hidden;
-  color: color-mix(in srgb, var(--archive-bone) 62%, transparent);
+  color: color-mix(in srgb, var(--archive-bone) 82%, transparent);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -267,8 +267,8 @@
 .recoveryCopy p {
   max-width: 68ch;
   margin: 0;
-  color: color-mix(in srgb, var(--archive-bone) 61%, transparent);
-  font-size: 10px;
+  color: color-mix(in srgb, var(--archive-bone) 82%, transparent);
+  font-size: 12px;
   line-height: 1.6;
 }
 
@@ -297,7 +297,7 @@
 .inspectButton,
 .restoreActions button {
   display: inline-flex;
-  min-height: 36px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   gap: 7px;
@@ -307,7 +307,7 @@
   color: color-mix(in srgb, var(--archive-bone) 82%, transparent);
   background: rgb(24 39 60 / 48%);
   font: inherit;
-  font-size: 10px;
+  font-size: 12px;
   cursor: pointer;
   transition: border-color 120ms ease, color 120ms ease, transform 120ms ease;
 }
@@ -315,8 +315,8 @@
 .fileName {
   min-width: 0;
   overflow: hidden;
-  color: color-mix(in srgb, var(--archive-bone) 52%, transparent);
-  font-size: 10px;
+  color: color-mix(in srgb, var(--archive-bone) 82%, transparent);
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -324,13 +324,13 @@
 .restoreSecret {
   display: grid;
   gap: 5px;
-  color: color-mix(in srgb, var(--archive-bone) 68%, transparent);
-  font-size: 10px;
+  color: color-mix(in srgb, var(--archive-bone) 84%, transparent);
+  font-size: 12px;
 }
 
 .restoreSecret input {
   width: 100%;
-  height: 36px;
+  height: 44px;
   box-sizing: border-box;
   padding: 0 10px;
   border: 1px solid color-mix(in srgb, var(--archive-success) 22%, transparent);
@@ -343,7 +343,7 @@
 }
 
 .restoreSecret input::placeholder {
-  color: color-mix(in srgb, var(--archive-bone) 30%, transparent);
+  color: color-mix(in srgb, var(--archive-bone) 72%, transparent);
 }
 
 .restoreSecret input:focus-visible,
@@ -392,13 +392,13 @@
   align-items: center;
   gap: 7px;
   color: var(--archive-success);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .previewHeading time {
-  color: color-mix(in srgb, var(--archive-bone) 48%, transparent);
-  font-size: 9px;
+  color: color-mix(in srgb, var(--archive-bone) 78%, transparent);
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -415,8 +415,8 @@
 }
 
 .restorePreview dt {
-  color: color-mix(in srgb, var(--archive-bone) 48%, transparent);
-  font-size: 9px;
+  color: color-mix(in srgb, var(--archive-bone) 78%, transparent);
+  font-size: 12px;
 }
 
 .restorePreview dd {
@@ -433,7 +433,7 @@
   gap: 7px;
   margin: 0;
   color: color-mix(in srgb, var(--archive-brass-light) 72%, var(--archive-bone));
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -463,18 +463,18 @@
   gap: 9px;
   margin: 8px 0 0;
   color: var(--archive-success);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .restoreReceipt span {
   display: grid;
   gap: 2px;
-  color: color-mix(in srgb, var(--archive-bone) 56%, transparent);
+  color: color-mix(in srgb, var(--archive-bone) 82%, transparent);
 }
 
 .restoreReceipt strong {
   color: var(--archive-success);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .restoreReceipt b {
@@ -531,8 +531,8 @@
 .rotationCopy p {
   max-width: 58ch;
   margin: 0;
-  color: color-mix(in srgb, var(--archive-bone) 57%, transparent);
-  font-size: 10px;
+  color: color-mix(in srgb, var(--archive-bone) 82%, transparent);
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -541,7 +541,7 @@
   display: block;
   margin-top: 5px;
   color: var(--archive-success);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .rotationError {
@@ -557,17 +557,17 @@
 
 .rotationActions button {
   display: inline-flex;
-  min-height: 32px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   gap: 6px;
   padding: 6px 10px;
   border: 1px solid color-mix(in srgb, var(--archive-brass-light) 23%, transparent);
   border-radius: 5px;
-  color: rgb(246 238 222 / 78%);
+  color: rgb(246 238 222 / 90%);
   background: rgb(24 39 60 / 50%);
   font: inherit;
-  font-size: 10px;
+  font-size: 12px;
   cursor: pointer;
   transition: border-color 120ms ease, color 120ms ease, transform 120ms ease;
 }

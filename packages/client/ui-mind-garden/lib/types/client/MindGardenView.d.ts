@@ -30,5 +30,5 @@ export declare function MindGardenReviewCenter({ projection, imageLimits, onExpo
 /** Full slot props: standard session kit, store, injected actions, and locale seat. */
 export type MindGardenViewProps = ConvViewProps & MindGardenViewActions & PropsLocale<'mindGarden'> & PropsStore<ReturnType<typeof createMindGardenViewStore>>;
 /** Read the typed session projection and adapt it to the review center. */
-export declare function MindGardenView({ useProjection, useSession, useStore, actions, inputActions, ...props }: MindGardenViewProps): import("react").JSX.Element;
+export declare function MindGardenView({ useProjection, useSession, useInput, useStore, actions, inputActions, ...props }: MindGardenViewProps): import("react").JSX.Element;
 //# sourceMappingURL=MindGardenView.d.ts.map

@@ -1,6 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 /** Resumable, encrypted first-observation ritual for the Star Map. */
 import { useEffect, useState } from 'react';
+import { settleMindGardenAction } from "../settle-action.js";
 import { STAR_MIST_COURTYARD_V5 } from "../generated-assets.js";
 import css from './StarRitual.module.css';
 const SCENES = [1, 2, 3, 4, 5, 6];
@@ -63,8 +64,8 @@ export function StarRitual({ profile, t, onSave, onComplete, onCommit, onExit })
             selfWords: words.split(/[，,]/u).map(word => word.trim()).filter(Boolean),
         };
         const result = step < 2
-            ? await onSave(normalized, step === 0 ? 1 : 2, profile.version)
-            : await onComplete(normalized, profile.version);
+            ? await settleMindGardenAction(() => onSave(normalized, step === 0 ? 1 : 2, profile.version))
+            : await settleMindGardenAction(() => onComplete(normalized, profile.version));
         setPending(false);
         if (!result.ok) {
             setError(true);

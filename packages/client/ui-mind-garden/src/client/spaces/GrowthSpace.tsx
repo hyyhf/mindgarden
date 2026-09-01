@@ -14,6 +14,7 @@ import { GrowthIcon, PrivateIcon } from '../GardenIcons.tsx'
 import { GROWTH_OBSERVATION_BENCH_V3 } from '../generated-assets.ts'
 import type { MindGardenKey } from '../locales.ts'
 import type { MindGardenDataResult, MindGardenViewActions } from '../slots.ts'
+import { settleMindGardenAction } from '../settle-action.ts'
 import shared from './GardenSpace.module.css'
 import css from './GrowthSpace.module.css'
 
@@ -59,7 +60,7 @@ export function GrowthSpace({
 
   const refresh = useCallback(async () => {
     const request = ++requestRef.current
-    const result = await onListExperiments()
+    const result = await settleMindGardenAction(onListExperiments)
     if (request !== requestRef.current) return
     if (result.ok) {
       setExperiments(result.value)
@@ -82,7 +83,7 @@ export function GrowthSpace({
     setPending(true)
     setError(false)
     setNotice(null)
-    const result = await actionRequest()
+    const result = await settleMindGardenAction(actionRequest)
     setPending(false)
     if (!result.ok) {
       setError(true)

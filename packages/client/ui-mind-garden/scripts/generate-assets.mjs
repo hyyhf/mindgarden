@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 
 const packageRoot = fileURLToPath(new URL('..', import.meta.url))
@@ -14,12 +14,12 @@ const assets = [
   ['GARDEN_HOME_COURTYARD_V4', 'immersive morning New Chinese home courtyard', 'garden-home-courtyard-v4.webp'],
 ]
 
-const declarations = await Promise.all(assets.map(async ([name, description, filename]) => {
-  const bytes = await readFile(`${packageRoot}/src/assets/${filename}`)
-  return `/** Package-owned ${description} image. */\nexport const ${name} = 'data:image/webp;base64,${bytes.toString('base64')}'`
-}))
+const pluginRoot = '/plugins/@deepseek-ai/dsh-mind-garden/ui/assets'
+const declarations = assets.map(([name, description, filename]) =>
+  `/** Package-owned ${description} image. */\nexport const ${name} = '${pluginRoot}/${filename}'`,
+)
 
 await writeFile(
   `${packageRoot}/src/client/generated-assets.ts`,
-  `/** Generated inline URLs for package-owned raster assets. Do not edit by hand. */\n\n${declarations.join('\n\n')}\n`,
+  `/** Generated package resource URLs for raster assets. Do not edit by hand. */\n\n${declarations.join('\n\n')}\n`,
 )

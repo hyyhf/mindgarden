@@ -39,6 +39,10 @@ for (const required of [
   'lib/typert.host.js',
   'lib/typert.host.d.ts',
   'packages/client/ui-mind-garden/lib/client.js',
+  'packages/client/ui-mind-garden/lib/heavy-scenes.js',
+  'packages/client/ui-mind-garden/lib/assets/mind-garden-display.woff2',
+  'packages/client/ui-mind-garden/lib/assets/photo-memory-stage-v5.webp',
+  'packages/client/ui-mind-garden/lib/assets/star-mist-courtyard-v5.webp',
 ]) {
   if (!existsSync(resolve(root, required))) failures.push(`missing release file: ${required}`)
 }
@@ -68,6 +72,9 @@ for (const [subpath, target] of Object.entries(manifest.exports ?? {})) {
 const clientBundle = readFileSync(resolve(root, 'packages/client/ui-mind-garden/lib/client.js'), 'utf8')
 if (!clientBundle.includes('id: "@deepseek-ai/dsh-mind-garden"')) {
   failures.push('the browser bundle does not register the standalone Loader row id @deepseek-ai/dsh-mind-garden')
+}
+if (!clientBundle.includes('/plugins/@deepseek-ai/dsh-mind-garden/heavy-scenes.js')) {
+  failures.push('the browser bundle does not load its heavy scene companion from the standalone package route')
 }
 
 const manifests = [

@@ -11,7 +11,7 @@ import type {
 import { StarMapSpace } from '../src/client/star-map/StarMapSpace.tsx'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
 
-vi.mock('../src/client/star-map/StarField.tsx', () => ({
+vi.mock('../src/client/star-map/StarFieldView.tsx', () => ({
   StarField: ({ fallback }: { readonly fallback: string }) => <div data-testid="star-field">{fallback}</div>,
 }))
 

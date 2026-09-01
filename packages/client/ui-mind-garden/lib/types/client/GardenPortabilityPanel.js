@@ -2,6 +2,7 @@ import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-run
 /** Private profile archive controls inside the Mind Garden settings instrument. */
 import { useRef, useState } from 'react';
 import { IconCheckOutline16, IconDataOutline16, IconDownloadOutline16, IconFolderOpenOutline16, IconRefreshOutline16, IconWarningOutline16, } from '@deepseek-ai/dsh-client-ui-primitives';
+import { settleMindGardenAction } from "./settle-action.js";
 import css from './GardenPortabilityPanel.module.css';
 function decodeBase64(value) {
     const binary = atob(value);
@@ -82,7 +83,7 @@ export function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onR
         if (!ready)
             return;
         setState({ kind: 'working' });
-        const result = await onExportBackup(passphrase);
+        const result = await settleMindGardenAction(() => onExportBackup(passphrase));
         if (!result.ok) {
             setState({ kind: 'error', key: errorKey(result.code) });
             return;
@@ -99,7 +100,7 @@ export function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onR
     };
     const rotate = async () => {
         setRotation({ kind: 'working' });
-        const result = await onRotateVaultKey();
+        const result = await settleMindGardenAction(onRotateVaultKey);
         setRotation(result.ok
             ? { kind: 'success', value: result.value }
             : { kind: 'error', key: rotationErrorKey(result.code) });
@@ -108,7 +109,7 @@ export function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onR
         if (restoreFile === null || codePointLength(restorePassphrase) < 8)
             return;
         setRestore({ kind: 'inspecting' });
-        const result = await onInspectBackup(restoreFile, restorePassphrase);
+        const result = await settleMindGardenAction(() => onInspectBackup(restoreFile, restorePassphrase));
         setRestore(result.ok
             ? { kind: 'preview', value: result.value }
             : { kind: 'error', code: result.code, key: restoreErrorKey(result.code) });
@@ -118,7 +119,7 @@ export function GardenPortabilityPanel({ t, onExportBackup, onInspectBackup, onR
             return;
         const preview = restore.value;
         setRestore({ kind: 'restoring', value: preview });
-        const result = await onRestoreBackup(restoreFile, restorePassphrase);
+        const result = await settleMindGardenAction(() => onRestoreBackup(restoreFile, restorePassphrase));
         if (!result.ok) {
             setRestore({ kind: 'error', code: result.code, key: restoreErrorKey(result.code) });
             return;

@@ -2,6 +2,7 @@ import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-run
 /** Evidence-bound card draw and human calibration surface for the Star Observer. */
 import { useEffect, useState } from 'react';
 import { IconCloseOutline16, IconPlusOutline16 } from '@deepseek-ai/dsh-client-ui-primitives';
+import { settleMindGardenAction } from "../settle-action.js";
 import css from './StarObserver.module.css';
 import { StarObserverDialogue } from "./StarObserverDialogue.js";
 import { PrivateIcon, StarMapIcon } from "../GardenIcons.js";
@@ -46,11 +47,11 @@ export function StarObserver({ profile, cards, activeCard, t, onDraw, onCalibrat
             return;
         setPending('draw');
         setError(false);
-        const result = await onDraw({
+        const result = await settleMindGardenAction(() => onDraw({
             deck,
             question: question.trim(),
             observedLocalDate: browserLocalDate(),
-        });
+        }));
         setPending(null);
         if (!result.ok)
             setError(true);
@@ -60,12 +61,12 @@ export function StarObserver({ profile, cards, activeCard, t, onDraw, onCalibrat
             return;
         setPending('calibrate');
         setError(false);
-        const result = await onCalibrate({
+        const result = await settleMindGardenAction(() => onCalibrate({
             id: card.id,
             ifVersion: card.version,
             verdict,
             ...(correction.trim().length === 0 ? {} : { correction: correction.trim() }),
-        });
+        }));
         setPending(null);
         if (!result.ok)
             setError(true);
@@ -75,7 +76,7 @@ export function StarObserver({ profile, cards, activeCard, t, onDraw, onCalibrat
             return;
         setPending('finalize');
         setError(false);
-        const result = await onFinalize({ id: card.id, ifVersion: card.version, action });
+        const result = await settleMindGardenAction(() => onFinalize({ id: card.id, ifVersion: card.version, action }));
         setPending(null);
         if (!result.ok) {
             setError(true);

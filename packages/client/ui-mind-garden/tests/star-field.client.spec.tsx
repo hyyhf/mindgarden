@@ -35,7 +35,12 @@ vi.mock('three', async (importOriginal) => {
   return { ...actual, WebGLRenderer }
 })
 
-import { mountGardenStarField, StarField } from '../src/client/star-map/StarField.tsx'
+vi.mock('../src/client/scene-loader.ts', () => ({
+  loadMindGardenScenes: async () => await import('../src/client/star-map/StarField.tsx'),
+}))
+
+import { mountGardenStarField } from '../src/client/star-map/StarField.tsx'
+import { StarField } from '../src/client/star-map/StarFieldView.tsx'
 
 const model: GardenStarMapModel = {
   nodes: [

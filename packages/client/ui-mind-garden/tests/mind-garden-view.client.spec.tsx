@@ -32,7 +32,7 @@ import { MindGardenReviewCenter, MindGardenView } from '../src/client/MindGarden
 import type { MindGardenViewActions } from '../src/client/slots.ts'
 import { zh, type MindGardenKey } from '../src/client/locales.ts'
 
-vi.mock('../src/client/star-map/StarField.tsx', () => ({
+vi.mock('../src/client/star-map/StarFieldView.tsx', () => ({
   StarField: () => <div data-testid="star-field" />,
 }))
 
@@ -319,6 +319,7 @@ describe('Mind Garden full view', () => {
 
     const useProjection = vi.fn(() => active())
     const useSession = vi.fn((selector: (state: { running: boolean }) => unknown) => selector({ running: false }))
+    const useInput = vi.fn((selector: (state: { draft: string }) => unknown) => selector({ draft: 'Keep this thought' }))
     const useStore = vi.fn((selector: (state: { activeSpace: 'today'; sidebarCollapsed: false }) => unknown) => selector({
       activeSpace: 'today',
       sidebarCollapsed: false,
@@ -327,6 +328,7 @@ describe('Mind Garden full view', () => {
     const viewProps = {
       useProjection,
       useSession,
+      useInput,
       useStore,
       actions: storeActions,
       inputActions: { setDraft: vi.fn() },
@@ -336,6 +338,7 @@ describe('Mind Garden full view', () => {
     loading.rerender(<MindGardenView {...viewProps} />)
     expect(useProjection).toHaveBeenCalledWith('mind-garden')
     expect(useSession).toHaveBeenCalledOnce()
+    expect(useInput).toHaveBeenCalledOnce()
     expect(useStore).toHaveBeenCalledOnce()
   })
 
@@ -488,6 +491,17 @@ describe('Mind Garden full view', () => {
     expect((await view.findByRole('alert')).textContent).toContain(zh['review.error.generic'])
   })
 
+  it('settles rejected initial loaders instead of leaving the center busy', async () => {
+    const props = actions({
+      onListOpenQuestions: vi.fn(() => Promise.reject(new Error('offline'))),
+      onListPeriodReviews: vi.fn(() => Promise.reject(new Error('offline'))),
+    })
+    const view = render(<MindGardenReviewCenter projection={active()} {...props} t={t} />)
+    expect((await view.findByRole('alert')).textContent).toContain(zh['review.error.generic'])
+    expect(view.queryByText(zh['review.loading'])).toBeNull()
+    expect(view.getByRole('button', { name: zh['review.retry'] })).toBeTruthy()
+  })
+
   it('ignores an obsolete load after the view unmounts', async () => {
     const deferredQuestions = Promise.withResolvers<ReturnType<typeof successQuestions>>()
     const deferredReviews = Promise.withResolvers<ReturnType<typeof successReviews>>()
@@ -563,6 +577,39 @@ describe('Mind Garden full view', () => {
     await view.findByText(zh['photo.empty.title'])
   })
 
+  it('keeps an unfinished space draft when the user briefly visits another space', async () => {
+    const viewActions = actions()
+    const view = render(
+      <MindGardenReviewCenter projection={active()} activeSpace="concerns" {...viewActions} t={t} />,
+    )
+    const draft = await view.findByLabelText(zh['concern.input'])
+    fireEvent.change(draft, { target: { value: '还没准备好说完的心事' } })
+    view.rerender(
+      <MindGardenReviewCenter projection={active()} activeSpace="growth" {...viewActions} t={t} />,
+    )
+    await view.findByText(zh['growth.empty'])
+    view.rerender(
+      <MindGardenReviewCenter projection={active()} activeSpace="concerns" {...viewActions} t={t} />,
+    )
+    expect((view.getByLabelText(zh['concern.input']) as HTMLTextAreaElement).value)
+      .toBe('还没准备好说完的心事')
+  })
+
+  it('isolates garden settings from the host surface and restores it on close', async () => {
+    const view = render(<MindGardenReviewCenter projection={active()} {...actions()} t={t} />)
+    fireEvent.click(view.getByRole('button', { name: zh['garden.settings'] }))
+    const dialog = await view.findByRole('dialog', { name: zh['garden.settings'] })
+    expect(dialog.parentElement).toBe(document.body)
+    expect(view.container.getAttribute('aria-hidden')).toBe('true')
+    expect(view.container.inert).toBe(true)
+    expect(document.documentElement.style.overflow).toBe('hidden')
+    fireEvent.click(view.getByRole('button', { name: zh['garden.settings.close'] }))
+    await waitFor(() => { expect(view.queryByRole('dialog', { name: zh['garden.settings'] })).toBeNull() })
+    expect(view.container.hasAttribute('aria-hidden')).toBe(false)
+    expect(view.container.inert).not.toBe(true)
+    expect(document.documentElement.style.overflow).toBe('')
+  })
+
   it('returns a life review to the resident Harness composer without sending it', async () => {
     const onDraftConversation = vi.fn()
     const viewActions = actions({
@@ -584,6 +631,29 @@ describe('Mind Garden full view', () => {
     fireEvent.click(view.getByRole('button', { name: zh['life.continue'] }))
     expect(onDraftConversation).toHaveBeenCalledWith(expect.stringContaining('saved review'))
     expect(view.getByRole('status').textContent).toContain(zh['life.notice.drafted'])
+  })
+
+  it('appends a life-review handoff without overwriting the resident composer draft', async () => {
+    const setDraft = vi.fn()
+    const viewActions = actions({
+      onListPeriodReviews: vi.fn(() => Promise.resolve({ ok: true as const, value: [periodReview('saved')] })),
+    })
+    const view = render(<MindGardenView {...({
+      useProjection: (key: string) => key === 'mind-garden' ? active() : undefined,
+      useSession: (selector: (state: { running: boolean }) => unknown) => selector({ running: false }),
+      useInput: (selector: (state: { draft: string }) => unknown) => selector({ draft: '我原本正在写的内容' }),
+      useStore: (selector: (state: { activeSpace: 'life'; sidebarCollapsed: false }) => unknown) => selector({
+        activeSpace: 'life',
+        sidebarCollapsed: false,
+      }),
+      actions: { selectSpace: vi.fn(), toggleSidebar: vi.fn() },
+      inputActions: { setDraft },
+      ...viewActions,
+      t,
+    } as unknown as Parameters<typeof MindGardenView>[0])} />)
+    await view.findByText('saved review')
+    fireEvent.click(view.getByRole('button', { name: zh['life.continue'] }))
+    expect(setDraft).toHaveBeenCalledWith(expect.stringMatching(/^我原本正在写的内容\n\n[\s\S]*saved review/))
   })
 })
 

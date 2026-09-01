@@ -5,6 +5,7 @@ import { IconCheckOutline16, IconEditOutline16, IconSendOutline14, } from '@deep
 import { calendarStamp } from "../calendar.js";
 import { ConcernsIcon, JournalIcon, PrivateIcon } from "../GardenIcons.js";
 import { CONCERN_PAPER_LATTICE_V3 } from "../generated-assets.js";
+import { settleMindGardenAction } from "../settle-action.js";
 import shared from './GardenSpace.module.css';
 import css from './ConcernsSpace.module.css';
 /** Render create, complete, and journal-conversion flows for private concerns. */
@@ -23,7 +24,7 @@ export function ConcernsSpace({ today, onListConcerns, onCreateConcern, onUpdate
     const requestRef = useRef(0);
     const refresh = useCallback(async () => {
         const request = ++requestRef.current;
-        const result = await onListConcerns();
+        const result = await settleMindGardenAction(onListConcerns);
         if (request !== requestRef.current)
             return;
         if (result.ok) {
@@ -47,7 +48,7 @@ export function ConcernsSpace({ today, onListConcerns, onCreateConcern, onUpdate
         setPending(true);
         setError(false);
         setNotice(null);
-        const result = await onCreateConcern(value, calendarStamp(today), reminder === '' ? undefined : calendarStamp(reminder));
+        const result = await settleMindGardenAction(() => onCreateConcern(value, calendarStamp(today), reminder === '' ? undefined : calendarStamp(reminder)));
         setPending(false);
         if (!result.ok) {
             setError(true);
@@ -62,7 +63,7 @@ export function ConcernsSpace({ today, onListConcerns, onCreateConcern, onUpdate
         setPending(true);
         setError(false);
         setNotice(null);
-        const result = await onCompleteConcern(item);
+        const result = await settleMindGardenAction(() => onCompleteConcern(item));
         setPending(false);
         if (!result.ok) {
             setError(true);
@@ -85,7 +86,7 @@ export function ConcernsSpace({ today, onListConcerns, onCreateConcern, onUpdate
         setPending(true);
         setError(false);
         setNotice(null);
-        const result = await onUpdateConcern(item, value, today, editingReminder === '' ? undefined : calendarStamp(editingReminder));
+        const result = await settleMindGardenAction(() => onUpdateConcern(item, value, today, editingReminder === '' ? undefined : calendarStamp(editingReminder)));
         setPending(false);
         if (!result.ok) {
             setError(true);
@@ -104,7 +105,7 @@ export function ConcernsSpace({ today, onListConcerns, onCreateConcern, onUpdate
         setPending(true);
         setError(false);
         setNotice(null);
-        const result = await onConvertConcern(item, calendarStamp(today), allowRetrieval);
+        const result = await settleMindGardenAction(() => onConvertConcern(item, calendarStamp(today), allowRetrieval));
         setPending(false);
         if (!result.ok) {
             setError(true);

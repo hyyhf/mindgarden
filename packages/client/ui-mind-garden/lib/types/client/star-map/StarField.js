@@ -1,9 +1,6 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 /** Three.js constellation renderer with adaptive detail and deterministic teardown. */
-import { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import css from './StarField.module.css';
 const linkVertexShader = `
 attribute vec3 linkColor;
 attribute float linkProgress;
@@ -553,38 +550,5 @@ export function mountGardenStarField(host, model, reducedMotion, selectedId = 'c
         renderer.forceContextLoss();
         canvas.remove();
     };
-}
-/** Display the live WebGL constellation, with the surrounding space owning accessible nodes. */
-export function StarField({ model, fallback, reducedMotion = false, selectedId = 'center', onSelect, }) {
-    const [host, setHost] = useState(null);
-    const [failed, setFailed] = useState(false);
-    const [systemReducedMotion, setSystemReducedMotion] = useState(() => typeof window.matchMedia === 'function'
-        && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    const [hovered, setHovered] = useState(null);
-    useEffect(() => {
-        if (typeof window.matchMedia !== 'function')
-            return;
-        const query = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const update = () => { setSystemReducedMotion(query.matches); };
-        update();
-        query.addEventListener('change', update);
-        return () => { query.removeEventListener('change', update); };
-    }, []);
-    useEffect(() => {
-        if (host === null)
-            return;
-        try {
-            setFailed(false);
-            return mountGardenStarField(host, model, reducedMotion || systemReducedMotion, selectedId, onSelect, (id, x, y) => {
-                const node = model.nodes.find(candidate => candidate.id === id);
-                setHovered(node === undefined ? null : { node, x, y });
-            });
-        }
-        catch {
-            host.replaceChildren();
-            setFailed(true);
-        }
-    }, [host, model, onSelect, reducedMotion, selectedId, systemReducedMotion]);
-    return (_jsxs("div", { className: css.scene, "data-render-state": failed ? 'fallback' : 'ready', children: [_jsx("div", { className: css.host, ref: setHost, "aria-hidden": "true" }), hovered !== null && (_jsxs("div", { className: css.tooltip, style: { '--mg-star-x': `${hovered.x}px`, '--mg-star-y': `${hovered.y}px` }, children: [_jsx("strong", { children: hovered.node.title }), _jsx("p", { children: hovered.node.detail })] })), failed && _jsx("div", { className: css.fallback, role: "status", children: fallback })] }));
 }
 //# sourceMappingURL=StarField.js.map
